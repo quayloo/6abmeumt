@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B7A75">
+<title>Sổ tay EMBA 6XD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Plan: mobile-first, một cột như ứng dụng học; mỗi môn một "màu nhiên liệu"; lộ trình kiến thức như tuyến đường có các trạm dừng. */
+:root{
+  --bg:#F2F5F3; --surface:#FFFFFF; --surface-2:#E8EEEA; --ink:#13201D; --muted:#5B6B66; --line:#D6DED9;
+  --ktud:#0B7A75; --ktud-soft:#D6EEEC; --qtcl:#D9562B; --qtcl-soft:#FBE3D9; --gold:#E8A317; --gold-soft:#FCEFCF; --gold-ink:#8A5D00;
+  --good:#1F8F4E; --good-soft:#DDF2E4; --bad:#C8372D; --bad-soft:#F8DEDB; --violet:#5A6FD6; --violet-soft:#E3E7FA;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --body:"Be Vietnam Pro","Segoe UI",system-ui,sans-serif;
+  --c:var(--ktud); --cs:var(--ktud-soft);
+  --shadow:0 1px 2px rgba(19,32,29,.06),0 6px 18px rgba(19,32,29,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1614; --surface:#16211E; --surface-2:#1F2C29; --ink:#E7EFEC; --muted:#94A7A1; --line:#2B3A36;
+  --ktud:#3BBDB4; --ktud-soft:#17332F; --qtcl:#F2825C; --qtcl-soft:#3A2219; --gold:#F2B940; --gold-soft:#3A2F14; --gold-ink:#F2B940;
+  --good:#4CC27D; --good-soft:#163222; --bad:#F0675C; --bad-soft:#3A1A17; --violet:#8C9BF0; --violet-soft:#232845;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1614; --surface:#16211E; --surface-2:#1F2C29; --ink:#E7EFEC; --muted:#94A7A1; --line:#2B3A36;
+  --ktud:#3BBDB4; --ktud-soft:#17332F; --qtcl:#F2825C; --qtcl-soft:#3A2219; --gold:#F2B940; --gold-soft:#3A2F14; --gold-ink:#F2B940;
+  --good:#4CC27D; --good-soft:#163222; --bad:#F0675C; --bad-soft:#3A1A17; --violet:#8C9BF0; --violet-soft:#232845;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15.5px/1.6 var(--body);-webkit-font-smoothing:antialiased;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+body.home-mode{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.18;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:27px;font-weight:800} h2{font-size:21px;font-weight:800} h3{font-size:17.5px;font-weight:600} h4{font-size:15.5px;font-weight:600}
+p{margin:0} a{color:var(--c)} button,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:13px}
+
+/* Top bar */
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 10px calc(14px + env(safe-area-inset-left));background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.homebtn{flex:none;width:44px;height:44px;border-radius:13px;border:1.5px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.homebtn.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.homebtn svg{width:22px;height:22px}
+.picker{position:relative;flex:1;min-width:0}
+.picker select{appearance:none;-webkit-appearance:none;width:100%;height:44px;border-radius:13px;border:1.5px solid var(--line);background:var(--surface);padding:0 38px 0 38px;font-weight:700;font-size:15px;text-overflow:ellipsis}
+.picker.active select{border-color:var(--c);background:var(--cs);color:var(--c)}
+.picker .dot{position:absolute;left:14px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:4px;background:var(--c);pointer-events:none}
+.picker.nosubj .dot{background:var(--muted)}
+.picker .chev{position:absolute;right:14px;top:50%;margin-top:-8px;width:16px;height:16px;pointer-events:none;color:var(--muted)}
+.days{flex:none;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);white-space:nowrap}
+
+/* Bottom bar */
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(19,32,29,.08);padding:6px calc(8px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left))}
+.bottom .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:54px;border-radius:14px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:700}
+.bottom a svg{width:23px;height:23px}
+.bottom a.on{background:var(--cs);color:var(--c)}
+body.home-mode .bottom{display:none}
+
+main{max-width:760px;margin:0 auto;padding:16px calc(16px + env(safe-area-inset-right)) 28px calc(16px + env(safe-area-inset-left))}
+.view{display:none;flex-direction:column;gap:14px} .view.on{display:flex}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.card.flat{box-shadow:none}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--c)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--surface-2);color:var(--ink);white-space:nowrap}
+.pill.c{background:var(--cs);color:var(--c)} .pill.g{background:var(--gold-soft);color:var(--gold-ink)} .pill.ok{background:var(--good-soft);color:var(--good)} .pill.ko{background:var(--bad-soft);color:var(--bad)}
+.btn{border:0;border-radius:13px;padding:12px 16px;min-height:46px;font-weight:700;font-size:14.5px;background:var(--c);color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.ghost{background:var(--surface-2);color:var(--ink)} .btn.good{background:var(--good)} .btn.bad{background:var(--bad)} .btn.block{width:100%}
+ul.clean{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.note{border-left:4px solid var(--nc,var(--gold));background:var(--ncs,var(--gold-soft));padding:12px 14px;border-radius:0 12px 12px 0;font-size:14.5px}
+.formula{font-family:var(--display);font-size:15.5px;font-weight:600;background:var(--surface-2);border-radius:12px;padding:12px 14px;text-align:center}
+.list{display:flex;flex-direction:column}
+.li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.li:last-child{border-bottom:0}
+.li .d{flex:none;width:52px;text-align:center;border-radius:12px;padding:5px 0;background:var(--surface-2)}
+.li .d b{display:block;font:800 18px var(--display);line-height:1.1}
+.li .d small{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.li .t{flex:1;min-width:0}
+.li .t b{display:block}
+.tag{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+table.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}
+svg text{font-family:var(--body)}
+
+/* Home hero */
+.hero{border-radius:22px;padding:20px;color:#fff;background:linear-gradient(140deg,#0B7A75 0%,#0A5753 55%,#3C2A1F 100%);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.hero::after{content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;border:30px solid rgba(255,255,255,.07)}
+.hero .eyebrow{color:#fff;opacity:.8}
+.hero h1{color:#fff;font-size:24px;margin-top:4px}
+.hero p{opacity:.9;font-size:14px;margin-top:6px}
+.gauge{width:118px;position:relative;z-index:1}
+
+/* Roadmap */
+.road{position:relative;display:flex;flex-direction:column;gap:12px;padding-left:34px}
+.road::before{content:"";position:absolute;left:14px;top:18px;bottom:18px;width:4px;border-radius:4px;background:repeating-linear-gradient(to bottom,var(--line) 0 10px,transparent 10px 18px)}
+.stop{position:relative;display:block;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);text-decoration:none;color:var(--ink)}
+.stop::before{content:attr(data-n);position:absolute;left:-34px;top:14px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:800 13px var(--display);background:var(--surface);border:3px solid var(--line);color:var(--muted)}
+.stop.done::before{background:var(--c);border-color:var(--c);color:#fff}
+.stop.now::before{background:var(--gold);border-color:var(--gold);color:#3D2A00;box-shadow:0 0 0 5px var(--gold-soft)}
+.stop.soon{opacity:.62;box-shadow:none;background:transparent;border-style:dashed}
+.stop h3{margin:4px 0 4px}
+.bar{height:7px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--c);border-radius:9px}
+
+/* Chapter */
+.back{align-self:flex-start;border:0;background:none;padding:6px 0;font-weight:700;color:var(--c);display:flex;gap:6px;align-items:center;text-decoration:none}
+.chhead{border-radius:20px;padding:18px;background:var(--cs);display:flex;flex-direction:column;gap:6px}
+.toc{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;font-size:13px;font-weight:700;padding:7px 12px;border-radius:99px;background:var(--surface);border:1.5px solid var(--line);text-decoration:none;color:var(--ink);white-space:nowrap}
+.toc a.ok{border-color:var(--c);color:var(--c)}
+.topic{scroll-margin-top:76px}
+.topic .hd{display:flex;gap:12px;align-items:flex-start}
+.topic .n{flex:none;width:34px;height:34px;border-radius:11px;background:var(--c);color:#fff;font:800 14px var(--display);display:grid;place-items:center}
+.topic .src{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.topic .body{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.more-box{border:1.5px dashed var(--gold);border-radius:14px;background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
+.more-box[hidden]{display:none}
+.mtag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#3D2A00;padding:2px 8px;border-radius:6px}
+.act{flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:40px;padding:6px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:13.5px;text-decoration:none;cursor:pointer}
+.act[data-more]{border-color:var(--gold);color:var(--gold-ink);background:var(--gold-soft)}
+.act.ask{border-color:var(--c);color:var(--c)}
+.act.got.on{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.acts{display:flex;gap:8px}
+.understood.ask{color:var(--c);border-color:var(--c)}
+.sheet{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(10,20,18,.45)}
+.sheet.on{display:flex}
+.sheet .box{width:100%;max-width:640px;background:var(--surface);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+.sheet textarea{width:100%;min-height:120px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:15px;padding:12px;resize:vertical}
+.sheet .row .btn{flex:1}
+.mh{font:800 11.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink);margin-top:4px}
+.mh:first-child{margin-top:0}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.steps li::marker{font-weight:800;color:var(--c)}
+.why{margin:8px 0 0;padding-left:18px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.intro{font-size:15px;line-height:1.65}
+.understood{align-self:flex-start;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 14px;font-weight:700;font-size:13.5px;min-height:40px}
+.understood.on{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.summary{border-radius:20px;padding:18px;background:var(--ink);color:var(--surface);display:flex;flex-direction:column;gap:12px}
+.summary h2{color:var(--surface)}
+.summary .k{display:grid;gap:8px}
+.summary .k div{background:color-mix(in srgb,var(--surface) 10%,transparent);border-radius:12px;padding:10px 12px;font-size:14.5px}
+.summary .k b{color:var(--gold)}
+.summary .lab{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.summary ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+.terms{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.term{background:color-mix(in srgb,var(--surface) 10%,transparent);border-radius:10px;padding:7px 10px;font-size:13px}
+.term i{display:block;opacity:.75}
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pl{border-radius:14px;padding:12px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--pc)}
+.pl b{font:800 20px var(--display);color:var(--pc);display:block;line-height:1}
+.pl h4{margin:6px 0 2px}
+.pl p{font-size:13px;color:var(--muted)}
+
+/* Exercises */
+details.sol{border-radius:12px;background:var(--surface-2)}
+details.sol summary{list-style:none;cursor:pointer;padding:11px 14px;font-weight:700;font-size:14px;color:var(--c);min-height:44px;display:flex;align-items:center}
+details.sol summary::-webkit-details-marker{display:none}
+details.sol[open] summary{border-bottom:1px solid var(--line)}
+details.sol .in{padding:12px 14px;font-size:14.5px}
+.todo{display:flex;flex-direction:column;gap:6px}
+.todo label{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--surface-2);font-size:15px;cursor:pointer}
+.todo input{margin-top:2px;accent-color:var(--c);width:20px;height:20px;flex:none}
+.todo input:checked + span{text-decoration:line-through;color:var(--muted)}
+
+/* Quiz */
+.stat{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.stat b{font:800 24px var(--display);display:block}
+.stat small{font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:99px;font-weight:700;font-size:13.5px;min-height:40px}
+.chip.on{background:var(--c);border-color:var(--c);color:#fff}
+.dots{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:2px 16px 6px;scrollbar-width:none}
+.dots::-webkit-scrollbar{display:none}
+.dots button{flex:none;width:36px;height:36px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:12.5px;font-weight:800;padding:0}
+.dots .cur{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.dots .ok{background:var(--good);border-color:var(--good);color:#fff} .dots .ko{background:var(--bad);border-color:var(--bad);color:#fff}
+.qtext{font:600 17px/1.5 var(--body)}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:13px 14px;min-height:52px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);font-size:15.5px}
+.opt .l{flex:none;width:26px;height:26px;border-radius:8px;background:var(--surface-2);font:800 13px var(--display);display:grid;place-items:center}
+.opt.right{border-color:var(--good);background:var(--good-soft)} .opt.right .l{background:var(--good);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)} .opt.wrong .l{background:var(--bad);color:#fff}
+.explain{border-radius:14px;padding:12px 14px;background:var(--surface-2);font-size:14.5px}
+.explain b{display:block;margin-bottom:4px}
+.qnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));background:var(--surface);padding-top:6px}
+.empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;gap:8px}
+.tl-axis{position:relative;height:16px;font-size:11px;color:var(--muted)}
+.tl-axis span{position:absolute;transform:translateX(-50%)}
+.tl-axis span:first-child{transform:none}
+.tl-axis span:last-child{transform:translateX(-100%)}
+.tl-row{font-size:13px}
+.tl-track{position:relative;height:22px;border-radius:6px;background:var(--surface-2);margin-top:3px}
+.tl-bar{position:absolute;top:3px;height:16px;border-radius:99px}
+.tl-dot{position:absolute;top:2px;width:18px;height:18px;transform:translateX(-50%) rotate(45deg);border-radius:4px}
+.tl-today{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55}
+
+@media (min-width: 700px){ h1{font-size:32px} .hero h1{font-size:30px} .gauge{width:150px} .pillars{grid-template-columns:repeat(4,1fr)} .terms{grid-template-columns:repeat(3,1fr)} }
+@media (prefers-reduced-motion: no-preference){ .view.on{animation:rise .3s ease both} @keyframes rise{from{opacity:.5;transform:translateY(6px)}to{opacity:1;transform:none}} }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="homebtn" href="#home" id="homeBtn" aria-label="Trang chủ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></a>
+  <div class="picker nosubj" id="picker">
+    <span class="dot"></span>
+    <label for="subj" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Chọn môn học</label>
+    <select id="subj">
+      <option value="">Chọn môn học…</option>
+      <option value="ktud">Kinh tế ứng dụng</option>
+      <option value="qtcl">Quản trị chiến lược</option>
+    </select>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <span class="days" id="days">30 ngày</span>
+  <button class="homebtn" id="fsBtn" aria-label="Toàn màn hình" title="Toàn màn hình" hidden><svg id="fsIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</header>
+
+<main>
+  <section class="view" id="v-home"></section>
+  <section class="view" id="v-know"></section>
+  <section class="view" id="v-chap"></section>
+  <section class="view" id="v-work"></section>
+  <section class="view" id="v-quiz"></section>
+</main>
+
+<nav class="bottom" aria-label="Mục của môn học"><div class="in">
+  <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
+  <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
+  <a href="#" data-tab="quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg>Ôn tập</a>
+</div></nav>
+
+<script>
+(function(){
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const now=new Date(), TODAY=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+const dayMs=864e5, U=s=>Date.parse(s), WD=['CN','T2','T3','T4','T5','T6','T7'];
+const dd=s=>{const d=new Date(U(s));return {w:WD[d.getUTCDay()],d:`${d.getUTCDate()}/${d.getUTCMonth()+1}`}};
+const EXAM='2026-12-12';
+
+/* ===================== DATA ===================== */
+const SCHED=[
+ {d:'2026-11-13',s:'ktud',t:'Online 18h30',x:'CĐ3: ràng buộc ngân sách, lựa chọn tiêu dùng tối ưu (lịch bổ sung, ngoài TKB)'},
+ {d:'2026-11-14',s:'qtcl',t:'Cả ngày · S202',x:'Ca 1 + Ca 2'},
+ {d:'2026-11-17',s:'qtcl',t:'Online · tối',x:'Ca 3'},
+ {d:'2026-11-18',s:'qtcl',t:'Tối · S202',x:'Lý thuyết 1,5 tiết + thảo luận 2 tiết'},
+ {d:'2026-11-21',s:'ktud',t:'Cả ngày · S202',x:'Buổi lý thuyết cuối + thảo luận 2 tiết'},
+ {d:'2026-11-25',s:'ktud',t:'Tối · S202',x:'Thảo luận 4 tiết'},
+ {d:'2026-11-28',s:'qtcl',t:'Cả ngày · S202',x:'Thảo luận'},
+ {d:'2026-12-02',s:'qtcl',t:'Tối · S202',x:'Thảo luận 4 tiết'},
+ {d:'2026-12-05',s:'ktud',t:'Cả ngày · S202',x:'Thuyết trình bài nhóm'},
+ {d:'2026-12-12',s:'both',t:'Thi hết học phần',x:'Kinh tế ứng dụng + Quản trị chiến lược (dự kiến)'}
+];
+const DEADLINES=[
+ {d:'2026-11-29',s:'ktud',t:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm để kịp chỉnh sửa'},
+ {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email chthuhien@gmail.com; Word 10–12 trang + slide'},
+ {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'}
+];
+const REMIND=[
+ {s:'ktud',t:'Cô sẽ đặt câu hỏi để lớp trả lời trước rồi mới chốt; không ai xung phong thì gọi tên. Mục tiêu 7–10 người phát biểu mỗi buổi (điểm chuyên cần 10%).'},
+ {s:'ktud',t:'Bài kiểm tra giữa kỳ (trắc nghiệm + tự luận) dự kiến khi hết Chuyên đề 3 — cần hỏi lại ngày cụ thể (21/11 hoặc 25/11).'},
+ {s:'ktud',t:'Bài nhóm: Times New Roman 12, giãn dòng 1,2; có trang bìa, mục lục, nội dung, tài liệu tham khảo.'},
+ {s:'ktud',t:'"Kinh tế học chỉ đưa ra một phần thông tin, giúp đặt đúng câu hỏi" — tự luận nên nêu rõ giả định và điều kiện áp dụng.'},
+ {s:'both',t:'Lịch thi trên thời khóa biểu là lịch dự kiến.'}
+];
+const SUBJ={
+ ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',
+  info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
+  chapters:[], work:null, quiz:[]},
+ qtcl:{name:'Quản trị chiến lược',short:'QTCL',c:'--qtcl',cs:'--qtcl-soft',
+  info:[['Giảng viên','PGS.TS Lưu Thị Thùy Dương'],['Mã học phần','CLDH0618 · 3 tín chỉ'],['Đánh giá','Chưa có — cần đề cương môn'],['Thi','12/12/2026 (dự kiến)']],
+  chapters:[{id:'qtcl-cd',n:'?',title:'Chưa có bài giảng',sub:'Gửi slide hoặc ghi âm buổi 14/11 để bắt đầu lộ trình',status:'soon',topics:[]}], work:null, quiz:[]}
+};
+
+/* ---------- KTƯD content ---------- */
+const svgStaff=`<svg viewBox="0 0 340 196" role="img" aria-label="Lợi ích ròng từng nhân viên" style="width:100%;height:auto"><text x="0" y="14" font-size="12" font-weight="700" fill="var(--ink)">MB − MC theo nhân viên (nghìn đ/ca)</text><line x1="30" y1="140" x2="335" y2="140" stroke="var(--line)" stroke-width="1.5"/><rect x="50" y="45" width="50" height="95" rx="6" fill="var(--ktud)"/><rect x="122" y="85" width="50" height="55" rx="6" fill="var(--ktud)" opacity=".8"/><rect x="194" y="125" width="50" height="15" rx="4" fill="var(--ktud)" opacity=".6"/><rect x="266" y="140" width="50" height="26" rx="4" fill="var(--bad)"/><g font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)"><text x="75" y="38">+425</text><text x="147" y="78">+245</text><text x="219" y="118">+65</text><text x="291" y="182" fill="var(--bad)">−115</text></g><g font-size="11" text-anchor="middle" fill="var(--muted)"><text x="75" y="156">NV 1</text><text x="147" y="156">NV 2</text><text x="219" y="156">NV 3</text><text x="291" y="194">NV 4</text></g></svg>`;
+const svgCeil=`<svg viewBox="0 0 380 300" role="img" aria-label="Giá trần gây thiếu hụt" style="width:100%;height:auto"><g fill="none" stroke-width="1.5"><path d="M50 40V260H360" stroke="var(--muted)"/><path d="M70 60L330 240" stroke="var(--ktud)" stroke-width="2.5"/><path d="M70 240L330 60" stroke="var(--qtcl)" stroke-width="2.5"/><path d="M50 150H200" stroke="var(--line)" stroke-dasharray="4 4"/><path d="M50 205H350" stroke="var(--bad)" stroke-dasharray="6 4"/><path d="M120 205V260M280 205V260" stroke="var(--line)" stroke-dasharray="4 4"/></g><path d="M120 205H280" stroke="var(--bad)" stroke-width="7" stroke-linecap="round"/><circle cx="200" cy="150" r="5" fill="var(--ink)"/><g font-size="13" fill="var(--ink)"><text x="200" y="134" text-anchor="middle" font-weight="700">E</text><text x="336" y="246" fill="var(--ktud)" font-weight="700">D</text><text x="336" y="62" fill="var(--qtcl)" font-weight="700">S</text><text x="44" y="154" text-anchor="end" fill="var(--muted)">P₀</text><text x="44" y="209" text-anchor="end" fill="var(--bad)" font-weight="700">Ptr</text><text x="200" y="228" text-anchor="middle" fill="var(--bad)" font-weight="700">Thiếu hụt</text><text x="120" y="278" text-anchor="middle" fill="var(--muted)">Qs</text><text x="280" y="278" text-anchor="middle" fill="var(--muted)">Qd</text><text x="364" y="264" fill="var(--muted)">Q</text><text x="44" y="46" text-anchor="end" fill="var(--muted)">P</text></g></svg>`;
+const svgFloor=`<svg viewBox="0 0 380 300" role="img" aria-label="Giá sàn gây dư thừa" style="width:100%;height:auto"><g fill="none" stroke-width="1.5"><path d="M50 40V260H360" stroke="var(--muted)"/><path d="M70 60L330 240" stroke="var(--ktud)" stroke-width="2.5"/><path d="M70 240L330 60" stroke="var(--qtcl)" stroke-width="2.5"/><path d="M50 150H200" stroke="var(--line)" stroke-dasharray="4 4"/><path d="M50 95H350" stroke="var(--gold)" stroke-dasharray="6 4"/><path d="M120 95V260M280 95V260" stroke="var(--line)" stroke-dasharray="4 4"/></g><path d="M120 95H280" stroke="var(--gold)" stroke-width="7" stroke-linecap="round"/><circle cx="200" cy="150" r="5" fill="var(--ink)"/><g font-size="13" fill="var(--ink)"><text x="200" y="176" text-anchor="middle" font-weight="700">E</text><text x="336" y="246" fill="var(--ktud)" font-weight="700">D</text><text x="336" y="62" fill="var(--qtcl)" font-weight="700">S</text><text x="44" y="154" text-anchor="end" fill="var(--muted)">P₀</text><text x="44" y="99" text-anchor="end" fill="var(--gold-ink)" font-weight="700">Psàn</text><text x="200" y="84" text-anchor="middle" fill="var(--gold-ink)" font-weight="700">Dư thừa</text><text x="120" y="278" text-anchor="middle" fill="var(--muted)">Qd</text><text x="280" y="278" text-anchor="middle" fill="var(--muted)">Qs</text><text x="364" y="264" fill="var(--muted)">Q</text><text x="44" y="46" text-anchor="end" fill="var(--muted)">P</text></g></svg>`;
+const svgMU=`<svg viewBox="0 0 340 214" role="img" aria-label="Lợi ích cận biên giảm dần" style="width:100%;height:auto"><text x="0" y="14" font-size="12" font-weight="700" fill="var(--ink)">MU theo cốc trà sữa (TU ở dưới)</text><line x1="20" y1="150" x2="335" y2="150" stroke="var(--line)" stroke-width="1.5"/><rect x="28" y="50" width="34" height="100" rx="5" fill="var(--ktud)"/><rect x="72" y="70" width="34" height="80" rx="5" fill="var(--ktud)" opacity=".85"/><rect x="116" y="90" width="34" height="60" rx="5" fill="var(--ktud)" opacity=".7"/><rect x="160" y="110" width="34" height="40" rx="5" fill="var(--ktud)" opacity=".55"/><rect x="204" y="130" width="34" height="20" rx="4" fill="var(--ktud)" opacity=".4"/><rect x="248" y="147" width="34" height="3" fill="var(--gold)"/><rect x="292" y="150" width="34" height="20" rx="4" fill="var(--bad)"/><g font-size="12" text-anchor="middle" font-weight="700" fill="var(--ink)"><text x="45" y="44">10</text><text x="89" y="64">8</text><text x="133" y="84">6</text><text x="177" y="104">4</text><text x="221" y="124">2</text><text x="265" y="140" fill="var(--gold-ink)">0</text><text x="309" y="186" fill="var(--bad)">−2</text></g><g font-size="10.5" text-anchor="middle" fill="var(--muted)"><text x="45" y="166">C1</text><text x="89" y="166">C2</text><text x="133" y="166">C3</text><text x="177" y="166">C4</text><text x="221" y="166">C5</text><text x="265" y="166">C6</text><text x="309" y="202">C7</text><text x="45" y="182">TU 10</text><text x="89" y="182">18</text><text x="133" y="182">24</text><text x="177" y="182">28</text><text x="221" y="182">30</text><text x="265" y="182">30</text></g><text x="265" y="202" font-size="10.5" text-anchor="middle" fill="var(--gold-ink)" font-weight="700">bão hòa</text></svg>`;
+
+SUBJ.ktud.chapters=[
+{id:'cd1',n:1,title:'Một số nguyên lý cơ bản của kinh tế học',sub:'Khan hiếm buộc phải lựa chọn: 4 nguyên lý ra quyết định',status:'done',src:'Slide giảng viên',
+ intro:'Chuyên đề này trả lời một câu hỏi nền tảng của quản trị: khi tiền, người, thời gian đều có hạn thì dựa vào đâu để chọn phương án này mà bỏ phương án kia? Cô đưa ra 4 nguyên lý, mỗi nguyên lý là một "câu hỏi kiểm tra" nhà quản trị nên tự đặt ra trước khi ra quyết định.',
+ topics:[
+ {t:'Khan hiếm và kinh tế học',
+  b:`<p><b>Khan hiếm (scarcity)</b> nghĩa là có ít nguồn lực hơn mức cần thiết để đáp ứng nhu cầu của con người. Slide nêu ví dụ: năm 2020 có 155 triệu người bị đói trên thế giới.</p>
+<p><b>Nguồn lực sản xuất</b> (còn gọi là yếu tố sản xuất) là tất cả những gì dùng để làm ra hàng hóa, dịch vụ: tài nguyên thiên nhiên, lao động, vốn…</p>
+<p>Vì sao khan hiếm? Vì <b>số lượng nguồn lực là hữu hạn</b>, trong khi <b>nhu cầu về hàng hóa, dịch vụ là vô hạn</b>. Do đó con người luôn phải lựa chọn. Cô đưa ra nhiều ví dụ lựa chọn ở mọi cấp:</p>
+<ul class="clean"><li>Cá nhân: dùng 500 triệu mua ô tô hay đầu tư chứng khoán? Dùng 15 giờ cuối tuần học EMBA hay nhận thêm dự án tư vấn?</li><li>Doanh nghiệp: dùng 50 tỷ mở rộng nhà máy hay chuyển đổi số? Dùng dây chuyền sản xuất xe SUV hay xe điện?</li><li>Chính phủ: 10.000 tỷ ngân sách xây cao tốc hay bệnh viện? Địa phương dùng quỹ đất ven biển làm du lịch hay cảng công nghiệp?</li></ul>
+<p><b>Kinh tế học</b> là môn khoa học nghiên cứu cách mỗi cá nhân, tổ chức và xã hội lựa chọn sử dụng nguồn lực khan hiếm của họ. Có hai phân ngành:</p>
+<ul class="clean"><li><b>Kinh tế học vi mô</b>: nghiên cứu hành vi kinh tế của các tác nhân đơn lẻ (một người tiêu dùng, một doanh nghiệp, một thị trường).</li><li><b>Kinh tế học vĩ mô</b>: nghiên cứu các vấn đề kinh tế tổng hợp của cả nền kinh tế (lạm phát, tăng trưởng, thất nghiệp).</li></ul>
+<p>Từ đó cô giới thiệu <b>4 nguyên lý về cách con người ra quyết định</b>: (1) con người đối mặt với sự đánh đổi; (2) chi phí của một thứ là những gì phải từ bỏ để có nó; (3) con người hợp lý suy nghĩ tại điểm cận biên; (4) con người phản ứng với các động cơ khuyến khích.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Kinh tế học không phải môn "học về tiền". Nó là môn học về <b>cách chọn khi không thể có tất cả</b>. Nếu nguồn lực vô hạn thì không cần kinh tế học — cứ làm hết mọi dự án.</p>
+<div class="mh">Vi mô hay vĩ mô?</div><p>Môn học này chủ yếu là <b>vi mô</b> (CĐ1–4: người tiêu dùng, doanh nghiệp, thị trường). Chỉ CĐ5 là vĩ mô. Mẹo phân biệt: câu hỏi về "một cửa hàng, một công ty, giá xăng" là vi mô; câu hỏi về "lạm phát cả nước, GDP, lãi suất điều hành" là vĩ mô.</p>
+<div class="mh">Nguồn gốc</div><p>Bốn nguyên lý này là nhóm đầu trong "10 nguyên lý kinh tế học" của N. Gregory Mankiw (giáo trình <i>Principles of Economics</i>, bản tiếng Việt <i>Nguyên lý kinh tế học</i>). Sáu nguyên lý còn lại nói về trao đổi, thị trường, vai trò Nhà nước, năng suất, lạm phát — sẽ gặp lại ở CĐ2 và CĐ5.</p>`},
+ {t:'Nguyên lý 1 · Con người đối mặt với sự đánh đổi',
+  b:`<p><b>Tình huống:</b> Doanh nghiệp X có 50 tỷ đồng đầu tư, chỉ đủ ưu tiên <b>một</b> hướng lớn:</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Phương án</th><th>Được gì</th><th>Phải đổi lấy gì</th></tr></thead><tbody>
+<tr><td><b>A. Mở rộng công suất</b></td><td>Khai thác nhu cầu thị trường trước mắt</td><td>Giảm nguồn lực cho đổi mới, số hóa</td></tr>
+<tr><td><b>B. Phát triển sản phẩm</b></td><td>Tạo dư địa tăng trưởng tương lai, lợi thế cạnh tranh lâu dài</td><td>Chậm mở rộng năng lực cung ứng</td></tr>
+<tr><td><b>C. Chuyển đổi số</b></td><td>Nâng năng suất, giảm chi phí vận hành</td><td>Trì hoãn đầu tư sản xuất, sản phẩm</td></tr></tbody></table></div>
+<p><b>Nguyên lý:</b> nguồn lực có hạn buộc cá nhân và tổ chức phải lựa chọn giữa các cách sử dụng khác nhau. Chuỗi logic: <b>Khan hiếm</b> (nguồn lực có giới hạn) → <b>Lựa chọn</b> (quyết định ưu tiên) → <b>Đánh đổi</b> (hy sinh lợi ích khác). Cô lưu ý: <i>đánh đổi không có nghĩa là mọi mục tiêu luôn xung đột.</i></p>
+<p><b>Các cặp đánh đổi điển hình trong quản trị:</b></p>
+<ul class="clean"><li>Tăng trưởng ngắn hạn ↔ đầu tư dài hạn (doanh thu hôm nay ↔ năng lực cạnh tranh mai sau)</li><li>Giảm chi phí ↔ nâng chất lượng (tiết kiệm nguồn lực ↔ giá trị cung cấp)</li><li>Tốc độ triển khai ↔ mức độ kiểm soát (ra thị trường nhanh ↔ kiểm thử, kiểm soát rủi ro)</li></ul>
+<p><b>Tư duy lựa chọn — 4 câu hỏi trước khi phân bổ nguồn lực:</b></p>
+<ol class="clean"><li>Mục tiêu ưu tiên là gì? (kết quả chiến lược quan trọng nhất)</li><li>Nguồn lực nào đang giới hạn? (ngân sách, nhân lực, thời gian, năng lực)</li><li>Được gì và phải hy sinh gì?</li><li>Phương án nào phù hợp nhất với chiến lược và điều kiện hiện tại?</li></ol>
+<p><b>Quay lại quyết định 50 tỷ</b> — không có lựa chọn tối ưu giống nhau cho mọi doanh nghiệp: ưu tiên công suất khi thiếu khả năng đáp ứng đơn hàng và nhu cầu tăng mạnh; ưu tiên sản phẩm khi sản phẩm hiện có có nguy cơ mất lợi thế; ưu tiên chuyển đổi số khi chi phí vận hành cao, quy trình thiếu hiệu quả.</p>
+<p><b>Thời gian</b> là nguồn lực khan hiếm nhất: khác với tiền, nó không thể tích trữ, vay mượn hay hoàn lại. Khi nói "có" với một việc, ta đang nói "không" với vô số việc khác.</p>
+<p><b>Ba thông điệp quản trị:</b> quản trị là lựa chọn (không chỉ quyết định làm gì mà cả việc <i>chưa</i> làm); ưu tiên theo chiến lược, tránh dàn trải; nhận diện đánh đổi nhiều chiều trước khi quyết định.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Đánh đổi giống như <b>bài toán tối ưu có ràng buộc</b>: muốn nhiều thứ nhưng chỉ có một ngân sách, một quỹ thời gian. Không có lời giải "tốt nhất tuyệt đối", chỉ có lời giải tốt nhất <b>trong điều kiện ràng buộc cụ thể</b>. Vì vậy cùng 50 tỷ, mỗi doanh nghiệp lại chọn khác nhau.</p>
+<div class="mh">Ví dụ thêm</div><p>Hãng hàng không giá rẻ chọn chi phí thấp, đổi lại phải hy sinh dịch vụ kèm theo (suất ăn, hành lý miễn phí). Hãng hàng không truyền thống chọn ngược lại. Cả hai đều hợp lý, vì phục vụ hai nhóm khách khác nhau — đúng ý "không có lựa chọn tối ưu chung".</p><div class="mh">"Đánh đổi không có nghĩa luôn xung đột" — hiểu thế nào?</div><p>Có những phương án làm được nhiều mục tiêu cùng lúc. Ví dụ chuyển đổi số vừa giảm chi phí giấy tờ, vừa tăng khả năng kiểm soát. Nhưng ngay cả khi đó vẫn có đánh đổi: tiền và người đã dồn cho chuyển đổi số thì không dùng cho việc khác được.</p>
+<div class="mh">Lỗi hay mắc khi trả lời tự luận</div><ul class="clean"><li>Chỉ nói "được gì" mà quên "mất gì". Bài làm tốt phải nêu cả cột "phải đổi lấy gì".</li><li>Kết luận một phương án là "tốt nhất" mà không gắn với bối cảnh. Hãy dùng mẫu câu của cô: "ưu tiên A <i>khi</i>…".</li></ul>
+`},
+ {t:'Nguyên lý 2 · Chi phí cơ hội',
+  b:`<p><b>Câu hỏi mở đầu của cô:</b> một dự án có lợi nhuận vẫn có thể <i>không</i> đáng lựa chọn?</p>
+<p><b>Tình huống:</b> Doanh nghiệp X có mặt bằng đang bỏ trống. Phương án A: mở trung tâm đào tạo. Phương án B: cho doanh nghiệp khác thuê. Số liệu mỗi năm (tỷ đồng): doanh thu trung tâm 5,0; chi phí kế toán 3,8; lợi nhuận kế toán 1,2; tiền thuê có thể nhận nếu không mở trung tâm 1,5.</p>
+<p><b>Nhận diện chi phí thực sự:</b> một khoản không phải trả tiền vẫn có thể là chi phí kinh tế.</p>
+<ul class="clean"><li><b>Chi phí hiện</b> (explicit cost): khoản chi trực tiếp — nhân sự, vật tư, điện nước, marketing…</li><li><b>Chi phí ẩn</b> (implicit cost): giá trị nguồn lực tự có phải từ bỏ — ở đây là tiền thuê mặt bằng có thể thu.</li></ul>
+<p class="formula">Không chi tiền ≠ Không có chi phí cơ hội</p>
+<p><b>Định nghĩa:</b> chi phí của một thứ là những gì phải từ bỏ để có được nó. <b>Chi phí cơ hội = giá trị của phương án thay thế tốt nhất bị từ bỏ.</b> Không cộng giá trị của tất cả phương án không được chọn.</p>
+<p><b>Thực hành 1 — kho tự sở hữu:</b> công ty dùng kho của mình làm trung tâm phân phối. Chi phí vận hành kho 400 triệu/năm; nếu cho thuê kho thì thu được 600 triệu/năm. → Chi phí kinh tế = 400 (hiện) + 600 (ẩn) = <b>1.000 triệu/năm</b>.</p>
+<p><b>Thực hành 2 — khu đất ba phương án</b> (lợi ích ròng, cùng kỳ, cùng rủi ro): A cho thuê 900 triệu/năm; B bãi đỗ xe 1,1 tỷ/năm; C quảng cáo 800 triệu/năm. Nếu chọn A thì chi phí cơ hội là <b>1,1 tỷ (phương án B)</b> — chọn A kém hơn 200 triệu/năm. Không cộng B và C.</p>
+<p><b>Quay lại trung tâm đào tạo:</b></p>
+<div class="formula">LN kế toán = 5,0 − 3,8 = +1,2 tỷ<br>LN kinh tế = 5,0 − 3,8 − 1,5 = −0,3 tỷ</div>
+<p>Có lãi kế toán nhưng thấp hơn phương án cho thuê (với giả định không có lợi ích khác, số liệu đủ, rủi ro tương đương).</p>
+<p><b>Ra quyết định — đừng chỉ nhìn lợi nhuận:</b> câu hỏi kế toán là "phương án này có tạo ra lợi nhuận không?"; câu hỏi kinh tế là "phương án này có tốt hơn cách dùng nguồn lực khác không?". Hiệu quả kinh tế đòi hỏi so sánh với lựa chọn thay thế.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Kế toán ghi lại <b>những gì đã chi ra</b>. Kinh tế học hỏi thêm: <b>những gì mình đã bỏ lỡ</b>. Mặt bằng "của nhà" không tốn tiền thuê, nhưng nếu đem cho người khác thuê thì được 1,5 tỷ. Dùng nó để mở trung tâm nghĩa là "trả" 1,5 tỷ đó cho chính mình — chỉ là không có hóa đơn.</p>
+<div class="mh">Vì sao chỉ lấy phương án tốt nhất, không cộng tất cả?</div><p>Vì mỗi lúc chỉ làm được <b>một</b> phương án trên cùng khu đất. Nếu không chọn A, ta chỉ làm được B <i>hoặc</i> C, không thể vừa B vừa C. Cái thực sự mất khi chọn A là phương án tốt nhất trong số còn lại (B = 1,1 tỷ). Cộng B + C = 1,9 tỷ là đếm một thứ không bao giờ có được.</p>
+<div class="mh">Cách tính từng bước (áp dụng mọi bài)</div><ol class="clean"><li>Liệt kê doanh thu của phương án đang xét.</li><li>Liệt kê chi phí hiện (có chứng từ).</li><li>Hỏi: nguồn lực nào của mình đang được dùng mà không trả tiền? (đất, nhà, vốn tự có, thời gian của chủ). Mỗi thứ, nếu không dùng ở đây thì đem đi đâu được bao nhiêu? → đó là chi phí ẩn.</li><li>LN kinh tế = Doanh thu − chi phí hiện − chi phí ẩn. Dương thì phương án tốt hơn cách dùng thay thế; âm thì kém hơn.</li></ol>
+<div class="mh">Ví dụ thêm</div><p>Một chủ nhà mặt phố tự mở quán cà phê ở tầng 1, lãi kế toán 300 triệu/năm. Nếu cho một chuỗi cửa hàng thuê mặt bằng đó được 400 triệu/năm thì LN kinh tế của quán là −100 triệu: tự kinh doanh đang kém phương án cho thuê. Nhiều người không nhận ra vì "nhà mình thì không mất tiền thuê".</p><div class="mh">Lỗi hay mắc</div><ul class="clean"><li>Quên chi phí ẩn khi tài sản là "của mình".</li><li>Cộng tất cả phương án bị bỏ thay vì chỉ lấy phương án tốt nhất.</li><li>So sánh các phương án khác kỳ hạn hoặc khác rủi ro mà không nói rõ giả định (slide luôn ghi "cùng kỳ, cùng rủi ro").</li></ul>`},
+ {t:'Chi phí chìm',
+  b:`<p><b>Tình huống — phát triển sản phẩm mới:</b> đã chi 8 tỷ (không thu hồi được); cần chi thêm 3 tỷ để hoàn thành; thu dự kiến trong tương lai 2 tỷ. Có nên chi thêm 3 tỷ để "cứu" 8 tỷ đã bỏ ra?</p>
+<p><b>Chi phí chìm (sunk cost):</b> khoản đã chi, không thể thu hồi và <b>không đổi theo quyết định hiện tại</b>. Quyết định lúc này: chi thêm 3 tỷ nhưng chỉ thu 2 tỷ → nên dừng. Không quyết định theo số tiền đã mất; chỉ xét phần thay đổi từ nay.</p>
+<p><b>Thực hành 3:</b> dự án đã chi 5 tỷ, không thu hồi được.</p>
+<div class="scroll"><table class="tbl num"><thead><tr><th>Tình huống</th><th>Chi thêm</th><th>Thu về</th><th>Lợi ích tăng thêm</th><th>Quyết định</th></tr></thead><tbody><tr><td>A</td><td>2 tỷ</td><td>3 tỷ</td><td>+1 tỷ</td><td><b>Tiếp tục</b></td></tr><tr><td>B</td><td>2 tỷ</td><td>1,5 tỷ</td><td>−0,5 tỷ</td><td><b>Dừng</b></td></tr></tbody></table></div>
+<p>Khoản 5 tỷ đã chi không thay đổi giữa hai quyết định, nên không ảnh hưởng tới lựa chọn.</p>
+<p><b>Ba nguyên tắc tránh đánh giá sai phương án:</b> (1) nhìn đủ chi phí — tính cả giá trị nguồn lực tự có và cơ hội bị từ bỏ; (2) so sánh đúng phương án — đối chiếu với lựa chọn thay thế tốt nhất; (3) tránh bẫy chi phí chìm — tiếp tục hay dừng theo lợi ích và chi phí còn thay đổi.</p>
+<p><b>Câu hỏi liên hệ của cô:</b> doanh nghiệp anh/chị có đang dùng nguồn lực "miễn phí" nào mà thực tế phải từ bỏ cơ hội sinh lợi khác? Có dự án nào vẫn tiếp tục chủ yếu vì đã đầu tư quá nhiều?</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Hãy tưởng tượng đứng ở thời điểm hôm nay và hỏi: "Từ giờ trở đi, nếu đi tiếp thì <b>thêm</b> bao nhiêu tiền ra, <b>thêm</b> bao nhiêu tiền vào?". Tiền đã chi nằm ở cả hai kịch bản (đi tiếp hay dừng đều đã mất), nên nó triệt tiêu khi so sánh. Chỉ phần "thêm" mới quyết định.</p>
+<div class="mh">Vì sao người ta hay mắc bẫy?</div><p>Tâm lý ngại thừa nhận sai lầm và cảm giác "bỏ thì phí". Hiện tượng này có tên là <b>ngụy biện chi phí chìm</b> (sunk cost fallacy) hay <b>leo thang cam kết</b> (escalation of commitment, Barry Staw 1976). Ví dụ kinh điển: máy bay Concorde — hai chính phủ Anh, Pháp tiếp tục rót tiền dù đã thấy không có lãi, chủ yếu vì đã đầu tư quá nhiều.</p>
+<div class="mh">Ví dụ thêm</div><p>Một công ty đã chi 3 tỷ phát triển một ứng dụng di động. Sau đó đối thủ ra mắt sản phẩm tương tự miễn phí. Lập luận "đã chi 3 tỷ rồi, dừng thì phí" là sai về kinh tế. Câu hỏi đúng: từ hôm nay, cần chi thêm bao nhiêu để hoàn thành và sẽ thu về bao nhiêu? Nếu phần thu thêm nhỏ hơn phần chi thêm thì nên dừng, dù 3 tỷ đã mất.</p><div class="mh">Lưu ý: chi phí chìm phải "thật sự không thu hồi được"</div><p>Nếu thiết bị đã mua còn bán lại được một phần, phần bán được đó <b>không</b> phải chi phí chìm mà là một dòng tiền của phương án "dừng". Ví dụ máy móc mua 5 tỷ, bán lại được 1 tỷ: chỉ 4 tỷ là chìm, còn 1 tỷ là lợi ích nếu dừng.</p>
+<div class="mh">Phân biệt với chi phí cơ hội</div><div class="scroll"><table class="tbl"><thead><tr><th></th><th>Chi phí chìm</th><th>Chi phí cơ hội</th></tr></thead><tbody><tr><td>Thời điểm</td><td>Quá khứ, đã xảy ra</td><td>Hiện tại, tương lai</td></tr><tr><td>Có thay đổi theo quyết định?</td><td>Không</td><td>Có</td></tr><tr><td>Đưa vào quyết định?</td><td><b>Không</b></td><td><b>Có</b></td></tr></tbody></table></div>`},
+ {t:'Nguyên lý 3 · Tư duy tại điểm cận biên',
+  b:`<p><b>Câu hỏi mở đầu:</b> chọn sản lượng nào, thuê bao nhiêu lao động, có nên ăn thêm một phần ở tiệc buffet — dựa trên cơ sở nào? Có khi nào chấp nhận bán dưới chi phí trung bình?</p>
+<p><b>Tình huống cửa hàng xăng dầu giờ cao điểm:</b> khách chờ lâu; cửa hàng có thể bổ sung tối đa 4 nhân viên theo ca. Lợi ích mong muốn: bán thêm xăng dầu, giảm thời gian chờ. Nguồn lực phải chi: tiền công, tổ chức ca. Doanh nghiệp đủ ngân sách trả — có đồng nghĩa nên thuê cả 4?</p>
+<p>Giả định đóng góp sau chi phí biến đổi là 450 đồng/lít; mỗi người thêm tốn 700.000 đồng/ca. Lượng bán thêm: người 1 = 2.500 lít, người 2 = 2.100, người 3 = 1.700, người 4 = 1.300. Nhận xét: càng thêm nhân viên, sản lượng bán tăng thêm càng ít. Đừng chỉ hỏi "bán thêm bao nhiêu?" mà hỏi "phần tăng thêm mang lại lợi ích ròng bao nhiêu?".</p>
+<p><b>Thay đổi biên</b> là điều chỉnh nhỏ trong kế hoạch hiện tại: thêm một sản phẩm, một giờ làm, một chuyến xe, một lao động. <b>Lợi ích cận biên (MB)</b>: lợi ích thu thêm khi tăng một đơn vị hoạt động. <b>Chi phí cận biên (MC)</b>: chi phí tăng thêm khi tăng một đơn vị hoạt động.</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>MB &gt; MC</th><th>MB = MC</th><th>MB &lt; MC</th></tr></thead><tbody><tr><td>Có lợi khi tăng thêm hoạt động</td><td>Ranh giới mở rộng</td><td>Không nên mở rộng</td></tr></tbody></table></div>
+<p>Với mức tăng rời rạc: chọn mức có tổng lợi ích ròng lớn nhất.</p>
+${svgStaff}
+<p>MB người 1 = 2.500 × 450 = 1.125 nghìn; người 2 = 945; người 3 = 765; người 4 = 585. Trừ MC 700: +425, +245, +65, −115. → Theo mục tiêu lợi nhuận: <b>bổ sung 3 nhân viên</b>. Nếu có ràng buộc dịch vụ (thời gian chờ, an toàn, tiêu chuẩn phục vụ) thì xét thêm; <i>chỉ tối ưu trong tập phương án đáp ứng các yêu cầu bắt buộc</i>. Quy mô phù hợp không nhất thiết là quy mô lớn nhất.</p>
+<p><b>Điều kiện áp dụng trong kinh doanh xăng dầu:</b> an toàn và tuân thủ (PCCC, chất lượng, quy định); năng lực và cơ hội khác (cột bơm, xe bồn, ca làm việc, chi phí cơ hội); mục tiêu kinh doanh (chất lượng dịch vụ, lợi ích dài hạn).</p>
+<p><b>Ba câu hỏi trước khi mở rộng một hoạt động:</b> lợi ích tăng thêm là bao nhiêu (không đồng nhất doanh thu tăng với hiệu quả tăng)? Chi phí tăng thêm là bao nhiêu (kể cả chi phí cơ hội)? Phương án có đáp ứng ràng buộc (an toàn, chất lượng, năng lực, quy định)?</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>"Cận biên" = <b>đơn vị tiếp theo</b>. Câu hỏi cận biên không phải "cả dự án có lãi không" mà là "<b>thêm một</b> người / một chuyến / một ca nữa thì lợi thêm bao nhiêu, tốn thêm bao nhiêu?". Còn lợi thêm lớn hơn tốn thêm thì làm tiếp; đến lúc lợi thêm nhỏ hơn thì dừng.</p>
+<div class="mh">Vì sao lợi ích cận biên giảm dần?</div><p>Cột bơm có hạn: người thứ nhất giải tỏa hàng chờ rất nhiều, người thứ tư thì các cột bơm đã gần kín việc, nên bán thêm ít. Đây là <b>quy luật năng suất cận biên giảm dần</b>, sẽ gặp kỹ ở CĐ4 (hành vi doanh nghiệp).</p>
+<div class="mh">Ví dụ máy bay (bài của cô) — giải chi tiết</div><p>Máy bay 200 ghế, chuyến bay tốn 20.000 USD → chi phí trung bình 100 USD/ghế. Máy bay sắp cất cánh, còn 10 ghế trống, một khách chờ trả 80 USD. Hỏi đúng câu: <b>bán thêm ghế này thì tốn thêm bao nhiêu?</b> Gần như bằng 0 (một suất ăn, chút nhiên liệu) vì chuyến bay vẫn bay dù có khách này hay không. MB = 80 USD &gt; MC ≈ vài USD → <b>nên bán</b>. Con số 100 USD là chi phí trung bình, không dùng cho quyết định cận biên.</p>
+<div class="mh">Ví dụ thêm</div><p>Một nhà hàng cân nhắc mở thêm đến 23h. So <b>doanh thu của hai giờ thêm</b> với <b>chi phí tăng thêm</b> của hai giờ đó (lương ca tối, điện, nguyên liệu) — không so với tổng chi phí cả ngày. Tiền thuê mặt bằng đã trả theo tháng không thay đổi nên không đưa vào.</p><div class="mh">Lỗi hay mắc</div><ul class="clean"><li>Dùng chi phí trung bình thay cho chi phí cận biên.</li><li>Quên chi phí cơ hội trong MC (bài chuyến giao: nếu phải bỏ chuyến khác lãi 1 triệu thì MC tăng thêm 1 triệu).</li><li>Tối ưu lợi nhuận mà vi phạm ràng buộc an toàn, PCCC.</li></ul>`},
+ {t:'Nguyên lý 4 · Con người phản ứng với động cơ khuyến khích',
+  b:`<p><b>Câu hỏi quản trị:</b> làm thế nào để cơ chế thưởng thúc đẩy hành vi phù hợp với mục tiêu doanh nghiệp?</p>
+<p><b>Tình huống Công ty X</b> (kinh doanh thiết bị văn phòng): nhân viên bán vượt chỉ tiêu doanh số tháng được thưởng thêm 20% trên phần doanh thu vượt. Sau 6 tháng: doanh thu <b>+18%</b>, lợi nhuận gộp <b>−10%</b>, tỷ lệ tái ký <b>75% → 60%</b>, xuất hiện hành vi giảm giá sâu.</p>
+<p>Cô hỏi: chính sách thành công hay thất bại? Vì sao nhân viên đạt chỉ tiêu mà lợi nhuận giảm? Vấn đề ở nhân viên hay ở thiết kế cơ chế thưởng?</p>
+<p><b>Nguyên lý:</b> khuyến khích là yếu tố làm thay đổi lợi ích hoặc chi phí gắn với một hành vi. Thay đổi khuyến khích → thay đổi lợi ích, chi phí → thay đổi hành vi. Phản ứng phụ thuộc vào cách mỗi người nhận thức lợi ích, chi phí.</p>
+<p><b>Khuyến khích không chỉ là tiền thưởng:</b> thưởng doanh thu (thúc đẩy số lượng, giá trị bán); thưởng lợi nhuận (chú ý biên lợi nhuận); ghi nhận – thăng tiến (động lực cải tiến, đóng góp); quy định – chế tài (hạn chế vi phạm).</p>
+<p><b>Vì sao có kết quả ngoài mong đợi:</b> chạy theo chỉ tiêu (tập trung vào kết quả được thưởng); đánh đổi giữa các mục tiêu (cải thiện chỉ tiêu này nhưng làm giảm chất lượng hoạt động khác); hành vi đối phó (dịch chuyển doanh số, giảm giá, tranh giành khách hàng).</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Cơ chế</th><th>Hành vi phát sinh</th><th>Hệ quả</th></tr></thead><tbody><tr><td>Thưởng theo doanh thu</td><td>Giảm giá để tăng hợp đồng</td><td>Lợi nhuận gộp giảm</td></tr><tr><td>Chú trọng khách hàng mới</td><td>Dồn sức tìm đơn mới</td><td>Khách cũ ít được chăm sóc, tái ký giảm</td></tr><tr><td>Thưởng theo tháng</td><td>Đẩy thời điểm ghi nhận hợp đồng</td><td>Doanh số phản ánh sai kỳ</td></tr><tr><td>Thưởng chủ yếu cá nhân</td><td>Tranh giành hợp đồng</td><td>Giảm phối hợp trong đội</td></tr></tbody></table></div>
+<p>Đạt KPI chưa đồng nghĩa đạt mục tiêu kinh doanh.</p>
+<p><b>Ra quyết định:</b> A — giữ thưởng doanh thu (dễ áp dụng, chưa xử lý tác động ngược); B — thưởng lợi nhuận gộp (kiểm soát giảm giá, ít chú ý quan hệ dài hạn); <b>C — kết hợp nhiều tiêu chí</b> (cân bằng lợi nhuận, khách hàng, chất lượng) — phù hợp hơn: gắn thưởng với lợi nhuận gộp; xem tỷ lệ tái ký và chất lượng chăm sóc; kiểm soát chiết khấu, ghi nhận hợp đồng, quy trình.</p>
+<p><b>Kiểm chứng trước khi áp dụng rộng:</b> thử nghiệm trong phạm vi phù hợp; theo dõi cả doanh thu, lợi nhuận, tái ký, chi phí thưởng; phát hiện hành vi không mong muốn và điều chỉnh. Không có công thức thưởng tối ưu cho mọi doanh nghiệp.</p>
+<p><b>Bốn nguyên tắc thiết kế:</b> nhìn vào động cơ; gắn đúng mục tiêu; dự báo phản ứng; theo dõi và sửa đổi.</p>
+<div class="note"><b>Thông điệp của cô:</b> chính sách khuyến khích hiệu quả là chính sách khiến lợi ích của người thực hiện gắn với mục tiêu thực sự của doanh nghiệp. Hãy tự hỏi: "Nếu tôi là người được thưởng theo chính sách này, tôi sẽ thay đổi hành vi như thế nào?"</div>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Người ta làm theo <b>cái được đo và được thưởng</b>, không phải theo cái mình mong. Thưởng theo doanh thu thì nhân viên tối đa doanh thu — kể cả bằng cách giảm giá làm mất lãi. Họ không "xấu"; họ phản ứng hợp lý với luật chơi.</p>
+<div class="mh">Lý thuyết đằng sau</div><p><b>Vấn đề người ủy quyền – người đại diện</b> (principal–agent problem, Jensen &amp; Meckling 1976): chủ doanh nghiệp (ủy quyền) muốn lợi nhuận dài hạn; nhân viên (đại diện) muốn tối đa tiền thưởng của mình. Khi hai lợi ích lệch nhau và chủ không quan sát hết hành vi, cơ chế thưởng là công cụ để "kéo" hai lợi ích về một hướng.</p><p><b>Định luật Goodhart:</b> "khi một thước đo trở thành mục tiêu, nó không còn là thước đo tốt". Tỷ lệ tái ký từng là dấu hiệu khách hài lòng; nhưng nếu chỉ thưởng theo tái ký, nhân viên có thể tặng quà để ép khách ký lại.</p>
+<div class="mh">Ví dụ thêm</div><ul class="clean"><li>Ngân hàng thưởng nhân viên theo dư nợ cho vay → dễ cho vay dễ dãi, nợ xấu tăng sau vài năm.</li><li>Tổng đài chăm sóc khách hàng thưởng theo số cuộc gọi xử lý → nhân viên kết thúc cuộc gọi sớm, vấn đề của khách không được giải quyết.</li><li>Thưởng theo số bài báo đăng → tăng số lượng, giảm chất lượng.</li></ul><div class="mh">Cách viết bài tự luận dạng này</div><ol class="clean"><li>Mô tả cơ chế khuyến khích hiện tại (thưởng gì, đo gì).</li><li>Dự báo hành vi của người được thưởng ("nếu tôi là họ…").</li><li>Chỉ ra hành vi đó lệch mục tiêu thật ở đâu (lợi nhuận, khách hàng, chất lượng, phối hợp).</li><li>Đề xuất cơ chế kết hợp nhiều tiêu chí, có trọng số, có kiểm soát.</li><li>Đề xuất thử nghiệm và theo dõi trước khi áp dụng rộng.</li></ol>
+`}
+ ],
+ sum:{core:'Ra quyết định tốt là: so với phương án thay thế tốt nhất, chỉ tính phần thay đổi từ nay về sau, và thiết kế khuyến khích để người thực hiện muốn đúng điều doanh nghiệp muốn.',
+  pillars:[['01','Đánh đổi','Hy sinh điều gì?','var(--ktud)'],['02','Chi phí cơ hội','Mất thật bao nhiêu?','var(--gold)'],['03','Cận biên','Thêm 1 đơn vị nữa?','var(--qtcl)'],['04','Khuyến khích','Hành vi đổi ra sao?','var(--violet)']],
+  recap:['<b>Khan hiếm → lựa chọn → đánh đổi.</b> Mọi phương án đều có cái giá; câu trả lời đúng luôn gắn với bối cảnh ("ưu tiên A khi…").','<b>LN kinh tế = DT − chi phí hiện − chi phí ẩn.</b> Chi phí cơ hội = phương án thay thế tốt nhất bị bỏ, không cộng tất cả.','<b>Chi phí chìm không vào quyết định.</b> Chỉ so phần chi thêm với phần thu thêm.','<b>MB &gt; MC thì làm tiếp.</b> Dùng chi phí cận biên, không dùng chi phí trung bình; tôn trọng ràng buộc an toàn.','<b>Người ta làm theo cái được thưởng.</b> Thưởng nhiều tiêu chí, thử nghiệm trước.'],
+  exam:['Tính LN kinh tế và LN kế toán; nhận diện chi phí cơ hội (thuê, lương, lãi)','Chi phí cơ hội chỉ lấy phương án tốt nhất bị bỏ','Tiếp tục hay dừng khi có chi phí chìm','Bảng MB – MC chọn số lao động, sản lượng','Tự luận: phân tích chính sách thưởng, KPI'],
+  terms:[['Khan hiếm','Scarcity'],['Đánh đổi','Trade-off'],['Chi phí cơ hội','Opportunity cost'],['Chi phí chìm','Sunk cost'],['Chi phí hiện / ẩn','Explicit / Implicit cost'],['Lợi nhuận kinh tế','Economic profit'],['Lợi ích / chi phí cận biên','MB / MC'],['Khuyến khích','Incentive']]}},
+
+{id:'cd2',n:2,title:'Hoạt động của thị trường',sub:'Cung – cầu, độ co giãn, cú sốc và can thiệp của Chính phủ',status:'done',src:'Slide giảng viên',
+ intro:'Chuyên đề này giải thích giá cả hình thành thế nào và vì sao thay đổi. Có thể coi thị trường như một chiếc cân: một bên là người mua (cầu), một bên là người bán (cung), giá cân bằng là điểm hai bên cân nhau. Khi có cú sốc hay Nhà nước can thiệp, hệ chuyển sang trạng thái cân bằng mới.',
+ topics:[
+ {t:'Cầu và sự thay đổi của cầu',
+  b:`<p><b>Câu hỏi mở đầu:</b> sản lượng xăng dầu bán ra tại một khu vực giảm. Có thể kết luận "cầu thị trường giảm" chưa? Cần phân tích: giá bán, nhu cầu, cạnh tranh hay khả năng cung ứng?</p>
+<p><b>Cầu (demand)</b> là lượng hàng người mua <b>sẵn sàng và có khả năng</b> mua tại các mức giá, trong một thời kỳ. Hai điều kiện hình thành cầu: <b>mong muốn mua + khả năng thanh toán</b>.</p>
+<p><b>Quy luật cầu:</b> giá tăng → lượng cầu giảm, nếu các yếu tố khác không đổi. (Câu hỏi của cô: giá xăng tăng, vì sao người tiêu dùng vẫn tiếp tục mua? → vì xăng là hàng thiết yếu, khó thay thế ngay; lượng mua giảm ít chứ không mất hẳn.)</p>
+<p><b>Đường cầu và sự thay đổi lượng cầu:</b> khi giá thay đổi → di chuyển <b>dọc theo</b> đường cầu (từ điểm A sang điểm B).</p>
+<p><b>Các yếu tố làm dịch chuyển cầu:</b></p>
+<ul class="clean"><li><b>Thu nhập</b> — thay đổi khả năng tiêu dùng</li><li><b>Giá hàng liên quan</b> — hàng thay thế hoặc bổ sung</li><li><b>Thị hiếu</b> — thay đổi ưu tiên lựa chọn</li><li><b>Kỳ vọng</b> — mua sớm hoặc trì hoãn</li><li><b>Yếu tố khác</b> — mùa vụ, quy mô người mua</li></ul>
+<div class="scroll"><table class="tbl"><thead><tr><th>Thay đổi LƯỢNG CẦU</th><th>Thay đổi CẦU</th></tr></thead><tbody><tr><td>Do giá của chính hàng hóa thay đổi</td><td>Do yếu tố ngoài giá thay đổi</td></tr><tr><td>Di chuyển dọc đường cầu</td><td>Dịch chuyển cả đường cầu</td></tr></tbody></table></div>
+<p><b>Vận dụng — chẩn đoán biến động nhu cầu:</b> thị trường xăng ở một địa bàn có 3 diễn biến: (1) giá bán lẻ xăng tăng → <i>thay đổi lượng cầu</i>; (2) nhiều khách chuyển sang xe điện → <i>cầu dịch chuyển sang trái</i>; (3) một cửa hàng mất khách vào tay đối thủ → <i>mất thị phần</i>, không phải cầu toàn thị trường giảm.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p><b>Đường cầu</b> là một "bảng giá – lượng" của người mua: ở giá 20.000đ họ mua bao nhiêu, ở 25.000đ mua bao nhiêu. Khi chỉ giá thay đổi, ta chỉ <b>đọc một dòng khác trên cùng bảng</b> (di chuyển dọc đường). Khi thu nhập, thị hiếu… thay đổi, <b>cả bảng thay đổi</b> — ở mọi mức giá người ta đều mua nhiều hơn hoặc ít hơn (dịch chuyển đường).</p>
+<div class="mh">Hàng thay thế và hàng bổ sung</div><ul class="clean"><li><b>Thay thế</b>: dùng cái này thay cái kia (xe buýt – taxi; xăng E10 – xăng khoáng). Giá cái này tăng → cầu cái kia tăng.</li><li><b>Bổ sung</b>: dùng cùng nhau (ô tô chạy xăng – xăng; xi măng – cát). Giá cái này tăng → cầu cái kia giảm.</li></ul>
+<div class="mh">Ví dụ thêm</div><p>Giá thịt lợn tăng mạnh: lượng thịt lợn được mua giảm (di chuyển dọc đường cầu thịt lợn). Đồng thời nhiều gia đình chuyển sang thịt gà, cá — <b>cầu thịt gà tăng</b> (đường cầu thịt gà dịch phải) vì đó là hàng thay thế.</p><div class="mh">Lỗi hay mắc</div><p>Nói "giá tăng làm cầu giảm" là <b>sai thuật ngữ</b> trong bài thi. Đúng phải là "giá tăng làm <b>lượng cầu</b> giảm". "Cầu giảm" chỉ dùng khi đường cầu dịch chuyển.</p>`},
+ {t:'Độ co giãn của cầu',
+  b:`<p>Cùng mức tăng giá 10%, sản phẩm A giảm lượng cầu 3%, sản phẩm B giảm 18% — khách phản ứng khác nhau. <b>Độ co giãn</b> là thước đo độ nhạy của lượng cầu trước thay đổi của một yếu tố. Có 3 loại: theo giá, theo giá chéo, theo thu nhập.</p>
+<p><b>1. Độ co giãn theo giá</b></p><div class="formula">E<sub>DP</sub> = % thay đổi lượng cầu / % thay đổi giá</div>
+<p>Ví dụ: giá tăng 5%, lượng cầu giảm 2% → E = −0,4: giá tăng 1% thì lượng cầu giảm khoảng 0,4%.</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Mức</th><th>Điều kiện</th><th>Ý nghĩa</th></tr></thead><tbody><tr><td>Co giãn nhiều</td><td>|E| &gt; 1</td><td>Lượng cầu biến động mạnh hơn giá</td></tr><tr><td>Co giãn đơn vị</td><td>|E| = 1</td><td>% thay đổi lượng bằng % thay đổi giá</td></tr><tr><td>Co giãn ít</td><td>|E| &lt; 1</td><td>Lượng cầu biến động yếu hơn giá</td></tr></tbody></table></div>
+<p>Dùng giá trị tuyệt đối vì E<sub>DP</sub> thường mang dấu âm. Trên đường cầu tuyến tính: đoạn trên điểm giữa |E| &gt; 1, tại điểm giữa |E| = 1, đoạn dưới |E| &lt; 1.</p>
+<p><b>Vì sao độ co giãn khác nhau?</b> Hàng thay thế (càng dễ thay thế càng co giãn); tính thiết yếu (hàng thiết yếu khó giảm ngay); tỷ trọng chi tiêu (chiếm tỷ trọng lớn → nhạy giá hơn); thời gian (dài hạn dễ điều chỉnh hơn). Nhiên liệu đi lại: ngắn hạn kém co giãn; du lịch: nhạy giá hơn; nhãn hàng có nhiều đối thủ: có thể co giãn cao. Không dùng một hệ số cố định cho mọi thị trường.</p>
+<p><b>Giá thay đổi tác động đến doanh thu ra sao?</b> TR = P × Q. Giá tăng làm doanh thu mỗi đơn vị tăng nhưng thường làm lượng giảm; tác động nào trội hơn quyết định kết quả.</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Loại cầu</th><th>Khi giá tăng</th><th>Khi giá giảm</th></tr></thead><tbody><tr><td>Co giãn nhiều</td><td>Doanh thu giảm</td><td>Doanh thu tăng</td></tr><tr><td>Co giãn đơn vị</td><td>Gần như không đổi</td><td>Gần như không đổi</td></tr><tr><td>Co giãn ít</td><td>Doanh thu tăng</td><td>Doanh thu giảm</td></tr></tbody></table></div>
+<p><b>2. Độ co giãn chéo:</b> E<sub>XY</sub> = %ΔQ<sub>X</sub> / %ΔP<sub>Y</sub>. E &gt; 0: thay thế (xe buýt – taxi); E &lt; 0: bổ sung (ô tô xăng – xăng); E ≈ 0: quan hệ rất yếu. Ví dụ: giá vận tải A tăng 10%, cầu dịch vụ B tăng 6% → E = +0,6, thay thế; biến động giá đối thủ có thể tạo cơ hội thu hút nhu cầu.</p>
+<p><b>3. Độ co giãn theo thu nhập:</b> E<sub>I</sub> = %ΔQ / %ΔI. E &lt; 0: hàng thứ cấp; 0 &lt; E &lt; 1: hàng thông thường phản ứng thấp hơn thu nhập; E &gt; 1: phản ứng mạnh hơn thu nhập.</p>
+<p><b>Tình huống:</b> thu nhập tăng nhưng thị trường chuyển từ xe xăng sang xe điện. Tác động thúc đẩy cầu xăng (đi lại nhiều hơn, sở hữu phương tiện tăng) và tác động kìm hãm (xe tiết kiệm nhiên liệu, chuyển sang xe điện) diễn ra cùng lúc.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Độ co giãn là <b>hệ số độ nhạy</b>: "giá thay đổi 1% thì lượng mua thay đổi bao nhiêu %". |E| = 0,4 nghĩa là khách "lì" với giá; |E| = 1,8 nghĩa là khách rất nhạy.</p>
+<div class="mh">Bài tập của cô — giải từng bước</div><p>Giá 20.000 → 22.000đ, lượng 1.000 → 930.</p><ol class="clean"><li>Doanh thu trước: 20.000 × 1.000 = 20,0 triệu. Sau: 22.000 × 930 = 20,46 triệu → tăng 2,3%.</li><li>Dùng phương pháp trung điểm: giá trung bình (20.000 + 22.000)/2 = 21.000; lượng trung bình (1.000 + 930)/2 = 965.</li><li>%ΔQ = (930 − 1.000)/965 = −7,25%. %ΔP = (22.000 − 20.000)/21.000 = +9,52%.</li><li>E = −7,25 / 9,52 ≈ <b>−0,76</b> → |E| &lt; 1, cầu kém co giãn → tăng giá làm doanh thu tăng (khớp bước 1).</li></ol><p><b>Câu hỏi bẫy của cô:</b> doanh thu tăng có đồng nghĩa lợi nhuận tăng? Chưa chắc — cần xem chi phí. Ở đây lượng bán giảm nên chi phí biến đổi cũng giảm, lợi nhuận nhiều khả năng tăng; nhưng phải có số liệu chi phí mới kết luận được.</p>
+<div class="mh">Vì sao dùng phương pháp trung điểm?</div><p>Nếu tính % theo giá gốc, đi từ 20.000 lên 22.000 là +10%, nhưng đi ngược từ 22.000 xuống 20.000 là −9,1% — cùng một đoạn mà ra hai con số. Trung điểm cho kết quả như nhau dù đi chiều nào. Nếu đề không nói rõ, nên ghi "tính theo phương pháp trung điểm".</p>
+<div class="mh">Ví dụ thêm</div><ul class="clean"><li>Xăng nói chung kém co giãn trong ngắn hạn: giá tăng, tổng lượng bán toàn thị trường giảm ít.</li><li>Nhưng với <b>một cửa hàng cụ thể</b>, cầu co giãn hơn nhiều vì khách có thể sang cửa hàng bên cạnh. Cầu "của thị trường" và cầu "của một doanh nghiệp" có độ co giãn khác nhau.</li><li>Hàng xa xỉ (du lịch nước ngoài, xe sang) thường có độ co giãn theo thu nhập lớn hơn 1: thu nhập tăng 10%, chi tiêu cho chúng tăng hơn 10%.</li></ul>`},
+ {t:'Cung và độ co giãn của cung',
+  b:`<p><b>Cung thị trường</b> là lượng hàng người bán sẵn sàng và có khả năng bán tại các mức giá. <b>Quy luật cung:</b> các yếu tố khác không đổi, giá tăng → lượng cung thường tăng; đường cung thông thường dốc lên.</p>
+<p><b>Các yếu tố làm thay đổi cung:</b> chi phí đầu vào (tăng → cung giảm); công nghệ (hiệu quả tăng → cung tăng); năng lực cung ứng (mở rộng → cung tăng); chính sách (thuế, quy định, hỗ trợ); kỳ vọng và rủi ro (giá tương lai, yếu tố gián đoạn nguồn cung).</p>
+<p>Giống như cầu: giá hàng hóa thay đổi → <b>di chuyển dọc</b> đường cung; yếu tố ngoài giá thay đổi → <b>dịch chuyển</b> đường cung.</p>
+<div class="formula">E<sub>S</sub> = % thay đổi lượng cung / % thay đổi giá</div>
+<div class="scroll"><table class="tbl"><thead><tr><th>Ngắn hạn</th><th>Dài hạn</th></tr></thead><tbody><tr><td>Công suất khó thay đổi; phụ thuộc tồn kho và hợp đồng; khả năng điều chỉnh hạn chế</td><td>Có thể mở rộng hạ tầng, điều chỉnh mạng lưới cung ứng; khả năng thích ứng lớn hơn</td></tr></tbody></table></div>
+<p><b>Tình huống gián đoạn nguồn cung xăng dầu:</b> chi phí vận chuyển tăng, thời gian giao hàng kéo dài, giá bán có xu hướng tăng. Cô hỏi: yếu tố nào làm cung thay đổi? Giá bán và chi phí tác động khác nhau ra sao? Vì sao lượng cung có thể chưa tăng ngay? Doanh nghiệp cần theo dõi chỉ báo nào?</p>
+<p><b>Ý nghĩa với doanh nghiệp:</b> hoạch định nguồn hàng; quản trị chi phí (theo dõi yếu tố dịch chuyển cung); tồn kho và phân phối theo địa bàn; đầu tư mở rộng năng lực cung dài hạn.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Người bán bán nhiều hơn khi giá cao hơn vì lúc đó những nguồn hàng đắt hơn (nhập từ xa, chạy thêm ca) mới bắt đầu có lãi. Độ co giãn của cung cho biết họ "tăng tốc" được nhanh đến đâu.</p>
+<div class="mh">Trả lời tình huống gián đoạn nguồn cung</div><ol class="clean"><li><b>Yếu tố làm cung thay đổi:</b> chi phí vận chuyển tăng và rủi ro gián đoạn → đường cung dịch sang trái.</li><li><b>Giá bán và chi phí khác nhau thế nào:</b> chi phí tăng ngay, còn giá bán (nhất là khi bị điều hành) có thể tăng chậm hơn → biên lợi nhuận bị ép.</li><li><b>Vì sao lượng cung chưa tăng ngay dù giá tăng:</b> ngắn hạn bị giới hạn bởi sức chứa kho, số xe bồn, hợp đồng nhập đã ký — cung kém co giãn.</li><li><b>Chỉ báo cần theo dõi:</b> tồn kho theo kho, thời gian giao hàng, giá nhập, mức bán theo khu vực, lịch tàu.</li></ol>
+<div class="mh">Ví dụ thêm</div><p>Khi giá nhà ở tăng mạnh, nguồn cung căn hộ không tăng ngay vì từ lúc có đất đến lúc bàn giao mất nhiều năm — cung ngắn hạn gần như không co giãn. Ngược lại, khi giá rau tăng, nông dân có thể trồng thêm sau vài tuần — cung co giãn hơn.</p>`},
+ {t:'Cân bằng thị trường và các cú sốc',
+  b:`<p>Phía người mua: cầu cho biết khách muốn và có thể mua bao nhiêu tại các mức giá. Phía người bán: cung cho biết doanh nghiệp sẵn sàng bán bao nhiêu. Giá thị trường hình thành từ tương tác giữa hai phía.</p>
+<p><b>Cân bằng:</b> lượng cung = lượng cầu, tại giao điểm E xác định P₀ và Q₀. Trong mô hình cạnh tranh cơ bản, tại đây không có áp lực giá do dư cung hoặc dư cầu.</p>
+<ul class="clean"><li><b>P &gt; P₀:</b> lượng cung &gt; lượng cầu → dư cung, hàng dư thừa, xuất hiện áp lực giảm giá.</li><li><b>P &lt; P₀:</b> lượng cầu &gt; lượng cung → thiếu hụt, xuất hiện áp lực tăng giá.</li></ul>
+<p><b>Giá cả là tín hiệu điều phối:</b> với người tiêu dùng, giá phản ánh chi phí mua hàng (điều chỉnh lượng mua, chọn hàng thay thế); với doanh nghiệp, giá phản ánh cơ hội kinh doanh (điều chỉnh cung ứng, đầu tư); với toàn thị trường, giá phản ánh khan hiếm tương đối (định hướng phân bổ nguồn lực).</p>
+<p><b>Khi giá không điều chỉnh linh hoạt</b> (bị ràng buộc bởi quy định, hợp đồng): mất cân đối được điều chỉnh qua tồn kho, lượng giao dịch, có thể xuất hiện thời gian chờ. Trong xăng dầu cần phân biệt <b>tín hiệu giá</b> với <b>quyền điều chỉnh giá bán</b>.</p>
+<p><b>Tình huống nghỉ lễ:</b> cửa hàng trên quốc lộ khách tăng, phải chờ bổ sung hàng; cửa hàng khu vực khác bán thấp hơn dự kiến, tồn kho lớn. Đây là mất cân đối tại cửa hàng hay của toàn thị trường?</p>
+<p><b>Cú sốc thị trường:</b></p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Cú sốc</th><th>Giá P</th><th>Lượng Q</th></tr></thead><tbody><tr><td>Cầu tăng</td><td>↑</td><td>↑</td></tr><tr><td>Cầu giảm</td><td>↓</td><td>↓</td></tr><tr><td>Cung tăng</td><td>↓</td><td>↑</td></tr><tr><td>Cung giảm</td><td>↑</td><td>↓</td></tr><tr><td>Cầu ↑ và cung ↑</td><td>Chưa xác định</td><td>↑</td></tr><tr><td>Cầu ↓ và cung ↓</td><td>Chưa xác định</td><td>↓</td></tr><tr><td>Cầu ↑ và cung ↓</td><td>↑</td><td>Chưa xác định</td></tr><tr><td>Cầu ↓ và cung ↑</td><td>↓</td><td>Chưa xác định</td></tr></tbody></table></div>
+<p><b>4 bước phân tích cú sốc:</b> (1) xác định cú sốc — yếu tố nào đã thay đổi? (2) xác định đường — cung hay cầu dịch chuyển? (3) so sánh cân bằng — P và Q mới ra sao? (4) hàm ý quản trị — nguồn hàng, tồn kho, phân phối.</p>
+<p><b>Case study của cô:</b> cú sốc 1 (phía cung) — vận chuyển gián đoạn, chi phí nhập tăng, giao chậm; cú sốc 2 (phía cầu) — kinh tế chững lại, doanh nghiệp vận tải cắt giảm nhu cầu nhiên liệu. Với doanh nghiệp: giá bán chịu ràng buộc điều hành, năng lực kho và giao hàng hữu hạn, có thể điều chuyển liên vùng. Không đủ dữ liệu dự báo chính xác P, Q mới → phải vẽ mô hình, dự báo hướng, lập kịch bản (cung mạnh hơn hay cầu mạnh hơn), chọn 2 hành động ưu tiên và chỉ báo giám sát.</p>
+<p>Mô hình giúp dự báo <b>hướng</b> tác động, không thay thế dữ liệu và quyết định thực tế.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Nghĩ về cân bằng như <b>mực nước trong bể có vòi vào (cung) và vòi ra (cầu)</b>: nếu vào nhiều hơn ra (dư cung), mực nước dâng → người bán phải hạ giá để xả hàng. Nếu ra nhiều hơn vào (thiếu hụt), bể cạn → người mua sẵn sàng trả cao hơn. Giá tự điều chỉnh đến khi vào = ra.</p>
+<div class="mh">Mẹo nhớ bảng cú sốc</div><ul class="clean"><li><b>Cú sốc cầu</b>: P và Q đi <b>cùng chiều</b> (cầu tăng thì cả hai tăng).</li><li><b>Cú sốc cung</b>: P và Q đi <b>ngược chiều</b> (cung giảm thì giá tăng, lượng giảm).</li><li><b>Cú sốc kép</b>: lần lượt xét từng cú sốc; đại lượng nào hai cú sốc kéo <b>cùng hướng</b> thì kết luận được, đại lượng bị kéo ngược hướng thì "chưa xác định" (phụ thuộc cú sốc nào mạnh hơn).</li></ul>
+<div class="mh">Giải case study của cô</div><p>Cung giảm (đường S dịch trái) + cầu giảm (đường D dịch trái). Cả hai đều làm <b>Q giảm</b> → chắc chắn lượng giảm. Về giá: cung giảm đẩy giá lên, cầu giảm kéo giá xuống → <b>P chưa xác định</b>. Kịch bản: nếu cú sốc cung mạnh hơn → giá tăng; nếu cú sốc cầu mạnh hơn → giá giảm. Hai hành động ưu tiên gợi ý: (1) điều chuyển hàng liên vùng theo nhu cầu thực tế; (2) điều chỉnh mức tồn kho, tránh tích trữ quá mức khi cầu đang giảm. Chỉ báo: sản lượng bán theo khu vực, giá nhập, thời gian giao hàng.</p>
+<div class="mh">Tình huống nghỉ lễ — trả lời</div><p>Đây chủ yếu là <b>mất cân đối cục bộ giữa các cửa hàng</b>, không phải của toàn thị trường: tổng hàng có thể đủ nhưng phân bổ chưa đúng nơi. Giải pháp là điều phối hàng theo dự báo nhu cầu từng tuyến, không phải tăng nhập.</p>`},
+ {t:'Thất bại thị trường và cơ sở để Nhà nước can thiệp',
+  b:`<p><b>Vai trò của cơ chế thị trường:</b> giá là tín hiệu điều phối — phản ánh khan hiếm tương đối → người mua và người bán điều chỉnh hành vi → nguồn lực dịch chuyển theo tín hiệu thị trường. Thị trường tạo động lực cạnh tranh, nâng hiệu quả và đổi mới.</p>
+<p><b>Vì sao thị trường không phải lúc nào cũng hiệu quả?</b></p>
+<ul class="clean"><li><b>Ngoại ứng</b>: chi phí hoặc lợi ích xã hội không được phản ánh đầy đủ trong quyết định tư nhân — ví dụ phát thải từ tiêu thụ nhiên liệu.</li><li><b>Quyền lực thị trường</b>: doanh nghiệp có khả năng ảnh hưởng đến giá, sản lượng; mức tập trung cao có thể tạo sức mạnh thị trường.</li><li><b>Thông tin bất cân xứng</b>: các bên nắm giữ thông tin không ngang nhau — ví dụ thông tin chất lượng, nguồn gốc nhiên liệu.</li></ul>
+<p>Thất bại thị trường là một cơ sở kinh tế quan trọng để Nhà nước can thiệp.</p>
+<p><b>Mục tiêu can thiệp:</b> nâng cao hiệu quả kinh tế (khắc phục thất bại thị trường, kiểm soát ngoại ứng, quyền lực thị trường) và thực hiện mục tiêu xã hội (hỗ trợ nhóm dễ bị tổn thương, ổn định và bảo đảm tiếp cận hàng thiết yếu). Không phải mọi can thiệp đều xuất phát từ thất bại thị trường.</p>
+<p>Ba nhóm công cụ được học: <b>can thiệp trực tiếp vào giá</b> (giá trần, giá sàn), <b>thuế</b>, <b>trợ cấp</b>.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Thị trường hoạt động tốt khi giá phản ánh <b>đúng và đủ</b> mọi chi phí, lợi ích, và hai bên đều biết rõ thứ mình mua bán. Ba thất bại là ba cách giá "nói sai":</p><ul class="clean"><li><b>Ngoại ứng:</b> giá xăng không tính tiền khói bụi mà người đi đường phải hít → xã hội tiêu dùng nhiều hơn mức tối ưu.</li><li><b>Quyền lực thị trường:</b> vài doanh nghiệp lớn đủ sức đặt giá cao hơn chi phí.</li><li><b>Thông tin bất cân xứng:</b> người mua không kiểm tra được chất lượng xăng tại chỗ, nên dễ bị bán hàng kém chất lượng.</li></ul>
+<div class="mh">Ví dụ thêm</div><p>Nhà máy xả khói gây ảnh hưởng sức khỏe dân xung quanh mà không phải trả tiền — ngoại ứng tiêu cực. Tiêm vắc-xin bảo vệ cả người xung quanh — ngoại ứng tích cực. Người bán xe cũ biết rõ xe hơn người mua — thông tin bất cân xứng, nên mới có dịch vụ kiểm định xe.</p><div class="mh">Nguồn gốc lý thuyết</div><p>Khái niệm ngoại ứng và thuế điều chỉnh ngoại ứng gắn với <b>Arthur Pigou</b> (1920) — thuế bảo vệ môi trường đối với xăng dầu là một dạng "thuế Pigou". Thông tin bất cân xứng gắn với <b>George Akerlof</b> (bài "thị trường xe cũ", 1970; Nobel 2001).</p>
+`},
+ {t:'Can thiệp trực tiếp vào giá: giá trần và giá sàn',
+  b:`<p>Giới hạn giá có thể bảo vệ một nhóm, nhưng làm thay đổi tín hiệu cung – cầu.</p>
+<ul class="clean"><li><b>Giá trần</b>: giá tối đa được phép giao dịch, thường nhằm bảo vệ người mua.</li><li><b>Giá sàn</b>: giá tối thiểu được phép giao dịch, thường nhằm hỗ trợ người bán.</li></ul>
+<div class="pillars" style="grid-template-columns:1fr 1fr"><div>${svgCeil}</div><div>${svgFloor}</div></div>
+<p><b>Giá trần có hiệu lực</b> (thấp hơn giá cân bằng): lượng cầu &gt; lượng cung → <b>thiếu hụt</b>; giá không thể tăng vượt trần; có thể phát sinh <b>phân bổ phi giá</b> (xếp hàng, hạn mức, quan hệ). Giá trần chỉ gây thiếu hụt trong mô hình khi có hiệu lực ràng buộc.</p>
+<p><b>Giá sàn có hiệu lực</b> (cao hơn giá cân bằng): lượng cung &gt; lượng cầu → <b>dư thừa</b>, áp lực tiêu thụ, tồn kho, cần cơ chế xử lý lượng dư. Giá sàn không tự bảo đảm người bán tiêu thụ hết hàng ở mức giá quy định.</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Tiêu chí</th><th>Giá trần</th><th>Giá sàn</th></tr></thead><tbody><tr><td>Mức giá ràng buộc</td><td>Thấp hơn giá cân bằng</td><td>Cao hơn giá cân bằng</td></tr><tr><td>Mất cân đối</td><td>Thiếu hụt: Qd &gt; Qs</td><td>Dư thừa: Qs &gt; Qd</td></tr><tr><td>Rủi ro chính</td><td>Phân bổ không qua giá</td><td>Tồn kho, khó tiêu thụ</td></tr><tr><td>Hàm ý quản trị</td><td>Bảo đảm nguồn hàng</td><td>Dự báo lượng bán và tồn kho</td></tr></tbody></table></div>
+<p><b>Hàm ý quản trị khi thị trường có điều tiết giá:</b> nhận diện ràng buộc (giá giới hạn, mức độ ràng buộc) → dự báo phản ứng (thiếu hụt, dư thừa, nhu cầu) → điều chỉnh vận hành (nguồn hàng, tồn kho, phân phối, chi phí) → giám sát kết quả (chất lượng phục vụ, tiếp cận, rủi ro). Khi giá bị ràng buộc, năng lực thích ứng vận hành càng quan trọng.</p>
+<p><b>Thảo luận của cô:</b> giả sử Chính phủ áp giá trần xăng dầu để bảo vệ người tiêu dùng, tránh lạm phát. (1) Hiện tượng ngắn hạn, dài hạn? (2) Doanh nghiệp xăng dầu gặp khó khăn gì, phản ứng ra sao khi giá thế giới cao hơn trần? (3) Doanh nghiệp dùng xăng dầu làm đầu vào có rủi ro nguồn cung không? (4) Nếu là CEO doanh nghiệp vận tải, xây dựng kịch bản rủi ro và chính sách giá thế nào?</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Giá trần giống như <b>"khóa" van giá ở mức thấp</b>: người mua muốn mua nhiều hơn (vì rẻ), người bán muốn bán ít hơn (vì lãi thấp hoặc lỗ). Khoảng cách giữa hai lượng đó là hàng thiếu. Vì giá không được tăng để "phân chia" hàng khan hiếm, việc phân chia diễn ra bằng cách khác: ai đến trước, ai quen biết, xếp hàng.</p>
+<div class="mh">Mẹo nhớ</div><p><b>Trần</b> nằm <b>dưới</b> cân bằng mới có tác dụng (nghe ngược nhưng đúng: trần cao hơn giá thị trường thì chẳng ai chạm tới). <b>Sàn</b> nằm <b>trên</b> cân bằng mới có tác dụng.</p>
+<div class="mh">Gợi ý trả lời câu thảo luận giá trần xăng dầu</div><ol class="clean"><li><b>Ngắn hạn:</b> thiếu hụt cục bộ, xếp hàng, cửa hàng hạn chế bán; dài hạn: doanh nghiệp giảm nhập, giảm đầu tư hệ thống, nguồn cung giảm, có thể xuất hiện thị trường ngầm.</li><li><b>Doanh nghiệp xăng dầu:</b> khi giá thế giới cao hơn trần → lỗ trên mỗi lít, áp lực dòng tiền; phản ứng: cắt giảm nhập, ưu tiên khách hợp đồng, kiến nghị điều chỉnh cơ chế.</li><li><b>Doanh nghiệp dùng xăng dầu:</b> giá rẻ nhưng rủi ro không mua được hàng — với vận tải, thiếu nhiên liệu nguy hiểm hơn giá cao.</li><li><b>CEO vận tải:</b> ký hợp đồng cung cấp dài hạn với đầu mối, dự trữ hợp lý, đa dạng nhà cung cấp, đưa phụ phí nhiên liệu vào hợp đồng vận chuyển.</li></ol>
+<div class="mh">Thực tế Việt Nam</div><p>Giá bán lẻ xăng dầu được điều hành theo kỳ dựa trên giá cơ sở và Quỹ bình ổn giá (NĐ 83/2014, 95/2021, 80/2023). Đây không hẳn là giá trần, nhưng khi giá thế giới tăng nhanh hơn giá điều hành thì tác động gần giống: đợt thiếu hàng cuối năm 2022 (nhiều cửa hàng tạm ngừng bán) là ví dụ của phân bổ phi giá. Dự thảo nghị định mới (lần 14, 30/9/2026) đi theo hướng doanh nghiệp tự quyết và kê khai giá — cần kiểm tra lại tình trạng ban hành. <a href="https://lsvn.vn/de-xuat-moi-ve-quy-binh-on-gia-xang-dau-a179866.html">Nguồn: LSVN</a></p>
+<div class="mh">Ví dụ giá sàn</div><p>Giá sàn lương tối thiểu vùng; giá sàn thu mua lúa trong một số giai đoạn.</p>`},
+ {t:'Can thiệp bằng thuế và trợ cấp',
+  b:`<p><b>Thuế</b> không chỉ tạo nguồn thu mà còn ảnh hưởng đến giá và hành vi: tạo nguồn thu (tài trợ hàng hóa, dịch vụ công), điều tiết hành vi (thay đổi chi phí và động cơ giao dịch), xử lý ngoại ứng (đưa một phần chi phí xã hội vào quyết định).</p>
+<p><b>Thuế theo đơn vị hàng hóa (t):</b> đường cung dịch lên đúng bằng mức thuế t; giá người mua trả (P<sub>M</sub>) tăng; giá người bán thực nhận (P<sub>B</sub>) giảm; lượng giao dịch giảm. Chênh lệch P<sub>M</sub> − P<sub>B</sub> = t.</p>
+<p><b>Ai thực sự chịu thuế?</b> Người có nghĩa vụ nộp thuế không nhất thiết chịu toàn bộ gánh nặng. Ví dụ thuế 1.000đ/đơn vị: người mua gánh 700đ (70%), người bán 300đ — tỷ lệ thực tế tùy độ co giãn tương đối. <b>Quy tắc: bên kém co giãn tương đối thường chịu phần lớn gánh nặng thuế.</b> Cầu kém co giãn hơn → người mua chịu nhiều; cung kém co giãn hơn → người bán chịu nhiều.</p>
+<p><b>Tình huống:</b> thuế nhiên liệu tăng 1.000đ/lít, cầu ngắn hạn kém co giãn. Cô hỏi: giá mua, giá thực nhận, lượng bán thay đổi thế nào? Cần biết thêm gì để xác định ai chịu nhiều hơn? Doanh thu, biên lợi nhuận thay đổi ra sao? Theo dõi lượng bán, nguồn hàng theo khu vực thế nào? Đề xuất 2 biện pháp ứng phó trong phạm vi quyền hạn.</p>
+<p><b>Trợ cấp</b> thay đổi động cơ cung ứng, tiêu dùng hoặc khả năng tiếp cận: hỗ trợ người bán (giảm chi phí, thúc đẩy cung), hỗ trợ người mua (giảm giá thực trả), hỗ trợ có mục tiêu (nhóm, hoạt động ưu tiên).</p>
+<p><b>Trợ cấp theo đơn vị (s):</b> đường cung dịch xuống/sang phải bằng s; giá người mua trả giảm; giá người bán nhận tăng; lượng giao dịch tăng. Giá người bán nhận − giá người mua trả = s. Bên kém co giãn tương đối hưởng phần lợi ích lớn hơn.</p>
+<p><b>Lợi ích, chi phí:</b> hỗ trợ tiếp cận hàng thiết yếu, khuyến khích hoạt động có ích; nhưng tốn ngân sách (s × lượng được trợ cấp), có thể khuyến khích tiêu dùng quá mức, nguy cơ phân bổ sai mục tiêu. Tình huống: trợ giá bán lẻ đại trà hay hỗ trợ trực tiếp nhóm thu nhập thấp?</p>
+<div class="scroll"><table class="tbl"><thead><tr><th>Công cụ</th><th>Cơ chế tác động</th><th>Vấn đề quản trị</th></tr></thead><tbody><tr><td>Giá trần</td><td>Giá tối đa ràng buộc → thiếu hụt</td><td>Nguồn cung, phân bổ hàng</td></tr><tr><td>Giá sàn</td><td>Giá tối thiểu ràng buộc → dư thừa</td><td>Tiêu thụ, tồn kho</td></tr><tr><td>Thuế</td><td>Chênh lệch giá mua – bán → giao dịch giảm</td><td>Sản lượng, gánh nặng thuế</td></tr><tr><td>Trợ cấp</td><td>Hỗ trợ theo đơn vị → giao dịch tăng</td><td>Lợi ích, kế hoạch nguồn hàng</td></tr></tbody></table></div>
+<p><b>Khung 5 bước phân tích chính sách cho nhà quản trị:</b> (1) Mục tiêu — chính sách muốn giải quyết gì? (2) Cơ chế — tác động qua giá, cung hay cầu? (3) Thị trường — giá, lượng, phân bổ lợi ích đổi ra sao? (4) Doanh nghiệp — doanh thu, chi phí, nguồn hàng chịu ảnh hưởng gì? (5) Quyết định — điều chỉnh gì trong giới hạn pháp lý và thẩm quyền? Đi từ phân tích kinh tế học đến lựa chọn quản trị, không đảo ngược trình tự.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Thuế như một <b>"cái nêm" chèn giữa</b> người mua và người bán: người mua trả nhiều hơn, người bán nhận ít hơn, khoảng chênh là tiền thuế. Ai bị nêm ép nhiều hơn? Người <b>khó né</b> hơn. Người mua xăng khó bỏ xăng ngay (kém co giãn) nên bị ép nhiều.</p>
+<div class="mh">Công thức phân chia gánh nặng (bổ sung)</div><div class="formula">Phần người mua chịu = E<sub>S</sub> / (E<sub>S</sub> + |E<sub>D</sub>|)<br>Phần người bán chịu = |E<sub>D</sub>| / (E<sub>S</sub> + |E<sub>D</sub>|)</div><p>Ví dụ của cô (người mua 70%) tương ứng E<sub>S</sub> gấp khoảng 2,33 lần |E<sub>D</sub>|. Kiểm tra: 2,33 / (2,33 + 1) ≈ 0,70.</p>
+<div class="mh">Gợi ý trả lời tình huống thuế nhiên liệu +1.000đ/lít</div><ol class="clean"><li>Giá người mua trả tăng gần 1.000đ (vì cầu kém co giãn), giá người bán nhận giảm ít, lượng bán giảm ít.</li><li>Để biết chính xác ai chịu bao nhiêu cần biết độ co giãn của cả cung và cầu.</li><li>Doanh thu của cửa hàng tính theo giá bán có thể tăng, nhưng biên lợi nhuận mỗi lít có thể giảm nhẹ.</li><li>Biện pháp: theo dõi sản lượng theo khu vực (vùng giáp ranh dễ mất khách), điều chỉnh tồn kho, tăng dịch vụ phi xăng dầu bù biên lợi nhuận.</li></ol>
+<div class="mh">Phần mất không (deadweight loss)</div><p>Thuế, giá trần, giá sàn đều làm lượng giao dịch lệch khỏi mức cân bằng. Những giao dịch "đáng lẽ có lợi cho cả hai bên" nhưng không xảy ra nữa tạo thành phần phúc lợi bị mất cho xã hội — gọi là <b>phần mất không</b> (tam giác Harberger). Có thể gặp lại ở CĐ3 khi học thặng dư tiêu dùng.</p>
+<div class="mh">Trợ giá đại trà hay hỗ trợ trực tiếp?</div><p>Trợ giá xăng đại trà: người đi ô tô (thường thu nhập cao, dùng nhiều xăng) hưởng nhiều nhất; tốn ngân sách lớn; khuyến khích tiêu dùng nhiều. Hỗ trợ trực tiếp nhóm thu nhập thấp: đúng đối tượng hơn, ít méo mó giá, nhưng khó thực thi (xác định đối tượng, chi trả).</p>`}
+ ],
+ sum:{core:'Giá và lượng do cung – cầu quyết định. Cú sốc cầu làm P, Q cùng chiều; cú sốc cung làm ngược chiều. Can thiệp của Nhà nước chỉ có tác dụng khi ràng buộc, và bên kém co giãn hơn luôn chịu phần lớn thuế, hưởng phần lớn trợ cấp.',
+  pillars:[['Trần','Giá trần','Dưới P₀ → thiếu hụt','var(--bad)'],['Sàn','Giá sàn','Trên P₀ → dư thừa','var(--gold)'],['Thuế','Thuế','Q giảm','var(--qtcl)'],['TC','Trợ cấp','Q tăng','var(--ktud)']],
+  recap:['<b>Lượng cầu khác cầu:</b> giá chính hàng đổi → đi dọc đường; yếu tố khác đổi → dịch cả đường.','<b>Độ co giãn = độ nhạy.</b> |E| &lt; 1 thì tăng giá làm tăng doanh thu; doanh thu tăng chưa chắc lợi nhuận tăng.','<b>Cú sốc:</b> cầu cùng chiều, cung ngược chiều; cú sốc kép có một đại lượng chưa xác định.','<b>Thất bại thị trường</b> (ngoại ứng, quyền lực, thông tin) là cơ sở để can thiệp.','<b>Khung 5 bước:</b> mục tiêu → cơ chế → thị trường → doanh nghiệp → quyết định.'],
+  exam:['Phân biệt thay đổi lượng cầu và thay đổi cầu','Tính E theo giá, chéo, thu nhập; quan hệ E với doanh thu','Bảng cú sốc đơn và kép','Giá trần, sàn chỉ tác động khi ràng buộc; vẽ đồ thị','Ai chịu thuế, ai hưởng trợ cấp','Tự luận: giá trần xăng dầu theo khung 5 bước'],
+  terms:[['Lượng cầu / Cầu','Quantity demanded / Demand'],['Độ co giãn','Elasticity'],['Hàng thay thế / bổ sung','Substitute / Complement'],['Hàng thứ cấp','Inferior good'],['Cân bằng','Equilibrium'],['Thất bại thị trường','Market failure'],['Ngoại ứng','Externality'],['Giá trần / sàn','Price ceiling / floor'],['Gánh nặng thuế','Tax incidence']]}},
+
+{id:'cd3',n:3,title:'Hành vi của người tiêu dùng',sub:'Lợi ích cận biên, đánh đổi trong tiêu dùng, lựa chọn tối ưu',status:'now',src:'Ghi âm buổi 12/11 (chưa có slide)',
+ intro:'CĐ2 nhìn người mua như một đường cầu. CĐ3 "mở hộp" đường cầu ra: vì sao người mua chọn mua bao nhiêu, và doanh nghiệp tận dụng hiểu biết đó để định giá, thiết kế sản phẩm thế nào. Đây là lý thuyết cốt lõi cho bài nhóm 3.',
+ topics:[
+ {t:'Tổng lợi ích và lợi ích cận biên',
+  b:`<p>Giả định nối từ phần trước: người tiêu dùng <b>thích nhiều hơn ít</b> — khi chưa tới điểm bão hòa, tiêu dùng tăng thì tổng lợi ích tăng.</p>
+<p><b>Lợi ích cận biên (MU — marginal utility):</b> lợi ích tăng thêm khi tiêu dùng thêm một đơn vị hàng hóa hay dịch vụ, với lượng tiêu dùng các hàng hóa khác giữ nguyên. Nó phản ánh thay đổi của tổng lợi ích khi tiêu dùng thêm một đơn vị.</p>
+<p>Ví dụ của cô: khách vừa uống một cốc trà sữa; nếu uống thêm cốc thứ hai thì lợi ích cận biên của cốc thứ hai là phần hài lòng tăng thêm do cốc thứ hai mang lại.</p>
+<p><b>Phân biệt:</b> TU phản ánh <b>tổng lợi ích</b> nhận được; MU phản ánh <b>lợi ích bổ sung</b> của một đơn vị. Cô nhấn mạnh sự phân biệt này rất quan trọng, vì khi doanh nghiệp nghiên cứu khả năng khách mua thêm, không chỉ dựa vào tổng lợi ích mà phải dựa vào lợi ích cận biên: người tiêu dùng so sánh <b>lợi ích thu thêm với số tiền phải bỏ ra</b> để quyết định.</p>
+${svgMU}
+<p><b>Cách tính MU:</b> số cốc tăng theo bước 1, nên MU = TU của mức sau − TU của mức trước. Từ 0 lên 1 cốc: TU 0 → 10, MU cốc 1 = 10. Từ 1 lên 2: 10 → 18, MU cốc 2 = 8. Cốc 3: MU = 6. Cốc 6: TU vẫn 30, MU = 0. Cốc 7: TU 30 → 28, MU = −2.</p>
+<p><b>Quan hệ TU – MU:</b> MU dương → TU tiếp tục tăng; MU = 0 → TU không tăng (đạt lớn nhất, ở cốc 5–6); MU âm → TU giảm. <b>Điểm bão hòa</b>: tăng tiêu dùng mà không tăng tổng lợi ích.</p>
+<p class="small muted">TU cốc 3–4 và MU cốc 5 suy ra từ các số cô đọc trong bản ghi.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>TU là <b>tổng điểm hài lòng</b>, MU là <b>điểm cộng thêm của đơn vị vừa dùng</b>. Giống như tổng điểm của cả bài thi và điểm của từng câu: tổng điểm còn tăng chừng nào câu tiếp theo còn được điểm dương.</p>
+<div class="mh">Đơn vị "lợi ích" là gì?</div><p>"Đơn vị lợi ích" (util) là con số giả định để minh họa, không đo được trực tiếp. Trong thực tế, doanh nghiệp đo gián tiếp qua <b>số tiền khách sẵn lòng trả</b> (WTP). Cô cũng dùng cách này trong tình huống cà phê: 10 đơn vị lợi ích ≈ 80.000đ, 8 đơn vị ≈ 60.000đ.</p>
+<div class="mh">Liên hệ CĐ1</div><p>Quyết định "mua thêm một đơn vị khi MU (quy ra tiền) lớn hơn giá" chính là Nguyên lý 3 (MB &gt; MC), chỉ khác là áp dụng cho người mua: MB là MU quy ra tiền, MC là giá phải trả.</p>
+<div class="mh">Bài tập tự luyện</div><p>TU của 4 cốc là 12, 20, 25, 25. MU lần lượt: 12 − 0 = 12; 20 − 12 = 8; 25 − 20 = 5; 25 − 25 = 0 → cốc 4 là điểm bão hòa.</p>`},
+ {t:'Quy luật lợi ích cận biên giảm dần',
+  b:`<p>Từ bảng số liệu, cô rút ra <b>quy luật lợi ích cận biên giảm dần</b>: trong những điều kiện nhất định, khi người tiêu dùng tiêu dùng ngày càng nhiều một loại hàng hóa, lợi ích tăng thêm từ mỗi đơn vị sẽ giảm dần, với giả định các yếu tố khác không đổi.</p>
+<p>Trong ví dụ: cốc thứ nhất mang lại 10 đơn vị lợi ích, cốc thứ hai chỉ 8, cốc thứ ba 6, cốc thứ tư 4. <b>Điều này không có nghĩa người tiêu dùng không còn thích trà sữa</b> — họ vẫn hài lòng khi uống thêm, chỉ là mức hài lòng không còn lớn như trước.</p>
+<p><b>Phạm vi áp dụng:</b> lợi ích cận biên giảm khi lượng tiêu dùng tăng <b>trong điều kiện xác định</b>, thường là cùng một thời điểm, một giai đoạn ngắn. Việc khách giảm hứng thú với sản phẩm sau nhiều năm sử dụng có thể không phải do quy luật này, mà do họ thay đổi sở thích, bối cảnh, thu nhập.</p>
+<p><b>Hàm ý cô đưa ra:</b> khách hàng có thể sẵn sàng chi trả ít hơn cho phần tiêu dùng bổ sung, <b>ngay cả khi họ vẫn thích sản phẩm</b>. Vì số tiền sẵn sàng chi trả đo lường lợi ích nhận được, nên lợi ích giảm dần thì sẵn sàng chi trả cũng giảm dần. Doanh nghiệp không được mặc nhiên cho rằng khách đã mua và yêu thích sản phẩm thì sẽ sẵn sàng mua thêm với cùng mức giá.</p>
+<p>Ví dụ đời thường cô đưa ra: cốc bia số 1, số 2 thường ngon hơn những cốc tiếp theo; đến cốc thứ 6, 7 thấy đắng và khó chịu hơn. Món ăn ngon được nấu liên tục: bữa đầu tuyệt vời, bữa thứ ba bắt đầu không hứng thú lắm — vẫn ăn được, vẫn tăng lợi ích, nhưng sự hào hứng không còn nhiều.</p>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Cái đầu tiên luôn "đáng giá" nhất vì nó đáp ứng nhu cầu cấp thiết nhất. Cốc nước đầu tiên khi khát cứu cơn khát; cốc thứ năm chỉ còn là uống cho vui. Mỗi đơn vị sau phục vụ một nhu cầu ít cấp thiết hơn.</p>
+<div class="mh">Ví dụ thêm</div><p>Chiếc điện thoại đầu tiên có giá trị rất lớn; chiếc thứ hai (để làm việc riêng) vẫn có ích; đến chiếc thứ ba, thứ tư thì lợi ích thêm gần như không còn.</p><div class="mh">Nguồn gốc lý thuyết</div><p>Quy luật này thường gắn với <b>Hermann Heinrich Gossen</b> (1854, "quy luật Gossen thứ nhất"), được phát triển trong "cuộc cách mạng cận biên" thập niên 1870 bởi <b>W. S. Jevons, Carl Menger, Léon Walras</b>, và hệ thống hóa bởi <b>Alfred Marshall</b>. Nó giải thích vì sao đường cầu dốc xuống: muốn khách mua thêm thì giá phải thấp hơn.</p>
+<div class="mh">Lỗi hay mắc trong bài thi</div><ul class="clean"><li>Phát biểu quy luật mà quên "trong điều kiện nhất định, các yếu tố khác không đổi".</li><li>Hiểu sai thành "khách chán sản phẩm". Phải nói rõ: vẫn thích, chỉ là lợi ích thêm nhỏ dần.</li><li>Áp dụng cho khoảng thời gian dài nhiều năm.</li></ul>`},
+ {t:'Tình huống thảo luận: cốc cà phê thứ hai',
+  b:`<p>Từ quy luật, cô đặt ba câu hỏi thực tế doanh nghiệp thường gặp:</p>
+<ol class="clean"><li><b>Cốc cà phê thứ hai có mang lại lợi ích như cốc thứ nhất không?</b> Trong điều kiện thông thường (uống liên tiếp, các yếu tố khác không đổi), MU cốc thứ hai nhỏ hơn cốc thứ nhất. Điều này giải thích vì sao khách sẵn sàng mua cốc đầu với giá thông thường nhưng đến cốc thứ hai thì do dự.</li><li><b>Tại sao khách có thể thích mua thêm bánh thay vì thêm cà phê?</b> Khách không chỉ so MU của cà phê mà còn so với lợi ích của hàng hóa khác và giá của hai sản phẩm. Quyết định mua thêm liên quan đến cả các lựa chọn tiêu dùng khác.</li><li><b>Nếu khách ít mua cốc thứ hai, doanh nghiệp nên thu thập thông tin gì trước khi quyết định giảm giá?</b></li></ol>
+<p><b>Hai học viên trả lời:</b> (a) nên giảm giá — ví dụ cốc đầu 40.000đ, cốc hai giảm còn 35.000đ; (b) không nên giảm vì giá cần ổn định, sau này khó bán; nên bán combo cà phê + bánh hoặc đồ uống khác.</p>
+<p><b>Phản biện của cô với ý (a):</b> quyết định này không phải lúc nào cũng đúng. Giả sử cốc thứ nhất mang 10 đơn vị lợi ích ≈ 80.000đ, cốc thứ hai 8 đơn vị ≈ 60.000đ, trong khi giá bán 40.000đ. Lợi ích của cốc thứ hai vẫn lớn hơn số tiền phải trả, nên nếu khách có thời gian ngồi tiếp và không có nhu cầu chuyển sang món khác, họ vẫn gọi cốc thứ hai với giá 40.000đ — <b>không nhất thiết phải giảm giá</b>. Chỉ khi 8 đơn vị lợi ích đó chỉ tương đương khoảng 35.000đ thì giữ giá 40.000đ khách mới không mua, lúc đó mới xét có giảm hay không, giảm thế nào. Và ngay cả khi muốn giảm, còn phải so với <b>chi phí sản xuất</b>: nếu chi phí một cốc là 35.000đ thì không thể giảm xuống 30.000đ.</p>
+<p><b>Phản biện với ý (b):</b> bán combo giúp "tiền khách tiêu cho món gì cũng vào túi cửa hàng", nhưng chưa tính đến quy luật: chưa chắc chiếc bánh đầu tiên có lợi ích cận biên bằng cốc cà phê thứ hai. Nếu khách không thích bánh ngọt, họ vẫn gọi hai cốc cà phê hoặc kết hợp món khác. Vẫn phải phân tích sở thích chi tiêu, chưa thể kết luận ngay có nên bán combo.</p>
+<p><b>Kết luận của cô:</b> trước khi điều chỉnh giá phải thu thập thông tin về <b>sẵn sàng chi trả của khách, khả năng thay thế, lựa chọn của khách hàng và chi phí của doanh nghiệp</b>. Thông tin về MU giảm dần mới chỉ là một đầu vào. Kinh tế học giúp doanh nghiệp đặt đúng câu hỏi; để chọn chính sách cần kết hợp thông tin về nhu cầu và hiệu quả kinh tế.</p>`,
+  m:`<div class="mh">Hiểu đơn giản — quy trình 3 câu hỏi trước khi giảm giá</div><ol class="clean"><li><b>Khách định giá đơn vị thêm bao nhiêu?</b> (WTP). Nếu WTP còn ≥ giá → không cần giảm.</li><li><b>Có món thay thế nào hấp dẫn hơn không?</b> Nếu khách đang chuyển sang món khác của chính cửa hàng thì không mất gì.</li><li><b>Giá mới còn trên chi phí không?</b> Bán thêm mà lỗ thì không nên.</li></ol>
+<div class="mh">Cách trả lời nếu bị cô gọi tên</div><p>"Quy luật lợi ích cận biên giảm dần cho biết khách sẵn lòng trả ít hơn cho đơn vị mua thêm. Nhưng có giảm giá hay không còn phụ thuộc vào ba điều: mức sẵn lòng trả thực tế so với giá bán, khả năng thay thế, và giá mới có còn bù đủ chi phí không."</p>
+<div class="mh">Liên hệ CĐ1</div><p>Đây là sự kết hợp Nguyên lý 3 (so MB với MC — phía khách: WTP với giá; phía cửa hàng: giá với chi phí) và Nguyên lý 2 (chi phí cơ hội: khách có thể dùng tiền mua bánh thay vì cà phê).</p>`},
+ {t:'Ba hướng vận dụng của quy luật',
+  b:`<p>Cô đưa ra ba hướng doanh nghiệp vận dụng quy luật vào giá bán, thiết kế sản phẩm và tổ chức kinh doanh.</p>
+<p><b>Hướng 1 — Chính sách giá khuyến khích mua thêm.</b> Cốc cà phê đầu tiên mang lại hài lòng lớn (giải khát, thưởng thức); cốc thứ hai ngay sau đó thấp hơn đáng kể. Nếu bán cốc thứ hai bằng giá cốc thứ nhất, khách có thể không mua vì lợi ích bổ sung không còn đủ lớn so với số tiền. Nếu cốc thứ nhất 40.000đ, cốc thứ hai 25.000đ, quyết định có thể đổi. Tương tự cửa hàng thời trang: váy thứ hai giảm 50%. Đây là cơ sở kinh tế cho <b>chiết khấu theo số lượng, định giá theo mức tiêu dùng, giảm giá cho đơn vị mua thêm</b>.</p>
+<p>Hai lưu ý của cô: (1) quy luật <b>không bắt buộc</b> doanh nghiệp phải giảm giá khi bán thêm — nếu mức sẵn sàng chi trả còn lớn hơn giá bán, khách vẫn mua; mức sẵn sàng chi trả phụ thuộc sở thích, hoàn cảnh tiêu dùng, khả năng lựa chọn hàng khác. (2) Khách mua thêm <b>chưa chắc doanh nghiệp có lợi nhuận cao hơn</b> — giảm còn 25.000đ mà chi phí 30.000đ thì không nên bán. Quy luật giúp hiểu vì sao khách cần mức giá thấp hơn để mua thêm, chứ <b>chưa trực tiếp xác định mức giá tối ưu</b>.</p>
+<p><b>Hướng 2 — Phân khúc khách hàng và thiết kế quy cách sản phẩm.</b> Có khách chỉ muốn cốc nhỏ, có khách muốn cốc lớn. Khác biệt xuất phát từ sở thích, nhu cầu, mức tiêu dùng hiện tại và hoàn cảnh. Khi tăng dung tích từ 100ml lên 200ml, khách đang rất khát đánh giá cao phần thêm, khách chỉ thưởng thức hương vị thì thấy không cần thiết. Doanh nghiệp có thể thiết kế nhiều mức dung tích (nhỏ, vừa, lớn) với giá phù hợp. Cần phân biệt: quy luật MU giảm dần giải thích thay đổi lợi ích khi lượng tăng; còn phân khúc đòi hỏi nghiên cứu khác biệt sở thích, nhu cầu, mức sẵn sàng chi trả <b>giữa các nhóm khách</b>; vẫn cần dữ liệu thực tế để chọn dung tích và giá.</p>
+<p><b>Hướng 3 — Phối hợp sản phẩm và thiết kế gói tiêu dùng.</b> Khách đã uống một cốc và không muốn cốc thứ hai (có người uống thêm sẽ mất ngủ — MU gần bằng 0), nhưng khi giới thiệu bánh ngọt thì có thể mua. Thay vì chỉ cố bán thêm cùng một sản phẩm, doanh nghiệp phối hợp sản phẩm khác (bánh, hoa quả, hạt hướng dương…) để đáp ứng nhu cầu đa dạng.</p>
+<p><b>Case tăng giá trị giỏ hàng:</b> quán cà phê thấy phần lớn khách chỉ mua 1 cốc mỗi lượt, cân nhắc 3 phương án: (1) giảm giá cốc thứ hai từ 45.000 xuống 25.000đ — cần xác định bao nhiêu khách mua thêm nhờ mức giảm và chi phí cốc thứ hai; (2) tăng dung tích với phụ phí 8.000đ (100ml lên 200ml) — khách không phải mua cả cốc mới; (3) combo cà phê + bánh 70.000đ — bổ sung hàng hóa khác vào giỏ. Phương án nào? Tùy bối cảnh; một quán có thể kết hợp cả ba cho các nhóm khách khác nhau.</p>
+<div class="note"><b>Bài học của cô:</b> không nên chỉ chọn phương án giúp tăng lượng bán hoặc doanh thu, mà phải xác định phương án mang lại lợi ích tăng thêm và phù hợp với nhu cầu, hành vi tiêu dùng của khách hàng.</div>`,
+  m:`<div class="mh">Hiểu đơn giản</div><p>Ba hướng là ba cách "đón" khách ở đúng chỗ lợi ích của họ đang giảm: <b>(1)</b> hạ giá đơn vị thêm cho khớp với WTP đã giảm; <b>(2)</b> bán đúng "liều lượng" cho từng loại khách; <b>(3)</b> chuyển sang món khác mà khách còn thèm.</p>
+<div class="mh">Tên gọi trong giáo trình (bổ sung)</div><ul class="clean"><li>Hướng 1 và 2 là các dạng <b>phân biệt giá cấp 2</b> (second-degree price discrimination): giá khác nhau theo lượng mua hoặc theo phiên bản sản phẩm, khách tự chọn.</li><li>Hướng 3 là <b>bán theo gói</b> (bundling).</li></ul>
+<div class="mh">Ví dụ thêm từ doanh nghiệp</div><ul class="clean"><li><b>Hướng 1:</b> siêu thị "mua 2 tặng 1", giảm giá sản phẩm thứ hai; hãng taxi công nghệ giảm giá theo số chuyến trong tháng.</li><li><b>Hướng 2:</b> chuỗi cà phê bán size S/M/L; nhà mạng có nhiều gói data theo dung lượng; hãng hàng không chia hạng phổ thông, phổ thông đặc biệt, thương gia.</li><li><b>Hướng 3:</b> combo burger + khoai + nước của chuỗi đồ ăn nhanh; khách sạn bán gói phòng + ăn sáng + spa.</li></ul><div class="mh">Lỗi hay mắc</div><p>Đề xuất "giảm giá để tăng doanh số" mà không nói đến WTP và chi phí — đúng loại câu trả lời cô đã phản biện trên lớp.</p>`},
+ {t:'Đường bàng quan và sự đánh đổi trong tiêu dùng',
+  b:`<p class="small muted">Bản ghi thiếu đoạn định nghĩa đường bàng quan; phần dưới từ đoạn cuối buổi.</p>
+<p>Khi khách lựa chọn giữa thêm cà phê hoặc thêm bánh ngọt, đây là hai hàng hóa trong cùng một bài toán lựa chọn — <b>không nhất thiết phải cạnh tranh với nhau</b>. Cô đưa ra quy trình ba bước:</p>
+<ol class="clean"><li><b>Xác định những hàng hóa khách hàng có thể đánh đổi trong tiêu dùng.</b></li><li><b>Đo lường mức độ sẵn sàng đánh đổi.</b> Không chỉ hỏi khách thích cà phê hay bánh, mà hỏi cụ thể: tại lượng tiêu dùng hiện có, khách sẵn sàng bớt bao nhiêu bánh để có thêm cà phê, hoặc ngược lại. Khái quát: khách sẵn sàng đánh đổi nhiều hay ít hàng hóa khác để có sản phẩm của doanh nghiệp — con số này đo <b>sức hấp dẫn tương đối</b> của sản phẩm.</li><li><b>Vận dụng vào kinh doanh.</b> Nếu khách đã uống nhiều cà phê và không muốn bớt bánh để lấy thêm cà phê, cửa hàng có thể nghiên cứu gói một cốc cà phê + bánh thay vì chỉ giảm giá. Nếu khách muốn uống nhiều cà phê hơn, cỡ lớn hoặc giảm giá phần mua thêm nên được thử nghiệm.</li></ol>
+<p><b>Phân biệt</b> mức sẵn sàng đánh đổi theo sở thích với tỷ lệ đánh đổi do giá thị trường quy định: khách có thể sẵn sàng bỏ một lượng bánh để có thêm cà phê, nhưng khi mua thực tế họ đối diện giá từng sản phẩm. Vì vậy doanh nghiệp có thể điều chỉnh giá tương đối hoặc cơ cấu gói.</p>
+<div class="note"><b>Câu chốt của cô:</b> MRS (tỷ lệ thay thế cận biên) không tự xác định đối thủ, không đưa ra giá tối ưu hay combo tối ưu. Nó giúp đi qua các bước: xác định hàng hóa khách lựa chọn → đo sự sẵn sàng đánh đổi → đưa thông tin đó vào phân tích phương án kinh doanh.</div>
+<p>Buổi 12/11 dừng ở phần lợi ích: đo lường lợi ích, quy luật MU giảm dần và đo sự đánh đổi giữa các hàng hóa.</p>`,
+  m:`<div class="mh">Đường bàng quan là gì? (bổ sung)</div><p><b>Đường bàng quan</b> (indifference curve) là tập hợp các tổ hợp hai hàng hóa mang lại <b>cùng một mức lợi ích</b> cho người tiêu dùng — họ "bàng quan", không phân biệt tổ hợp nào hơn. Ví dụ (2 cà phê, 1 bánh) và (1 cà phê, 3 bánh) có thể cùng hài lòng như nhau.</p>
+<div class="mh">MRS — tỷ lệ thay thế cận biên</div><div class="formula">MRS = −ΔY/ΔX = MU<sub>X</sub> / MU<sub>Y</sub></div><p>MRS cho biết khách sẵn sàng bỏ bao nhiêu đơn vị Y (bánh) để có thêm 1 đơn vị X (cà phê) mà vẫn hài lòng như cũ. MRS chính là độ dốc của đường bàng quan.</p><p><b>Vì sao MRS giảm dần?</b> Càng có nhiều cà phê, MU của cà phê càng nhỏ (quy luật MU giảm dần), nên khách càng ít sẵn lòng bỏ bánh để lấy thêm cà phê. Đây là sợi dây nối giữa hai nửa buổi học.</p>
+<div class="mh">Ví dụ thêm</div><p>Một người chia thời gian rảnh buổi tối giữa xem phim và tập thể thao. Họ có thể hài lòng như nhau với "2 giờ phim, 1 giờ tập" hoặc "1 giờ phim, 2 giờ tập" — hai điểm trên cùng một đường bàng quan. Đã xem phim rất nhiều thì không muốn bớt thêm giờ tập để xem tiếp (MRS giảm).</p><div class="mh">Sẽ học buổi 13/11</div><p>"Tỷ lệ đánh đổi do giá thị trường quy định" chính là Px/Py — độ dốc của đường ngân sách. Kết hợp với MRS sẽ ra điều kiện lựa chọn tối ưu.</p>`},
+ {t:'Ràng buộc ngân sách và lựa chọn tối ưu',soon:true,
+  b:`<p class="muted">Học buổi 13/11. Cô báo: lợi ích thì mong muốn nhiều nhưng ngân sách có hạn, nên ràng buộc ngân sách khiến người tiêu dùng phải có lựa chọn tối ưu. Sẽ cập nhật sau khi có ghi âm hoặc slide.</p>`,
+  m:`<div class="mh">Chuẩn bị trước (bổ sung)</div><p><b>Đường ngân sách:</b> tập hợp các tổ hợp hàng hóa mua được khi tiêu hết thu nhập I.</p><div class="formula">I = Px·X + Py·Y &nbsp;→&nbsp; độ dốc = −Px/Py</div><ul class="clean"><li>Thu nhập tăng: đường ngân sách dịch song song ra ngoài.</li><li>Giá một hàng thay đổi: đường xoay quanh điểm chặn trên trục hàng kia.</li></ul><p><b>Lựa chọn tối ưu:</b> điểm trên đường ngân sách chạm vào đường bàng quan cao nhất (tiếp điểm), tại đó:</p><div class="formula">MRS = Px/Py &nbsp;⇔&nbsp; MU<sub>X</sub>/P<sub>X</sub> = MU<sub>Y</sub>/P<sub>Y</sub></div><p><b>Ý nghĩa:</b> đồng tiền cuối cùng chi cho mỗi hàng hóa phải mang lại lợi ích như nhau. Nếu 1.000đ chi cho cà phê mang lại nhiều lợi ích hơn 1.000đ chi cho bánh thì nên chuyển tiền từ bánh sang cà phê, cho đến khi hai bên bằng nhau.</p><p><b>Ví dụ dễ nhớ:</b> giống phân bổ thời gian ôn thi giữa hai môn: dồn thêm giờ cho môn nào mà mỗi giờ thêm giúp tăng điểm nhiều hơn, cho đến khi một giờ thêm ở môn nào cũng giúp tăng điểm như nhau.</p>`}
+ ],
+ sum:{core:'Khách sẵn lòng trả ít hơn cho đơn vị mua thêm vì lợi ích cận biên giảm dần. Doanh nghiệp vận dụng qua giá, quy cách và combo — nhưng chỉ sau khi biết mức sẵn lòng trả, hàng thay thế và chi phí.',
+  pillars:[['TU','Tổng lợi ích','Cộng dồn','var(--ktud)'],['MU','Cận biên','Giảm dần','var(--gold)'],['WTP','Sẵn lòng trả','Đi theo MU','var(--qtcl)'],['MRS','Đánh đổi','Theo sở thích','var(--violet)']],
+  recap:['<b>MU = TU sau − TU trước.</b> MU = 0 là điểm bão hòa, TU lớn nhất.','<b>MU giảm dần</b> trong ngắn hạn, không có nghĩa khách hết thích.','<b>WTP giảm theo MU</b> → không mặc định khách mua thêm với cùng giá, nhưng cũng không mặc định phải giảm giá.','<b>Ba hướng:</b> giá cho phần mua thêm, quy cách theo phân khúc, combo.','<b>MRS ≠ Px/Py:</b> sở thích khác giá thị trường; MRS không tự cho ra giá hay combo tối ưu.'],
+  exam:['Tính MU từ bảng TU; điểm bão hòa','Phát biểu quy luật kèm 2 giới hạn','Tình huống "có nên giảm giá đơn vị thứ hai?"','Ba hướng vận dụng và lưu ý','MRS và tỷ lệ giá thị trường; điều kiện tối ưu'],
+  terms:[['Tổng lợi ích','Total utility'],['Lợi ích cận biên','Marginal utility'],['Điểm bão hòa','Satiation point'],['Sẵn lòng chi trả','Willingness to pay'],['Bán theo gói','Bundling'],['Đường bàng quan','Indifference curve'],['Tỷ lệ thay thế cận biên','MRS'],['Đường ngân sách','Budget line']]}},
+{id:'cd4',n:4,title:'Hành vi của doanh nghiệp',sub:'Sắp học',status:'soon',topics:[]},
+{id:'cd5',n:5,title:'Chỉ số và chính sách kinh tế vĩ mô',sub:'Sắp học',status:'soon',topics:[]}
+];
+SUBJ.ktud.bridge=[['Chi phí cơ hội','Giá trị đất, tài sản sẵn có đưa vào dự án; suất chiết khấu là chi phí cơ hội của vốn'],['Chi phí chìm','Chi phí khảo sát, lập dự án, thiết kế đã chi — không đưa vào quyết định đi tiếp hay dừng'],['Tư duy cận biên','Dòng tiền tăng thêm: so kịch bản có và không có dự án'],['LN kinh tế > 0','Tương đương NPV > 0 ở suất chiết khấu bằng chi phí vốn'],['Đánh đổi','Phân bổ vốn giữa các dự án trong kế hoạch đầu tư năm'],['Độ co giãn','Giả định sản lượng trong dự báo doanh thu; phân tích độ nhạy theo giá'],['Cú sốc cung/cầu','Kịch bản trong phân tích rủi ro: xe điện, giá dầu, giá vật liệu'],['Khuyến khích','KPI, giao khoán, thưởng tiến độ cho nhà thầu và ban quản lý dự án'],['MU giảm dần','Hiệu quả giảm khi mở thêm cửa hàng trong cùng khu vực; quy mô tối ưu không phải lớn nhất']];
+
+SUBJ.ktud.work={
+ ex:[
+  {t:'Nhà sách',cd:'CĐ1',q:'Một người định mở nhà sách tại tầng 1–2 nhà gia đình ở trung tâm. Đầu tư ban đầu 800 triệu (sửa mặt bằng, kệ, máy tính…). Nếu không mở, hai tầng cho thuê được 25 triệu/tháng. Người này đang làm quản lý marketing lương 30 triệu/tháng, sẽ nghỉ việc. Vốn nhập sách 400 triệu, nếu gửi ngân hàng lãi 7%/năm. Doanh thu dự kiến 180 triệu/tháng; chi phí vận hành trực tiếp 120 triệu/tháng. Xác định chi phí kế toán, chi phí cơ hội, LN kế toán, LN kinh tế; có nên mở?',
+   steps:['<b>Chi phí kế toán (hiện)</b>: chi phí vận hành 120tr/tháng (nhập sách bổ sung, điện nước, nhân viên, marketing). Khoản đầu tư 800tr cũng là chi phí kế toán, ghi nhận dần qua khấu hao: 800tr / 60 tháng ≈ 13,33tr/tháng.','<b>Chi phí cơ hội (ẩn)</b>: (1) tiền thuê nhà bị bỏ 25tr; (2) lương bị bỏ 30tr; (3) lãi tiền gửi bị bỏ của 400tr: 400 × 7% / 12 ≈ 2,33tr; (4) nếu chặt chẽ hơn: lãi của 800tr đầu tư ban đầu: 800 × 7% / 12 ≈ 4,67tr.','<b>LN kế toán</b> = 180 − 120 − 13,33 ≈ 46,67tr/tháng (hoặc 60tr nếu chưa tính khấu hao).','<b>Tổng chi phí cơ hội</b> = 25 + 30 + 2,33 + 4,67 = 62tr/tháng (hoặc 57,33tr nếu chỉ tính 3 khoản đề bài liệt kê).','<b>LN kinh tế</b> = 46,67 − 62 ≈ <b>−15,3tr/tháng</b> (cách đầy đủ). Theo cách đơn giản (chưa tính khấu hao và lãi của 800tr): 60 − 57,33 ≈ +2,67tr/tháng, gần như hòa vốn kinh tế.'],
+   ans:'Theo cách tính đầy đủ, LN kinh tế âm khoảng 15 triệu/tháng → <b>không nên mở</b> (trừ khi có lợi ích phi tài chính như đam mê, tự chủ). Nếu chỉ nhìn LN kế toán 46–60 triệu/tháng sẽ tưởng là "lãi lớn" — đó chính là sai lầm cô muốn chỉ ra.',
+   trap:'Đề không nói rõ cách xử lý 800 triệu đầu tư, nên khi làm bài phải <b>nêu rõ giả định</b> (khấu hao bao nhiêu năm, có tính lãi cơ hội không). Hai đáp án khác nhau đều được chấp nhận nếu giả định rõ ràng.'},
+  {t:'Chuyến giao thêm 10.000 lít',cd:'CĐ1',q:'Khách công nghiệp đặt thêm 10.000 lít. Đóng góp sau giá vốn 300đ/lít; chi phí vận chuyển tăng thêm 2,2 triệu; chi phí giao nhận khác 0,3 triệu. Có nên giao?',
+   steps:['Lợi ích tăng thêm = 10.000 × 300 = 3,0 triệu.','Chi phí tăng thêm = 2,2 + 0,3 = 2,5 triệu.','Lợi ích ròng = 3,0 − 2,5 = +0,5 triệu > 0.'],
+   ans:'<b>Nên giao</b> (theo giả định không có chi phí khác).',trap:'Nếu xe bồn phải bỏ một chuyến khác lãi 1 triệu, chi phí cơ hội 1 triệu phải cộng vào MC → MC = 3,5 triệu > 3,0 → <b>không nên giao</b>.'},
+  {t:'Đơn diesel 50.000 lít',cd:'CĐ1',q:'Đơn bổ sung 50.000 lít, không ảnh hưởng cam kết hiện tại. Doanh thu 1.000 triệu; giá vốn và chi phí biến đổi 985 triệu; giao nhận và xử lý bổ sung 8 triệu. Biên đóng góp thấp — có nên từ chối?',
+   steps:['Doanh thu tăng thêm 1.000 triệu.','Chi phí tăng thêm 985 + 8 = 993 triệu.','Lợi ích ròng = +7 triệu.'],
+   ans:'<b>Có thể chấp nhận</b> — biên thấp nhưng vẫn dương.',trap:'Phải xem thêm chi phí vốn (bán chịu bao lâu?), rủi ro thanh toán, công nợ. Nếu khách trả chậm 60 ngày, chi phí vốn của 1.000 triệu có thể ăn hết 7 triệu lãi.'},
+  {t:'Máy bay 200 ghế',cd:'CĐ1',q:'Chuyến bay 200 ghế tốn 20.000 USD (trung bình 100 USD/ghế). Sắp cất cánh, còn 10 ghế trống, một khách chờ sẵn sàng trả 80 USD. Có nên bán?',
+   steps:['Chi phí cận biên của thêm 1 khách: gần như bằng 0 (chuyến bay vẫn bay; chỉ thêm suất ăn, chút nhiên liệu).','Lợi ích cận biên = 80 USD.','MB (80) > MC (≈ vài USD).'],
+   ans:'<b>Nên bán</b>.',trap:'Con số 100 USD là chi phí trung bình, không phải chi phí cận biên. Dùng chi phí trung bình cho quyết định thêm một đơn vị là lỗi kinh điển.'},
+  {t:'Tăng giá hay giảm giá',cd:'CĐ2',q:'Giá 20.000đ, bán 1.000 đơn vị. Sau tăng giá: 22.000đ, bán 930 đơn vị. Tính doanh thu trước/sau và độ co giãn. Doanh thu tăng có đồng nghĩa lợi nhuận tăng?',
+   steps:['TR trước = 20.000 × 1.000 = 20,0 triệu; TR sau = 22.000 × 930 = 20,46 triệu → +2,3%.','Giá trung bình 21.000; lượng trung bình 965.','%ΔQ = −70 / 965 ≈ −7,25%; %ΔP = 2.000 / 21.000 ≈ 9,52%.','E = −7,25 / 9,52 ≈ −0,76 → |E| < 1: cầu kém co giãn.'],
+   ans:'Cầu kém co giãn nên tăng giá làm doanh thu tăng (lượng bán giảm 7% nhưng doanh thu vẫn +2,3%). Lợi nhuận tăng hay không còn phụ thuộc chi phí — cần thêm số liệu.',trap:'Tính % theo giá gốc sẽ ra E = −7%/10% = −0,7; vẫn kết luận được kém co giãn, nhưng nên ghi rõ dùng phương pháp nào.'},
+  {t:'Co giãn chéo vận tải',cd:'CĐ2',q:'Giá dịch vụ vận tải A tăng 10%, cầu dịch vụ B tăng 6%. Tính E chéo, kết luận quan hệ, hàm ý cạnh tranh.',
+   steps:['E<sub>BA</sub> = %ΔQ<sub>B</sub> / %ΔP<sub>A</sub> = 6% / 10% = +0,6.','E > 0 → hai dịch vụ thay thế nhau.'],
+   ans:'Thay thế. Khi đối thủ A tăng giá, B có cơ hội thu hút thêm khách mà không cần giảm giá.',trap:'Dấu của E chéo mới quan trọng; độ lớn 0,6 cho biết mức thay thế vừa phải.'},
+  {t:'Cú sốc kép thị trường xăng dầu',cd:'CĐ2',q:'Vận chuyển gián đoạn làm chi phí nhập tăng, cùng lúc kinh tế chững lại khiến doanh nghiệp vận tải cắt giảm nhiên liệu. Giá và lượng cân bằng thay đổi thế nào?',
+   steps:['Cú sốc 1: chi phí tăng → cung giảm (đường S dịch trái) → đẩy P lên, kéo Q xuống.','Cú sốc 2: cầu giảm (đường D dịch trái) → kéo P xuống, kéo Q xuống.','Q: cả hai cùng kéo xuống → chắc chắn giảm. P: một lực lên, một lực xuống → chưa xác định.'],
+   ans:'<b>Q giảm, P chưa xác định</b>. Cú sốc cung mạnh hơn thì giá tăng; cú sốc cầu mạnh hơn thì giá giảm → phải lập hai kịch bản.',trap:'Đừng kết luận "giá tăng" chỉ vì chi phí tăng — đây là cú sốc kép.'},
+  {t:'Cốc cà phê thứ hai',cd:'CĐ3',q:'Giá cà phê 40.000đ. Cốc 1 mang 10 đơn vị lợi ích (≈ 80.000đ), cốc 2 mang 8 đơn vị (≈ 60.000đ). Khách ít gọi cốc 2. Có nên giảm giá cốc 2 xuống 35.000đ?',
+   steps:['So WTP cốc 2 (60.000đ) với giá (40.000đ): WTP > giá → khách vẫn có lợi khi mua.','Vậy khách ít gọi không phải vì giá; có thể do thời gian, sở thích, có món thay thế.','Nếu khảo sát thấy WTP thực tế chỉ ≈ 35.000đ → giữ 40.000đ khách không mua; lúc đó mới xét giảm.','Khi giảm phải kiểm tra giá mới ≥ chi phí một cốc.'],
+   ans:'Với số liệu đề cho: <b>không cần giảm giá</b>. Trước khi giảm cần biết WTP, khả năng thay thế, lựa chọn của khách và chi phí.',trap:'"MU giảm dần nên phải giảm giá" là suy luận sai mà cô đã phản biện trên lớp.'}
+ ],
+ discuss:['<b>Giá trần xăng dầu:</b> hiện tượng ngắn hạn, dài hạn; khó khăn của DN khi giá thế giới cao hơn trần; rủi ro nguồn cung cho DN dùng xăng dầu làm đầu vào; kịch bản rủi ro của CEO vận tải. <i>Gợi ý trả lời xem ở chủ đề "Giá trần và giá sàn", phần mở rộng.</i>','<b>Thuế nhiên liệu +1.000đ/lít:</b> giá mua, giá thực nhận, lượng bán; cần biết gì để xác định ai chịu thuế; 2 biện pháp ứng phó trong phạm vi quyền hạn. <i>Gợi ý ở chủ đề "Thuế và trợ cấp".</i>','<b>Trợ giá đại trà hay hỗ trợ trực tiếp:</b> ai hưởng lợi, lượng tiêu dùng và ngân sách thay đổi ra sao.','<b>Nhu cầu xăng dầu 5 năm tới:</b> tác động của xe điện, thu nhập, nhu cầu đi lại; ngắn hạn hay dài hạn; chỉ báo theo dõi theo khu vực.','<b>Liên hệ doanh nghiệp (CĐ1):</b> nguồn lực "miễn phí" có chi phí cơ hội; dự án tiếp tục chỉ vì đã đầu tư nhiều; KPI đạt nhưng không hiệu quả.'],
+ todo:['Họp nhóm chốt dàn ý và chia việc','Chỉnh Phần I theo bài giảng CĐ3 của cô','Thu thập số liệu Petrolimex (BCTN 2025, E10, Petrolimex ID)','Hỏi cô hướng làm bài buổi 25/11','Ghép bản thảo 10–12 trang (29/11)','Kiểm tra tình trạng nghị định xăng dầu mới','Định dạng Word, làm slide, tập thuyết trình','Gửi email nộp bài sáng 5/12']
+};
+
+SUBJ.ktud.quiz=[
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Chi phí cơ hội của một lựa chọn là gì?',o:['Tổng giá trị mọi phương án bị bỏ','Giá trị phương án thay thế tốt nhất bị bỏ','Chi phí kế toán của phương án','Khoản đã chi không thu hồi'],a:1,e:'Mỗi lúc chỉ làm được một phương án, nên cái thực sự mất là phương án tốt nhất còn lại.',w:['A sai: không thể làm tất cả phương án bị bỏ cùng lúc, cộng lại là đếm thứ không bao giờ có.','C sai: chi phí kế toán chỉ là chi phí hiện, thiếu chi phí ẩn.','D sai: đó là chi phí chìm.']},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Doanh thu 5 tỷ, chi phí kế toán 3,8 tỷ, nếu không làm thì cho thuê mặt bằng được 1,5 tỷ. Lợi nhuận kinh tế là?',o:['+1,2 tỷ','+0,3 tỷ','−0,3 tỷ','−1,5 tỷ'],a:2,e:'LN kinh tế = 5,0 − 3,8 − 1,5 = −0,3 tỷ.',w:['A là LN kế toán (chưa trừ chi phí cơ hội).','B sai dấu: 1,5 − 1,2.','D chỉ là chi phí cơ hội, chưa tính doanh thu và chi phí kế toán.']},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Công ty dùng kho tự sở hữu: chi phí vận hành 400 triệu/năm, nếu cho thuê thu 600 triệu/năm. Chi phí kinh tế của việc tự dùng kho là?',o:['400 triệu','600 triệu','1.000 triệu','200 triệu'],a:2,e:'Chi phí kinh tế = chi phí hiện 400 + chi phí ẩn 600 = 1.000 triệu.',w:['A thiếu chi phí ẩn (tiền thuê bị bỏ).','B thiếu chi phí vận hành.','D là hiệu số, không có ý nghĩa ở đây.']},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Khoản nào KHÔNG được đưa vào quyết định có tiếp tục dự án hay không?',o:['Chi phí còn phải chi','Doanh thu dự kiến','Khoản đã chi, không thu hồi được','Chi phí cơ hội của đất'],a:2,e:'Chi phí chìm có mặt ở cả hai kịch bản (đi tiếp hay dừng) nên triệt tiêu khi so sánh.',w:['A, B là phần thay đổi từ nay — phải xét.','D là chi phí cơ hội — phải xét.']},
+ {cd:'CĐ1',k:'Tính toán',q:'Dự án đã chi 5 tỷ (không thu hồi). Nếu chi thêm 2 tỷ sẽ thu về 1,5 tỷ. Tiếp tục hay dừng?',ans:'Dừng',e:'Lợi ích tăng thêm = 1,5 − 2 = −0,5 tỷ < 0. Khoản 5 tỷ không đổi giữa hai lựa chọn nên không ảnh hưởng. Ngược lại, nếu thu về 3 tỷ thì +1 tỷ → tiếp tục.'},
+ {cd:'CĐ1',k:'Tính toán',q:'MB của nhân viên thứ 1–4 lần lượt 1.125; 945; 765; 585 nghìn đ/ca, MC = 700 nghìn đ/ca. Nên thuê thêm mấy người?',ans:'3 người',e:'Ròng: +425, +245, +65, −115. Thuê đến người thứ 3 (còn dương), dừng trước người thứ 4. Nếu có ràng buộc dịch vụ (thời gian chờ tối đa) thì chỉ tối ưu trong các phương án đáp ứng ràng buộc.'},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Máy bay 200 ghế, chi phí trung bình 100 USD/ghế, sắp cất cánh còn ghế trống. Khách trả 80 USD. Theo nguyên lý cận biên:',o:['Không bán vì 80 < 100','Bán vì chi phí cận biên của thêm 1 khách gần bằng 0','Chỉ bán nếu khách trả ≥ 100 USD','Không đủ thông tin'],a:1,e:'Quyết định "thêm một" phải so với chi phí cận biên, không phải chi phí trung bình.',w:['A, C dùng sai chi phí trung bình.','D sai: đủ thông tin để kết luận theo nguyên lý cận biên.']},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Thưởng 20% doanh thu vượt chỉ tiêu làm doanh thu +18% nhưng lợi nhuận gộp −10%, tái ký giảm. Nguyên nhân gốc?',o:['Nhân viên thiếu năng lực','Cơ chế thưởng gắn sai mục tiêu','Thị trường suy giảm','Giá vốn tăng'],a:1,e:'Nhân viên phản ứng hợp lý với thứ được thưởng (doanh thu), kể cả bằng giảm giá sâu.',w:['A sai: họ vượt chỉ tiêu, không thiếu năng lực.','C sai: doanh thu tăng 18%, thị trường không suy giảm.','D: đề không nói giá vốn tăng; giảm lãi gộp do giảm giá bán.']},
+ {cd:'CĐ1',k:'Trắc nghiệm',q:'Phương án điều chỉnh cơ chế thưởng mà cô cho là phù hợp hơn với Công ty X?',o:['Giữ thưởng doanh thu','Chỉ thưởng lợi nhuận gộp','Kết hợp nhiều tiêu chí: lợi nhuận gộp, tái ký, kiểm soát chiết khấu','Bỏ hẳn thưởng'],a:2,e:'Phương án C cân bằng lợi nhuận, khách hàng và chất lượng bán hàng; nên thử nghiệm trước khi áp dụng rộng.',w:['A chưa xử lý tác động ngược.','B kiểm soát giảm giá nhưng ít chú ý quan hệ dài hạn.','D làm mất động lực.']},
+ {cd:'CĐ1',k:'Tự luận',q:'Phân tích một KPI tại doanh nghiệp anh/chị khiến nhân viên đạt chỉ tiêu nhưng chưa chắc mang lại hiệu quả tốt nhất. Đề xuất điều chỉnh.',ans:'Dàn ý',e:'<b>Mở:</b> nêu Nguyên lý 4 — con người phản ứng với động cơ khuyến khích; đạt KPI chưa chắc đạt mục tiêu. <b>Thân:</b> (1) mô tả KPI (ví dụ: chuỗi bán lẻ thưởng cửa hàng trưởng theo doanh thu tháng); (2) "nếu tôi là cửa hàng trưởng" → khuyến mãi dồn dập cuối tháng, nhập thừa hàng để không hết hàng; (3) hệ quả: biên lợi nhuận giảm, hàng tồn, hủy hàng tăng; (4) đề xuất: kết hợp doanh thu với lợi nhuận gộp, tỷ lệ hàng hủy, điểm hài lòng khách; thử nghiệm ở một số cửa hàng. <b>Kết:</b> thiết kế khuyến khích sao cho lợi ích người thực hiện gắn với mục tiêu thật.'},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Giá xăng tăng làm lượng mua giảm. Đây là:',o:['Dịch chuyển đường cầu','Di chuyển dọc đường cầu','Dịch chuyển đường cung','Mất thị phần'],a:1,e:'Giá của chính hàng hóa thay đổi → thay đổi lượng cầu, di chuyển dọc đường.',w:['A: chỉ khi yếu tố ngoài giá thay đổi.','C: không liên quan phía cung.','D: mất thị phần là khách sang đối thủ.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Nhiều người chuyển sang xe điện. Đường cầu xăng:',o:['Dịch sang phải','Dịch sang trái','Không đổi, chỉ di chuyển dọc','Dốc hơn'],a:1,e:'Thị hiếu và hàng thay thế (xe điện) là yếu tố ngoài giá → ở mọi mức giá người ta mua ít xăng hơn.',w:['A: là cầu tăng.','C: chỉ khi giá xăng thay đổi.','D: độ dốc không phải điều đề hỏi.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Một cửa hàng xăng mất khách vì đối thủ mở cửa hàng mới gần đó. Đây là:',o:['Cầu thị trường giảm','Lượng cầu giảm','Mất thị phần','Cung giảm'],a:2,e:'Tổng cầu thị trường khu vực không đổi; khách chỉ chuyển sang người bán khác.',w:['A, B nhầm doanh số một cửa hàng với cầu toàn thị trường.','D không liên quan.']},
+ {cd:'CĐ2',k:'Tính toán',q:'Giá từ 20.000đ lên 22.000đ, lượng bán từ 1.000 xuống 930. Tính độ co giãn (trung điểm) và nhận xét doanh thu.',ans:'E ≈ −0,76',e:'%ΔQ = −70/965 ≈ −7,25%; %ΔP = 2.000/21.000 ≈ 9,52%; E ≈ −0,76 → kém co giãn. Doanh thu 20,0 → 20,46 triệu (+2,3%). Doanh thu tăng chưa chắc lợi nhuận tăng.'},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Giá tăng 5%, lượng cầu giảm 2%. Hệ số co giãn theo giá và loại cầu?',o:['−2,5; co giãn nhiều','−0,4; co giãn ít','−0,4; co giãn nhiều','−2,5; co giãn ít'],a:1,e:'E = −2%/5% = −0,4; |E| < 1 → co giãn ít.',w:['A, D chia ngược (5/2).','C đúng số nhưng sai kết luận: |E| < 1 là co giãn ít.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Giá dịch vụ A tăng 10%, cầu dịch vụ B tăng 6%. Hai dịch vụ là:',o:['Bổ sung','Thay thế','Hàng thứ cấp','Không liên quan'],a:1,e:'E chéo = +0,6 > 0 → thay thế.',w:['A: bổ sung có E chéo âm.','C: hàng thứ cấp liên quan đến thu nhập, không phải giá chéo.','D: E ≈ 0 mới là không liên quan.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Thu nhập tăng 10%, lượng cầu một hàng hóa giảm 3%. Đây là:',o:['Hàng xa xỉ','Hàng thông thường','Hàng thứ cấp','Hàng bổ sung'],a:2,e:'E thu nhập = −0,3 < 0 → hàng thứ cấp.',w:['A: E thu nhập > 1.','B: E thu nhập > 0.','D: khái niệm của co giãn chéo.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Cầu kém co giãn theo giá. Nếu tăng giá thì tổng doanh thu:',o:['Tăng','Giảm','Không đổi','Không xác định'],a:0,e:'% giảm lượng nhỏ hơn % tăng giá, nên P × Q tăng.',w:['B: đúng khi cầu co giãn nhiều.','C: khi co giãn đơn vị.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Cung giảm và cầu tăng cùng lúc. Kết quả:',o:['P tăng, Q chưa xác định','P giảm, Q tăng','P chưa xác định, Q tăng','P và Q cùng giảm'],a:0,e:'Cung giảm đẩy P lên; cầu tăng cũng đẩy P lên → P tăng chắc chắn. Q: cung giảm kéo xuống, cầu tăng kéo lên → chưa xác định.'},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Gián đoạn vận chuyển làm cung xăng giảm, đồng thời kinh tế chững làm cầu giảm. Kết luận:',o:['P tăng, Q giảm','P giảm, Q giảm','Q giảm, P chưa xác định','P tăng, Q chưa xác định'],a:2,e:'Hai cú sốc cùng kéo Q xuống; về giá thì một lực lên, một lực xuống → phải lập kịch bản.'},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Giá trần chỉ có hiệu lực khi:',o:['Cao hơn giá cân bằng','Thấp hơn giá cân bằng','Bằng giá cân bằng','Luôn có hiệu lực'],a:1,e:'Trần thấp hơn P₀ mới ràng buộc → Qd > Qs → thiếu hụt, phân bổ phi giá.',w:['A: trần cao hơn giá thị trường thì không ai chạm tới.','C: không gây thay đổi.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Giá sàn có hiệu lực sẽ gây ra:',o:['Thiếu hụt','Dư thừa','Giá giảm','Lượng cầu tăng'],a:1,e:'Sàn cao hơn P₀ → người bán muốn bán nhiều, người mua mua ít → dư thừa, tồn kho.'},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Thuế theo đơn vị đánh vào xăng, cầu kém co giãn hơn cung. Ai chịu phần lớn thuế?',o:['Người bán','Người mua','Chia đều','Nhà nước'],a:1,e:'Bên kém co giãn tương đối (khó né) chịu phần lớn.',w:['A đúng khi cung kém co giãn hơn.','D: Nhà nước thu thuế, không chịu thuế.']},
+ {cd:'CĐ2',k:'Trắc nghiệm',q:'Khi Nhà nước trợ cấp theo đơn vị cho người bán:',o:['Giá người mua trả tăng, lượng giảm','Giá người mua trả giảm, giá người bán nhận tăng, lượng tăng','Chỉ người bán hưởng lợi','Lượng giao dịch không đổi'],a:1,e:'Cung dịch xuống một khoản s; chênh lệch giá bán nhận và giá mua trả bằng s; lợi ích chia cho hai bên theo độ co giãn.',w:['A là tác động của thuế.','C sai: người nhận trợ cấp theo quy định không nhất thiết hưởng toàn bộ lợi ích.']},
+ {cd:'CĐ2',k:'Tính toán',q:'Thuế 1.000đ/lít, E_S = 2,33, |E_D| = 1. Người mua chịu bao nhiêu? (công thức bổ sung)',ans:'≈ 700đ',e:'Phần người mua = E_S / (E_S + |E_D|) = 2,33 / 3,33 ≈ 70% → 700đ; người bán 300đ — khớp ví dụ trong slide.'},
+ {cd:'CĐ2',k:'Tự luận',q:'Phân tích chính sách giá trần xăng dầu theo khung 5 bước và đề xuất ứng phó cho doanh nghiệp đầu mối.',ans:'Dàn ý',e:'<b>1. Mục tiêu:</b> bảo vệ người tiêu dùng, kiềm chế lạm phát. <b>2. Cơ chế:</b> giá tối đa; chỉ có hiệu lực khi thấp hơn P₀ (vẽ đồ thị). <b>3. Thị trường:</b> ngắn hạn thiếu hụt, xếp hàng, phân bổ phi giá; dài hạn DN giảm nhập, giảm đầu tư, cung giảm thêm. <b>4. Doanh nghiệp:</b> lỗ khi giá thế giới > trần, áp lực dòng tiền, rủi ro uy tín khi thiếu hàng. <b>5. Quyết định:</b> hợp đồng nhập dài hạn, điều phối liên vùng, quản lý tồn kho, ưu tiên khách hợp đồng, kiến nghị cơ chế. Liên hệ: cơ chế giá cơ sở và Quỹ bình ổn, đợt thiếu hàng cuối 2022, dự thảo nghị định mới.'},
+ {cd:'CĐ3',k:'Tính toán',q:'Tổng lợi ích của cốc 1 đến cốc 4 lần lượt là 12, 20, 25, 25. Tính MU từng cốc và chỉ ra điểm bão hòa.',ans:'MU: 12; 8; 5; 0',e:'MU = TU sau − TU trước: 12 − 0; 20 − 12; 25 − 20; 25 − 25. Cốc 4 có MU = 0 → TU lớn nhất, bắt đầu bão hòa.'},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'MU = 0 có nghĩa là:',o:['Tổng lợi ích nhỏ nhất','Tổng lợi ích đạt cực đại','Khách hết thích sản phẩm','WTP tăng'],a:1,e:'Tiêu dùng thêm không làm tăng TU — điểm bão hòa.',w:['A ngược lại.','C: quy luật không có nghĩa là hết thích.','D: MU = 0 thì WTP cho đơn vị thêm bằng 0.']},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Khi MU âm thì:',o:['TU tăng chậm','TU giảm','TU không đổi','TU tăng nhanh'],a:1,e:'Đơn vị thêm làm giảm tổng lợi ích (cốc trà sữa thứ 7: TU 30 → 28).'},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Quy luật lợi ích cận biên giảm dần được xét chủ yếu trong:',o:['Nhiều năm sử dụng','Cùng thời điểm, giai đoạn ngắn','Khi thu nhập thay đổi','Khi sở thích thay đổi'],a:1,e:'Cô phân biệt: chán sản phẩm sau nhiều năm là do sở thích, hoàn cảnh, thu nhập thay đổi.',w:['C, D vi phạm giả định "các yếu tố khác không đổi".']},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Hàm ý quan trọng nhất của quy luật MU giảm dần với doanh nghiệp:',o:['Khách đã thích thì luôn mua thêm với cùng giá','Khách có thể sẵn lòng trả ít hơn cho phần mua thêm, dù vẫn thích sản phẩm','Phải luôn giảm giá đơn vị thứ hai','Khách sẽ ngừng mua sản phẩm'],a:1,e:'WTP đo lường lợi ích; lợi ích thêm giảm thì WTP cho đơn vị thêm giảm.',w:['A: đúng là điều cô bảo không được mặc nhiên.','C: quy luật không bắt buộc giảm giá.','D: hiểu sai thành hết thích.']},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Giá cà phê 40.000đ, khách định giá cốc thứ hai 60.000đ. Quán nên:',o:['Giảm giá cốc 2 ngay','Giữ giá, khách vẫn mua','Ngừng bán cốc 2','Bắt buộc mua combo'],a:1,e:'WTP (60.000đ) vẫn lớn hơn giá → khách vẫn có lợi khi mua.',w:['A: đúng là ý cô phản biện.','D: combo chỉ hiệu quả khi khách muốn món đi kèm.']},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Theo cô, trước khi giảm giá cho đơn vị mua thêm, thông tin nào KHÔNG cần thiết nhất?',o:['Mức sẵn lòng chi trả của khách','Khả năng thay thế bằng sản phẩm khác','Chi phí sản xuất của đơn vị thêm','Tổng lợi ích của đơn vị đầu tiên'],a:3,e:'Quyết định đơn vị thêm dựa vào lợi ích cận biên (WTP), hàng thay thế và chi phí; tổng lợi ích không phải biến quyết định.'},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Bán ly nhỏ / vừa / lớn với các mức giá khác nhau thuộc hướng vận dụng nào?',o:['Giá khuyến khích mua thêm','Phân khúc khách hàng và thiết kế quy cách sản phẩm','Phối hợp sản phẩm, gói tiêu dùng','Không liên quan quy luật MU'],a:1,e:'Khách khác nhau có MU của phần dung tích thêm khác nhau → thiết kế nhiều quy cách.'},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'MRS (tỷ lệ thay thế cận biên) phản ánh:',o:['Tỷ lệ giá thị trường','Mức sẵn sàng đánh đổi theo sở thích','Mức giá tối ưu','Chi phí cận biên'],a:1,e:'MRS là lượng hàng Y khách sẵn lòng bỏ để có thêm 1 đơn vị X mà vẫn hài lòng như cũ.',w:['A: đó là Px/Py.','C: cô nhấn mạnh MRS không tự đưa ra giá tối ưu.']},
+ {cd:'CĐ3',k:'Tự luận',q:'Vận dụng quy luật MU giảm dần vào kinh doanh của một chuỗi cà phê: đề xuất 3 hướng và lưu ý.',ans:'Dàn ý',e:'<b>Mở:</b> phát biểu quy luật, hàm ý WTP cho đơn vị thêm giảm. <b>Thân:</b> (1) giá cho phần mua thêm — giảm giá cốc thứ hai, thẻ tích điểm; lưu ý không bắt buộc giảm nếu WTP còn cao, giá mới phải ≥ chi phí; (2) phân khúc, quy cách — size S/M/L với giá phù hợp; cần dữ liệu WTP từng nhóm khách; (3) combo — cà phê + bánh; chỉ hiệu quả khi khách thật sự muốn món đi kèm. <b>Kết:</b> kinh tế học giúp đặt đúng câu hỏi; chọn phương án mang lại lợi ích tăng thêm, không chỉ tăng doanh thu.'},
+ {cd:'CĐ3',k:'Trắc nghiệm',q:'Điều kiện lựa chọn tiêu dùng tối ưu (bổ sung, buổi 13/11):',o:['MUx = MUy','MUx/Px = MUy/Py','TUx = TUy','Px = Py'],a:1,e:'Đồng tiền cuối cùng chi cho mỗi hàng hóa mang lại lợi ích như nhau; tương đương MRS = Px/Py.',w:['A bỏ qua giá: hàng đắt hơn phải mang lại MU lớn hơn tương ứng.']}
+];
+
+
+/* ===================== STATE & HELPERS ===================== */
+let cur = store.get('emba-subj','ktud');
+const understood = store.get('emba-understood',{});
+const todoDone = store.get('emba-todo',{});
+let quizRes = store.get('emba-quiz',{}); let picks={}; let qFilter='all', qCur=0;
+const $=id=>document.getElementById(id);
+const leftDays=Math.max(0,Math.round((U(EXAM)-TODAY)/dayMs));
+$('days').textContent = leftDays===0 ? 'Hôm nay thi' : `${leftDays} ngày`;
+function setSubjColors(s){ const S=SUBJ[s]; document.documentElement.style.setProperty('--c',`var(${S.c})`); document.documentElement.style.setProperty('--cs',`var(${S.cs})`); }
+function sTag(s){ return s==='both'?'<span class="tag" style="background:var(--gold)"></span>':`<span class="tag" style="background:var(${SUBJ[s].c})"></span>`; }
+function sName(s){ return s==='both'?'Cả hai môn':SUBJ[s].name; }
+function topicKey(s,ch,i){ return `${s}.${ch}.${i}`; }
+function chapProgress(s,ch){ const t=ch.topics.filter(x=>!x.soon); const n=t.filter((x,i)=>understood[topicKey(s,ch.id,ch.topics.indexOf(x))]).length; return [n,t.length]; }
+
+/* ===================== HOME ===================== */
+function renderHome(){
+  const up = SCHED.filter(x=>U(x.d)>=TODAY);
+  const next = up[0];
+  const total=Math.round((U(EXAM)-U('2026-11-12'))/dayMs);
+  const pct=Math.max(3,Math.min(100,leftDays/total*100));
+  const T0=U('2026-11-13'),T1=U(EXAM),sp=T1-T0,pos=d=>(U(d)-T0)/sp*100, tp=Math.min(100,Math.max(0,(TODAY-T0)/sp*100));
+  const rows=[['Học Kinh tế ứng dụng','2026-11-13','2026-11-25','var(--ktud)'],['Học Quản trị chiến lược','2026-11-14','2026-12-02','var(--qtcl)'],['Viết bài nhóm 3','2026-11-13','2026-11-29','var(--gold)'],['Nộp + thuyết trình','2026-12-05',null,'var(--gold)'],['Ôn thi tổng','2026-12-06','2026-12-11','var(--violet)'],['Thi hai môn',EXAM,null,'var(--bad)']];
+  const qv=Object.values(quizRes); const ok=qv.filter(x=>x==='ok').length;
+  $('v-home').innerHTML = `
+  <div class="hero">
+    <div style="position:relative;z-index:1"><div class="eyebrow">Học kỳ I · EMBA 6XD</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>Thi Kinh tế ứng dụng và Quản trị chiến lược cùng ngày ${dd(EXAM).w} ${dd(EXAM).d}/2026.</p></div>
+    <svg class="gauge" viewBox="0 0 120 80" role="img" aria-label="Kim xăng thời gian còn lại"><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="12" stroke-linecap="round"/><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="#F2B940" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="${pct} 100"/><text x="60" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" style="font-family:var(--display)">${leftDays}</text><text x="12" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">E</text><text x="108" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">F</text></svg>
+  </div>
+  ${next?`<a class="card" href="#${next.s==='both'?'ktud':next.s}-know" style="text-decoration:none;color:inherit;border-left:5px solid ${next.s==='both'?'var(--gold)':`var(${SUBJ[next.s].c})`}"><div class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</div><div class="row between" style="margin-top:4px"><h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2></div><p style="margin-top:4px">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p></a>`:''}
+  <div class="card stack"><div class="row between"><h3>Hạn nộp & lịch thi</h3></div><div class="list">${DEADLINES.filter(x=>U(x.d)>=TODAY).map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span></div>`}).join('')}</div></div>
+  <div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${REMIND.map(r=>`<div class="li"><div class="t">${sTag(r.s)}<span class="small" style="font-weight:700">${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>
+  <div class="card stack"><h3>Lịch học sắp tới</h3><div class="list">${up.slice(next?1:0,7).map(x=>{const D=dd(x.d);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${sName(x.s)}</b><span class="small muted">${x.t} · ${x.x}</span></div></div>`}).join('')}</div><p class="small muted">Ca 1: 7h30 · Ca 2: 13h30 · Ca 3: 18h00 · Nghỉ T3 24/11 (VHVN)</p></div>
+  <div class="card stack"><h3>Lộ trình đến ngày thi</h3><div class="tl"><div class="tl-axis">${['2026-11-13','2026-11-20','2026-11-27','2026-12-04','2026-12-12'].map(d=>`<span style="left:${pos(d)}%">${dd(d).d}</span>`).join('')}</div>${rows.map(r=>`<div class="tl-row">${r[0]}<div class="tl-track">${r[2]?`<span class="tl-bar" style="left:${pos(r[1])}%;width:${pos(r[2])-pos(r[1])}%;background:${r[3]}"></span>`:`<span class="tl-dot" style="left:${pos(r[1])}%;background:${r[3]}"></span>`}${TODAY>=T0&&TODAY<=T1?`<span class="tl-today" style="left:${tp}%"></span>`:''}</div></div>`).join('')}</div></div>
+  <div class="card stack"><h3>Chọn môn để học</h3>${Object.keys(SUBJ).map(s=>{const S=SUBJ[s];const ch=S.chapters.filter(c=>c.status!=='soon').length;return `<a class="btn block" href="#${s}-know" style="background:var(${S.c});justify-content:space-between"><span>${S.name}</span><span class="small" style="opacity:.85">${ch} chuyên đề · ${S.quiz.length} câu ôn</span></a>`}).join('')}<p class="small muted">Đã trả lời đúng ${ok}/${SUBJ.ktud.quiz.length} câu ôn tập. Tiến độ lưu trên trình duyệt này.</p></div>`;
+}
+
+/* ===================== KNOWLEDGE (roadmap) ===================== */
+function renderKnow(s){
+  const S=SUBJ[s];
+  $('v-know').innerHTML = `
+  <div><div class="eyebrow">${S.name} · Kiến thức</div><h1 style="margin-top:4px">Lộ trình học</h1></div>
+  <details class="sol"><summary>Thông tin môn học</summary><div class="in"><div class="list">${S.info.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div></div></details>
+  <div class="road">${S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="stop soon" data-n="${ch.n}"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div>`;
+     const [n,t]=chapProgress(s,ch); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
+     return `<a class="stop ${st||(ch.status==='done'?'':'')}" data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${ch.status==='now'?'Đang học':'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>
+  `;
+}
+
+/* ===================== CHAPTER ===================== */
+function renderChap(s,id){
+  const S=SUBJ[s], ch=S.chapters.find(c=>c.id===id); if(!ch){ location.hash=`#${s}-know`; return; }
+  const sm=ch.sum;
+  $('v-chap').innerHTML = `
+  <a class="back" href="#${s}-know">← Lộ trình</a>
+  <div class="chhead"><div class="eyebrow">Chuyên đề ${ch.n} · ${ch.src||''}</div><h1>${ch.title}</h1><p class="muted">${ch.sub}</p></div>
+  ${ch.intro?`<div class="card flat intro"><div class="eyebrow" style="margin-bottom:6px">Chuyên đề này nói về gì</div>${ch.intro}</div>`:''}
+  <nav class="toc" aria-label="Các chủ đề">${ch.topics.map((t,i)=>`<a href="#${s}-${ch.id}" data-jump="t${i}" class="${understood[topicKey(s,ch.id,i)]?'ok':''}">${i+1}. ${t.t}</a>`).join('')}<a href="#${s}-${ch.id}" data-jump="tsum">Tóm tắt</a></nav>
+  ${ch.topics.map((t,i)=>`<article class="card topic" id="t${i}" ${t.soon?'style="opacity:.75;border-style:dashed"':''}>
+    <div class="hd" style="align-items:center"><span class="n">${i+1}</span><div><h3>${t.t}</h3>${t.soon?'<div class="src">Sắp học</div>':''}</div></div>
+    <div class="body">${t.b}
+      ${t.m?`<div class="more-box" id="m-${i}" hidden><div class="mtag">Hiểu sâu hơn</div>${t.m}</div>`:''}
+      <div class="acts">${t.m?`<button class="act" data-more="${i}" aria-expanded="false" aria-controls="m-${i}">More</button>`:''}<a class="act ask" href="${askLink(s,ch,i)}" target="_blank" rel="noopener">Ask</a>${t.soon?'':`<button class="act got ${understood[topicKey(s,ch.id,i)]?'on':''}" data-u="${topicKey(s,ch.id,i)}" data-ti="${i}" aria-pressed="${understood[topicKey(s,ch.id,i)]?'true':'false'}">${understood[topicKey(s,ch.id,i)]?'✓ Got it':'Got it'}</button>`}</div>
+    </div></article>`).join('')}
+  ${sm?`<section class="summary topic" id="tsum"><div class="lab">Tóm tắt & kết luận chuyên đề</div><h2>${sm.core}</h2>
+    <div class="pillars">${sm.pillars.map(p=>`<div class="pl" style="--pc:${p[3]};background:transparent;border-color:rgba(255,255,255,.15);border-top-color:${p[3]}"><b>${p[0]}</b><h4 style="color:var(--surface)">${p[1]}</h4><p style="color:var(--surface);opacity:.75">${p[2]}</p></div>`).join('')}</div>
+    ${sm.recap?`<div class="lab">Ghi nhớ cốt lõi</div><ul>${sm.recap.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
+    <div class="lab">Điểm dễ ra thi</div><ul>${sm.exam.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <div class="lab">Thuật ngữ</div><div class="terms">${sm.terms.map(([v,e])=>`<div class="term">${v}<i>${e}</i></div>`).join('')}</div>
+    <a class="btn" href="#${s}-quiz" style="background:var(--gold);color:#3D2A00">Ôn câu hỏi ${'CĐ'+ch.n} →</a></section>`:''}`;
+}
+
+/* ===================== WORK ===================== */
+function renderWork(s){
+  const S=SUBJ[s], W=S.work;
+  if(!W){ $('v-work').innerHTML=`<div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1></div><div class="empty"><h3>Chưa có đề</h3><p>Môn có 3 buổi thảo luận cuối kỳ (18/11, 28/11, 2/12), nhiều khả năng có bài nhóm.</p></div>`; return; }
+  $('v-work').innerHTML = `
+  <div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1></div>
+  <div class="card stack" style="border-left:5px solid var(--gold)"><div class="row between"><h3>Bài nhóm 3</h3><span class="pill ko">Nộp sáng 5/12</span></div>
+    <p><b>Chủ đề:</b> Các nguyên lý kinh tế học về hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm của doanh nghiệp.</p>
+    <p class="small muted">Word 10–12 trang A4, Times New Roman 12, giãn dòng 1,2; bìa, mục lục, nội dung, tài liệu tham khảo. Gửi chthuhien@gmail.com, thuyết trình cả ngày 5/12.</p>
+    <details class="sol"><summary>Xem dàn ý đề xuất</summary><div class="in stack">
+      <p><i>Hành vi người tiêu dùng và chiến lược giá – sản phẩm: Nghiên cứu trường hợp Petrolimex trong giai đoạn chuyển đổi xăng sinh học E10.</i></p>
+      <ol class="clean"><li><b>Mở đầu (~0,5 tr):</b> E10 thay xăng khoáng, xe điện tăng, cơ chế giá thị trường hóa.</li><li><b>I. Nguyên lý (~3,5 tr):</b> TU, MU giảm dần; đường bàng quan, MRS, ngân sách; tác động thay thế – thu nhập; WTP; kinh tế học hành vi.</li><li><b>II. Ứng dụng (~3 tr):</b> nguyên lý → chiến lược giá → chiến lược sản phẩm, dùng khung 3 hướng vận dụng của cô.</li><li><b>III. Petrolimex (~4 tr):</b> E10 (TT 50/2025, bán toàn hệ thống từ 20/5/2026, đề xuất chênh lệch 1.000–1.500đ/lít, sản lượng thí điểm +40%); Petrolimex ID (50 điểm/10.000đ không tiền mặt so với 50 điểm/20.000đ tiền mặt; thẻ BIDV-Visa 1,5%); cửa hàng tiện lợi Ohmee Express.</li><li><b>Kết luận</b> và tài liệu tham khảo.</li></ol>
+      <p class="small muted">Nguồn: <a href="https://nhadautu.vn/xang-e10-phu-song-toan-quoc-nguoi-dung-dang-lo-dieu-gi-d105297.html">Nhà đầu tư</a> · <a href="https://www.sggp.org.vn/tiep-tuc-duy-tri-xang-e5-song-song-xang-e10-post854455.html">SGGP</a> · <a href="https://tapchicongthuong.vn/petrolimex-day-nhanh-chuyen-doi-kinh-doanh-xang-e10-tu-giua-thang-5-2026-517638.htm">TC Công Thương</a> · <a href="https://tienphong.vn/epaper/2026/TP-82/5/">Tiền Phong</a> · <a href="https://baodautu.vn/thanh-toan-thong-minh--loi-ich-dong-hanh-cung-petrolimex-d156794.html">Báo Đầu tư</a> · <a href="https://vcci.com.vn/en/news/petrolimex-mo-rong-tien-ich-tai-cua-hang-xang-dau">VCCI</a></p>
+    </div></details>
+    <h4>Việc cần làm</h4><div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${i}" ${todoDone[i]?'checked':''}><span>${t}</span></label>`).join('')}</div>
+  </div>
+  <h2>Bài tập trong slide</h2>
+  ${W.ex.map((x,i)=>`<div class="card stack"><div class="row between"><h3>${i+1}. ${x.t}</h3><span class="pill c">${x.cd}</span></div><p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details></div>`).join('')}
+  <h2>Câu hỏi thảo luận trên lớp</h2>
+  <div class="card"><ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="card stack"><h3>Đề các nhóm</h3><div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm của anh</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div></div>`;
+}
+
+/* ===================== QUIZ ===================== */
+const LT=['A','B','C','D'];
+function qList(Q){ return Q.map((q,i)=>i).filter(i=> qFilter==='all'?true: qFilter==='ko'? quizRes[i]==='ko' : Q[i].cd===qFilter); }
+function renderQuiz(s){
+  const S=SUBJ[s], Q=S.quiz, v=$('v-quiz');
+  if(!Q.length){ v.innerHTML=`<div><div class="eyebrow">${S.name} · Ôn tập</div><h1 style="margin-top:4px">Ngân hàng câu hỏi</h1></div><div class="empty"><h3>Chưa có câu hỏi</h3><p>Câu hỏi sẽ được thêm sau buổi học đầu tiên.</p></div>`; return; }
+  const vals=Object.values(quizRes), ok=vals.filter(x=>x==='ok').length, ko=vals.filter(x=>x==='ko').length;
+  const cds=[...new Set(Q.map(q=>q.cd))];
+  const ids=qList(Q); if(qCur>=ids.length) qCur=0;
+  let card='';
+  if(!ids.length){ card=`<div class="empty"><h3>${qFilter==='ko'?'Không còn câu sai':'Chưa có câu'}</h3><p>Chọn "Tất cả" để ôn tiếp.</p></div>`; }
+  else { const i=ids[qCur], q=Q[i], p=picks[i];
+    card=`<div class="card stack"><div class="row"><span class="pill c">${q.cd}</span><span class="pill">${q.k}</span><span class="pill num">Câu ${i+1}/${Q.length}</span>${quizRes[i]==='ok'?'<span class="pill ok">Đã đúng</span>':quizRes[i]==='ko'?'<span class="pill ko">Cần ôn lại</span>':''}</div><div class="qtext">${q.q}</div>`;
+    if(q.o){ card+=`<div class="opts">${q.o.map((o,j)=>{let c='';if(p!==undefined){if(j===q.a)c='right';else if(j===p)c='wrong';}return `<button class="opt ${c}" data-o="${j}" ${p!==undefined?'disabled':''}><span class="l">${LT[j]}</span><span>${o}</span></button>`}).join('')}</div>${p!==undefined?`<div class="explain"><b>${p===q.a?'Chính xác!':'Đáp án đúng: '+LT[q.a]}</b>${q.e}${q.w?`<ul class="why">${q.w.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`:''}`; }
+    else { card+= p===undefined?`<button class="btn ghost block" data-show="1">Tự làm ra giấy, rồi bấm xem đáp án</button>`:`<div class="explain"><b>Đáp án: ${q.ans}</b>${q.e}</div><div class="row"><span class="small muted" style="flex-basis:100%">Anh làm đúng không?</span><button class="btn good" style="flex:1" data-self="ok">Đúng</button><button class="btn bad" style="flex:1" data-self="ko">Chưa đúng</button></div>`; }
+    card+=`<div class="qnav"><button class="btn ghost" data-nav="-1">← Câu trước</button><button class="btn" data-nav="1">Câu tiếp →</button></div></div>`; }
+  v.innerHTML=`<div><div class="eyebrow">${S.name} · Ôn tập</div><h1 style="margin-top:4px">Ngân hàng câu hỏi</h1></div>
+  <div class="card flat stat num"><div><b>${vals.length}</b><small>đã làm</small></div><div><b style="color:var(--good)">${ok}</b><small>đúng</small></div><div><b style="color:var(--bad)">${ko}</b><small>cần ôn lại</small></div></div>
+  <div class="chips">${['all',...cds,'ko'].map(f=>`<button class="chip ${qFilter===f?'on':''}" data-f="${f}">${f==='all'?'Tất cả':f==='ko'?'Câu sai':f}</button>`).join('')}<button class="chip" data-reset="1">Làm lại từ đầu</button></div>
+  ${ids.length?`<div class="dots">${ids.map((i,j)=>`<button class="${j===qCur?'cur ':''}${quizRes[i]||''}" data-j="${j}" aria-label="Câu ${i+1}">${i+1}</button>`).join('')}</div>`:''}
+  ${card}`;
+}
+
+
+/* ---------- Ask link ---------- */
+function plain(h){ const d=document.createElement('div'); d.innerHTML=h; return d.textContent.replace(/\s+/g,' ').trim(); }
+function askLink(s,ch,i){ const S=SUBJ[s], t=ch.topics[i]; const body=plain(t.b); const brief=body.length>500?body.slice(0,500)+'…':body;
+  const q=`Môn ${S.name} (EMBA), Chuyên đề ${ch.n}: ${ch.title}, chủ đề "${t.t}".\n\nNội dung tôi đang học:\n${brief}\n\nHãy giải thích kỹ hơn phần này giúp tôi, kèm ví dụ dễ hiểu.`;
+  return 'https://claude.ai/new?q='+encodeURIComponent(q); }
+
+
+/* ---------- Fullscreen ---------- */
+(function(){
+  const root=document.documentElement, b=$('fsBtn'), ico=$('fsIco');
+  const req=root.requestFullscreen||root.webkitRequestFullscreen, ex=document.exitFullscreen||document.webkitExitFullscreen;
+  const enabled=(document.fullscreenEnabled||document.webkitFullscreenEnabled)&&req;
+  if(!enabled) return;               // ví dụ Safari trên iPhone: không hỗ trợ, ẩn nút
+  b.hidden=false;
+  const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+  const paint=()=>{ const on=isFs(); b.setAttribute('aria-label',on?'Thoát toàn màn hình':'Toàn màn hình'); b.title=b.getAttribute('aria-label'); b.classList.toggle('on',on);
+    ico.innerHTML=on?'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>':'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'; };
+  const go=async()=>{ try{ await req.call(root,{navigationUI:'hide'}); }catch(e){} paint(); };
+  const leave=async()=>{ try{ await ex.call(document); }catch(e){} paint(); };
+  b.addEventListener('click',e=>{ e.stopPropagation(); if(isFs()){ store.set('emba-fs',false); leave(); } else { store.set('emba-fs',true); go(); } });
+  document.addEventListener('fullscreenchange',paint); document.addEventListener('webkitfullscreenchange',paint);
+  // Mặc định toàn màn hình: trình duyệt chỉ cho phép sau một lần chạm, nên bật ở lần chạm đầu tiên
+  const auto=(e)=>{ if(e.target.closest&&e.target.closest('#fsBtn')) return; if(store.get('emba-fs',true) && !isFs()) go(); };
+  document.addEventListener('pointerdown',auto,{once:true,capture:true});
+  paint();
+})();
+
+/* ===================== EVENTS ===================== */
+document.addEventListener('click',e=>{
+  const mo=e.target.closest('[data-more]'); if(mo){ const box=$('m-'+mo.dataset.more); const open=box.hidden; box.hidden=!open; mo.textContent=open?'Less':'More'; mo.setAttribute('aria-expanded',String(open)); mo.classList.toggle('on',open); return; }
+  const u=e.target.closest('[data-u]'); if(u){ const v=!understood[u.dataset.u]; understood[u.dataset.u]=v; store.set('emba-understood',understood); u.classList.toggle('on',v); u.textContent=v?'✓ Got it':'Got it'; u.setAttribute('aria-pressed',String(v)); const tc=document.querySelector(`.toc a[data-jump="t${u.dataset.ti}"]`); if(tc) tc.classList.toggle('ok',v); return; }
+  const jp=e.target.closest('[data-jump]'); if(jp){ e.preventDefault(); const t=$(jp.dataset.jump); if(t) t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); return; }
+  const bt=e.target.closest('.bottom a'); if(bt){ e.preventDefault(); location.hash=`#${cur}-${bt.dataset.tab}`; return; }
+  const v=$('v-quiz'); if(!v.contains(e.target)) return;
+  const Q=SUBJ[cur].quiz, ids=qList(Q), i=ids[qCur];
+  const o=e.target.closest('[data-o]'); if(o&&picks[i]===undefined){ const j=+o.dataset.o; picks[i]=j; quizRes[i]=j===Q[i].a?'ok':'ko'; store.set('emba-quiz',quizRes); renderQuiz(cur); return; }
+  if(e.target.closest('[data-show]')){ picks[i]=-1; renderQuiz(cur); return; }
+  const sf=e.target.closest('[data-self]'); if(sf){ quizRes[i]=sf.dataset.self; store.set('emba-quiz',quizRes); qCur=Math.min(qCur+1,ids.length-1); renderQuiz(cur); return; }
+  const n=e.target.closest('[data-nav]'); if(n){ qCur=(qCur+ +n.dataset.nav+ids.length)%ids.length; renderQuiz(cur); return; }
+  const dj=e.target.closest('[data-j]'); if(dj){ qCur=+dj.dataset.j; renderQuiz(cur); return; }
+  const f=e.target.closest('[data-f]'); if(f){ qFilter=f.dataset.f; qCur=0; renderQuiz(cur); return; }
+  if(e.target.closest('[data-reset]')){ quizRes={}; picks={}; store.set('emba-quiz',quizRes); qCur=0; renderQuiz(cur); }
+});
+document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); } });
+$('subj').addEventListener('change',e=>{ const s=e.target.value; if(s) location.hash=`#${s}-know`; else location.hash='#home'; });
+
+/* ===================== ROUTER ===================== */
+function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id)); }
+function route(){
+  const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/);
+  const pk=$('picker'), sel=$('subj');
+  document.querySelectorAll('.bottom a').forEach(a=>a.classList.remove('on'));
+  if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); sel.value=''; pk.className='picker nosubj'; renderHome(); show('home'); return; }
+  const [,s,p]=m; if(s!==cur){ cur=s; qFilter='all'; qCur=0; picks={}; } store.set('emba-subj',s); setSubjColors(s);
+  document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); sel.value=s; pk.className='picker active';
+  let tab='know';
+  if(p==='know'){ renderKnow(s); show('know'); }
+  else if(p==='work'){ renderWork(s); show('work'); tab='work'; }
+  else if(p==='quiz'){ renderQuiz(s); show('quiz'); tab='quiz'; }
+  else { renderChap(s,p); show('chap'); }
+  document.querySelector(`.bottom a[data-tab="${tab}"]`).classList.add('on');
+}
+let lastHash=null;
+window.addEventListener('hashchange',()=>{ route(); if(location.hash!==lastHash) window.scrollTo(0,0); lastHash=location.hash; });
+setSubjColors(cur); route(); lastHash=location.hash;
+})();
+</script>
+</body>
+</html>
