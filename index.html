@@ -54,11 +54,31 @@ button{cursor:pointer}
 .homebtn.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .homebtn svg{width:22px;height:22px}
 .picker{position:relative;flex:1;min-width:0}
-.picker select{appearance:none;-webkit-appearance:none;width:100%;height:44px;border-radius:13px;border:1.5px solid var(--line);background:var(--surface);padding:0 38px 0 38px;font-weight:700;font-size:15px;text-overflow:ellipsis}
-.picker.active select{border-color:var(--c);background:var(--cs);color:var(--c)}
-.picker .dot{position:absolute;left:14px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:4px;background:var(--c);pointer-events:none}
+.pickbtn{width:100%;height:44px;border-radius:13px;border:1.5px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:10px;padding:0 12px 0 14px;font-weight:700;font-size:15px;text-align:left}
+.pickbtn .lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.picker.active .pickbtn{border-color:var(--c);background:var(--cs);color:var(--c)}
+.pickbtn .dot{flex:none;width:12px;height:12px;border-radius:4px;background:var(--c)}
 .picker.nosubj .dot{background:var(--muted)}
-.picker .chev{position:absolute;right:14px;top:50%;margin-top:-8px;width:16px;height:16px;pointer-events:none;color:var(--muted)}
+.pickbtn .chev{flex:none;width:16px;height:16px;color:var(--muted);transition:transform .2s}
+.pickbtn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.subjsheet{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;justify-content:flex-end;background:rgba(10,20,18,.45);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.subjsheet.on{display:flex}
+.subjsheet .box{width:100%;max-width:640px;margin:0 auto;background:var(--bg);border-radius:24px 24px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;box-shadow:0 -12px 32px rgba(0,0,0,.22)}
+.subjsheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 4px}
+.subjsheet h3{padding:2px 4px}
+.sopt{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:18px;padding:14px;box-shadow:var(--shadow);position:relative;overflow:hidden;color:var(--ink)}
+.sopt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--oc)}
+.sopt .ic{flex:none;width:46px;height:46px;border-radius:14px;background:var(--ocs);color:var(--oc);display:grid;place-items:center;font:800 15px var(--display)}
+.sopt .tx{flex:1;min-width:0}
+.sopt .tx b{display:block;font:800 16px var(--display);letter-spacing:-.01em}
+.sopt .tx span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.sopt .mini{height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-top:8px}
+.sopt .mini i{display:block;height:100%;background:var(--oc)}
+.sopt .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:#fff}
+.sopt.sel{border-color:var(--oc)}
+.sopt.sel .ck{background:var(--oc);border-color:var(--oc)}
+.sopt.home{--oc:var(--ink);--ocs:var(--surface-2)}
+@media (prefers-reduced-motion: no-preference){ .subjsheet.on .box{animation:up .22s ease-out both} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
 .days{flex:none;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);white-space:nowrap}
 
 /* Bottom bar */
@@ -233,14 +253,7 @@ body.app-mode #fsBtn{display:none}
 <header class="top">
   <a class="homebtn" href="#home" id="homeBtn" aria-label="Trang chủ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></a>
   <div class="picker nosubj" id="picker">
-    <span class="dot"></span>
-    <label for="subj" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Chọn môn học</label>
-    <select id="subj">
-      <option value="">Chọn môn học…</option>
-      <option value="ktud">Kinh tế ứng dụng</option>
-      <option value="qtcl">Quản trị chiến lược</option>
-    </select>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    <button type="button" class="pickbtn" id="subjBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="subjSheet"><span class="dot"></span><span class="lbl" id="subjLbl">Chọn môn học</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
   </div>
   <span class="days" id="days">30 ngày</span>
   <button class="homebtn" id="fsBtn" aria-label="Toàn màn hình" title="Toàn màn hình" hidden><svg id="fsIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -259,6 +272,7 @@ body.app-mode #fsBtn{display:none}
 <ol class="steps-ios"><li>Mở trang này bằng <b>Safari</b> (không dùng trình duyệt trong ứng dụng khác).</li><li>Bấm nút <b>Chia sẻ</b> (hình vuông có mũi tên lên) ở thanh dưới.</li><li>Kéo xuống, chọn <b>Thêm vào Màn hình chính</b>.</li><li>Bấm <b>Thêm</b>. Biểu tượng "Sổ tay EMBA" sẽ xuất hiện trên màn hình chính.</li></ol>
 <p class="small muted">Mở từ biểu tượng này, Sổ tay chạy như một ứng dụng riêng: không thanh địa chỉ, không thanh của claude.ai, mở được cả khi mất mạng.</p>
 </div></div>
+<div class="subjsheet" id="subjSheet" role="dialog" aria-modal="true" aria-labelledby="subjT"><div class="box"><div class="grab"></div><h3 id="subjT">Chọn môn học</h3><div class="stack" id="subjList"></div></div></div>
 <nav class="bottom" aria-label="Mục của môn học"><div class="in">
   <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
   <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
@@ -850,17 +864,30 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-reset]')){ quizRes={}; picks={}; store.set('emba-quiz',quizRes); qCur=0; renderQuiz(cur); }
 });
 document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); } });
-$('subj').addEventListener('change',e=>{ const s=e.target.value; if(s) location.hash=`#${s}-know`; else location.hash='#home'; });
+function renderSubjList(){
+  const curS=(location.hash.match(/^#(ktud|qtcl)-/)||[])[1]||'';
+  const ck='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+  const items=Object.keys(SUBJ).map(k=>{ const S=SUBJ[k]; const chs=S.chapters.filter(c=>c.status!=='soon'&&c.topics.length);
+    let n=0,t=0; chs.forEach(c=>{ const [a,b]=chapProgress(k,c); n+=a; t+=b; });
+    const nx=SCHED.find(x=>U(x.d)>=TODAY&&(x.s===k||x.s==='both')); const nd=nx?dd(nx.d):null;
+    return `<button class="sopt ${curS===k?'sel':''}" data-pick="${k}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><span class="ic">${S.short}</span><span class="tx"><b>${S.name}</b><span>${chs.length} chuyên đề · ${S.quiz.length} câu ôn${nd?` · học tiếp ${nd.w} ${nd.d}`:''}</span>${t?`<span class="mini"><i style="width:${n/t*100}%"></i></span>`:''}</span><span class="ck">${curS===k?ck:''}</span></button>`; }).join('');
+  $('subjList').innerHTML=items+`<button class="sopt home ${curS?'':'sel'}" data-pick=""><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span class="tx"><b>Trang chủ</b><span>Lịch học, hạn nộp, lịch thi, nhắc nhở</span></span><span class="ck">${curS?'':ck}</span></button>`;
+}
+function openSubj(){ renderSubjList(); $('subjSheet').classList.add('on'); $('subjBtn').setAttribute('aria-expanded','true'); }
+function closeSubj(){ $('subjSheet').classList.remove('on'); $('subjBtn').setAttribute('aria-expanded','false'); }
+$('subjBtn').addEventListener('click',openSubj);
+$('subjSheet').addEventListener('click',e=>{ const b=e.target.closest('[data-pick]'); if(b){ const k=b.dataset.pick; closeSubj(); location.hash=k?`#${k}-know`:'#home'; return; } if(e.target===$('subjSheet')) closeSubj(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&$('subjSheet').classList.contains('on')) closeSubj(); });
 
 /* ===================== ROUTER ===================== */
 function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id)); }
 function route(){
   const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/);
-  const pk=$('picker'), sel=$('subj');
+  const pk=$('picker'), lbl=$('subjLbl');
   document.querySelectorAll('.bottom a').forEach(a=>a.classList.remove('on'));
-  if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); sel.value=''; pk.className='picker nosubj'; renderHome(); show('home'); return; }
+  if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); lbl.textContent='Chọn môn học'; pk.className='picker nosubj'; renderHome(); show('home'); return; }
   const [,s,p]=m; if(s!==cur){ cur=s; qFilter='all'; qCur=0; picks={}; } store.set('emba-subj',s); setSubjColors(s);
-  document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); sel.value=s; pk.className='picker active';
+  document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=SUBJ[s].name; pk.className='picker active';
   let tab='know';
   if(p==='know'){ renderKnow(s); show('know'); }
   else if(p==='work'){ renderWork(s); show('work'); tab='work'; }
