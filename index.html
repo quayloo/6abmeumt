@@ -77,7 +77,46 @@ button{cursor:pointer}
 .sopt .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:#fff}
 .sopt.sel{border-color:var(--oc)}
 .sopt.sel .ck{background:var(--oc);border-color:var(--oc)}
-.sopt.home{--oc:var(--ink);--ocs:var(--surface-2)}
+.subjsheet .box{max-height:88vh;max-height:88dvh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;outline:none}
+.subjsheet .shead{position:sticky;top:-10px;z-index:2;background:var(--bg);margin:-10px -16px 0;padding:10px 16px 6px}
+.subjsheet .ssum{font-size:12.5px;color:var(--muted);padding:2px 4px 0}
+.sgrp{font:800 11.5px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 4px 0;display:flex;align-items:center;gap:8px}
+.sgrp i{font-style:normal;background:var(--surface-2);border-radius:9px;padding:1px 7px;font-size:11px;letter-spacing:0}
+.scard{border:1.5px solid var(--line);background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.scard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--oc);z-index:1}
+.scard.sel{border-color:var(--oc)}
+.scard .sopt{border:0;box-shadow:none;border-radius:0;background:transparent}
+.scard .sopt::before{display:none}
+.scard.sel .sopt .ck{background:var(--oc);border-color:var(--oc)}
+.sfoot{display:flex;align-items:center;gap:8px;padding:9px 14px 11px 20px;border-top:1px dashed var(--line);font-size:12.5px}
+.spill{font-weight:700;border-radius:999px;padding:3px 10px;font-size:12px;white-space:nowrap}
+.spill.dang{background:var(--ktud-soft);color:var(--ktud)}
+.spill.cho{background:var(--surface-2);color:var(--ink)}
+.spill.qua{background:var(--good-soft);color:var(--good)}
+.spill.thilai{background:#fdecd2;color:#9a5a00}
+.spill.hoclai{background:#fbe0e0;color:#a32727}
+.sscore{font:800 14px var(--display);color:var(--ink)}
+.sscore small{font-weight:500;font-size:11.5px;color:var(--muted)}
+.gbtn{margin-left:auto;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-weight:700;font-size:12.5px;display:inline-flex;gap:6px;align-items:center}
+.gbtn[aria-expanded="true"]{border-color:var(--oc);color:var(--oc)}
+.gedit{padding:4px 14px 14px 20px;display:flex;flex-direction:column;gap:10px}
+.gedit .grow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gedit .grow.one{grid-template-columns:1fr}
+.gedit label{font-size:11.5px;color:var(--muted);font-weight:700;display:flex;flex-direction:column;gap:4px}
+.gedit input{font:700 16px var(--display);width:100%;border:1.5px solid var(--line);border-radius:12px;padding:9px 10px;background:var(--bg);color:var(--ink)}
+.gedit input:focus{border-color:var(--oc);outline:none}
+.gedit .gtk{font-size:13px;color:var(--muted)}
+.gedit .gtk b{font:800 18px var(--display);color:var(--ink)}
+.gchips{display:flex;flex-wrap:wrap;gap:6px}
+.gchips button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:700}
+.gchips button.on{background:var(--oc);border-color:var(--oc);color:#fff}
+.gacts{display:flex;gap:8px}
+.gacts button{flex:1;border-radius:12px;padding:10px;font-weight:800;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.gacts .gsave{background:var(--oc);border-color:var(--oc);color:#fff}
+.spass{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);padding:6px 4px 0;flex-wrap:wrap}
+.spass input{width:68px;font:700 15px var(--display);border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--surface);color:var(--ink)}
+.subjsheet .box:focus-visible{outline:none}
+body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 @media (prefers-reduced-motion: no-preference){ .subjsheet.on .box{animation:up .22s ease-out both} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
 .days{flex:none;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);white-space:nowrap}
 
@@ -272,7 +311,7 @@ body.app-mode #fsBtn{display:none}
 <ol class="steps-ios"><li>Mở trang này bằng <b>Safari</b> (không dùng trình duyệt trong ứng dụng khác).</li><li>Bấm nút <b>Chia sẻ</b> (hình vuông có mũi tên lên) ở thanh dưới.</li><li>Kéo xuống, chọn <b>Thêm vào Màn hình chính</b>.</li><li>Bấm <b>Thêm</b>. Biểu tượng "Sổ tay EMBA" sẽ xuất hiện trên màn hình chính.</li></ol>
 <p class="small muted">Mở từ biểu tượng này, Sổ tay chạy như một ứng dụng riêng: không thanh địa chỉ, không thanh của claude.ai, mở được cả khi mất mạng.</p>
 </div></div>
-<div class="subjsheet" id="subjSheet" role="dialog" aria-modal="true" aria-labelledby="subjT"><div class="box"><div class="grab"></div><h3 id="subjT">Chọn môn học</h3><div class="stack" id="subjList"></div></div></div>
+<div class="subjsheet" id="subjSheet" role="dialog" aria-modal="true" aria-labelledby="subjT"><div class="box" tabindex="-1"><div class="shead"><div class="grab"></div><h3 id="subjT">Chọn môn học</h3><div class="ssum" id="subjSum"></div></div><div class="stack" id="subjList"></div></div></div>
 <nav class="bottom" aria-label="Mục của môn học"><div class="in">
   <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
   <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
@@ -313,10 +352,10 @@ const REMIND=[
  {s:'both',t:'Lịch thi trên thời khóa biểu là lịch dự kiến.'}
 ];
 const SUBJ={
- ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',
+ ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
   info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
   chapters:[], work:null, quiz:[]},
- qtcl:{name:'Quản trị chiến lược',short:'QTCL',c:'--qtcl',cs:'--qtcl-soft',
+ qtcl:{name:'Quản trị chiến lược',short:'QTCL',c:'--qtcl',cs:'--qtcl-soft',cr:3,w:null,
   info:[['Giảng viên','PGS.TS Lưu Thị Thùy Dương'],['Mã học phần','CLDH0618 · 3 tín chỉ'],['Đánh giá','Chưa có — cần đề cương môn'],['Thi','12/12/2026 (dự kiến)']],
   chapters:[{id:'qtcl-cd',n:'?',title:'Chưa có bài giảng',sub:'Gửi slide hoặc ghi âm buổi 14/11 để bắt đầu lộ trình',status:'soon',topics:[]}], work:null, quiz:[]}
 };
@@ -864,20 +903,70 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-reset]')){ quizRes={}; picks={}; store.set('emba-quiz',quizRes); qCur=0; renderQuiz(cur); }
 });
 document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); } });
+let grades=store.get('emba-grades',{}); let gEdit=null, gDraft=null;
+const GST={dang:'Đang học',cho:'Đã học – chờ điểm',qua:'Đã qua',thilai:'Thi lại',hoclai:'Học lại'};
+const GORD=['dang','cho','thilai','hoclai','qua'];
+const passMark=()=>{ const v=parseFloat(grades._pass); return isNaN(v)?5.5:v; };
+const num=v=>{ if(v===''||v==null) return null; const x=parseFloat(String(v).replace(',','.')); return isNaN(x)?null:Math.max(0,Math.min(10,x)); };
+const fmt=x=>x==null?'':(Math.round(x*10)/10).toFixed(1).replace('.',',');
+function gTotal(k,g){ g=g||{}; const W=SUBJ[k].w;
+  if(W){ const c=num(g.cc),t=num(g.th),e=num(g.thi); if(c==null||t==null||e==null) return null; return Math.round((c*W.cc+t*W.th+e*W.thi)*10)/10; }
+  return num(g.tk); }
+function gStatus(k){ const g=grades[k]||{}; if(g.st) return g.st; const tk=gTotal(k,g);
+  if(tk!=null) return tk>=passMark()?'qua':'thilai';
+  return SCHED.some(x=>U(x.d)>=TODAY&&(x.s===k||x.s==='both'))?'dang':'cho'; }
+function gEditor(k){ const S=SUBJ[k], W=S.w, g=gDraft; const tk=gTotal(k,g);
+  const f=(id,lb)=>`<label>${lb}<input inputmode="decimal" data-gf="${id}" value="${g[id]??''}" placeholder="0–10" autocomplete="off"></label>`;
+  const fields=W?`<div class="grow">${f('cc',`Chuyên cần ${W.cc*100}%`)}${f('th',`Thực hành ${W.th*100}%`)}${f('thi',`Thi ${W.thi*100}%`)}</div><div class="gtk">Điểm tổng kết: <b id="gTk">${tk==null?'—':fmt(tk)}</b></div>`
+    :`<div class="grow one">${f('tk','Điểm tổng kết học phần (thang 10)')}</div><div class="gtk">Chưa có trọng số đánh giá của môn — nhập thẳng điểm tổng kết.</div>`;
+  const chips=[['','Tự động'],...Object.entries(GST)].map(([v,l])=>`<button type="button" data-gst="${v}" class="${(g.st||'')===v?'on':''}">${l}</button>`).join('');
+  return `<div class="gedit" id="gEd">${fields}<div><div class="gtk" style="margin-bottom:6px">Trạng thái <span style="font-size:11.5px">(Tự động: theo lịch học và ngưỡng đạt ${fmt(passMark())})</span></div><div class="gchips">${chips}</div></div><div class="gacts"><button type="button" data-gclear="${k}">Xóa điểm</button><button type="button" class="gsave" data-gsave="${k}">Lưu</button></div></div>`; }
 function renderSubjList(){
   const curS=(location.hash.match(/^#(ktud|qtcl)-/)||[])[1]||'';
   const ck='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
-  const items=Object.keys(SUBJ).map(k=>{ const S=SUBJ[k]; const chs=S.chapters.filter(c=>c.status!=='soon'&&c.topics.length);
+  const pen='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+  const card=k=>{ const S=SUBJ[k]; const chs=S.chapters.filter(c=>c.status!=='soon'&&c.topics.length);
     let n=0,t=0; chs.forEach(c=>{ const [a,b]=chapProgress(k,c); n+=a; t+=b; });
     const nx=SCHED.find(x=>U(x.d)>=TODAY&&(x.s===k||x.s==='both')); const nd=nx?dd(nx.d):null;
-    return `<button class="sopt ${curS===k?'sel':''}" data-pick="${k}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><span class="ic">${S.short}</span><span class="tx"><b>${S.name}</b><span>${chs.length} chuyên đề · ${S.quiz.length} câu ôn${nd?` · học tiếp ${nd.w} ${nd.d}`:''}</span>${t?`<span class="mini"><i style="width:${n/t*100}%"></i></span>`:''}</span><span class="ck">${curS===k?ck:''}</span></button>`; }).join('');
-  $('subjList').innerHTML=items+`<button class="sopt home ${curS?'':'sel'}" data-pick=""><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span class="tx"><b>Trang chủ</b><span>Lịch học, hạn nộp, lịch thi, nhắc nhở</span></span><span class="ck">${curS?'':ck}</span></button>`;
+    const st=gStatus(k), tk=gTotal(k,grades[k]), open=gEdit===k;
+    return `<div class="scard ${curS===k?'sel':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><button class="sopt" data-pick="${k}"><span class="ic">${S.short}</span><span class="tx"><b>${S.name}</b><span>${S.cr} TC · ${chs.length} chuyên đề · ${S.quiz.length} câu ôn${nd?` · học tiếp ${nd.w} ${nd.d}`:''}</span>${t?`<span class="mini"><i style="width:${n/t*100}%"></i></span>`:''}</span><span class="ck">${curS===k?ck:''}</span></button>
+<div class="sfoot"><span class="spill ${st}">${GST[st]}</span>${tk!=null?`<span class="sscore">${fmt(tk)}<small> /10</small></span>`:''}<button type="button" class="gbtn" data-grade="${k}" aria-expanded="${open}">${pen}${open?'Đóng':(tk!=null?'Sửa điểm':'Cập nhật điểm')}</button></div>${open?gEditor(k):''}</div>`; };
+  const keys=Object.keys(SUBJ); let html='';
+  GORD.forEach(g=>{ const ks=keys.filter(k=>gStatus(k)===g); if(ks.length) html+=`<div class="sgrp">${GST[g]} <i>${ks.length}</i></div>`+ks.map(card).join(''); });
+  html+=`<label class="spass">Ngưỡng đạt học phần <input inputmode="decimal" id="gPass" value="${fmt(passMark())}"> <span>điểm — đối chiếu quy chế đào tạo thạc sĩ ĐHTM</span></label>`;
+  $('subjList').innerHTML=html;
+  const done=keys.filter(k=>gStatus(k)==='qua'); let sc=0,sw=0; done.forEach(k=>{ const tk=gTotal(k,grades[k]); if(tk!=null){ sc+=tk*SUBJ[k].cr; sw+=SUBJ[k].cr; } });
+  const tc=keys.reduce((a,k)=>a+SUBJ[k].cr,0);
+  $('subjSum').textContent=`${keys.length} môn · ${tc} tín chỉ · đã qua ${done.length} môn${sw?` · TB tích lũy ${fmt(sc/sw)}`:''}`;
 }
-function openSubj(){ renderSubjList(); $('subjSheet').classList.add('on'); $('subjBtn').setAttribute('aria-expanded','true'); }
-function closeSubj(){ $('subjSheet').classList.remove('on'); $('subjBtn').setAttribute('aria-expanded','false'); }
+let lockY=0, lastFocus=null;
+function openSubj(){ gEdit=null; renderSubjList(); lastFocus=document.activeElement; lockY=window.scrollY;
+  document.body.style.top=`-${lockY}px`; document.body.classList.add('locked');
+  $('subjSheet').classList.add('on'); $('subjBtn').setAttribute('aria-expanded','true');
+  const box=$('subjSheet').querySelector('.box'); box.scrollTop=0; box.focus({preventScroll:true}); }
+function closeSubj(){ if(!$('subjSheet').classList.contains('on')) return; $('subjSheet').classList.remove('on'); $('subjBtn').setAttribute('aria-expanded','false');
+  document.body.classList.remove('locked'); document.body.style.top=''; window.scrollTo(0,lockY);
+  (lastFocus&&lastFocus.focus?lastFocus:$('subjBtn')).focus({preventScroll:true}); }
+function saveGrades(){ store.set('emba-grades',grades); }
 $('subjBtn').addEventListener('click',openSubj);
-$('subjSheet').addEventListener('click',e=>{ const b=e.target.closest('[data-pick]'); if(b){ const k=b.dataset.pick; closeSubj(); location.hash=k?`#${k}-know`:'#home'; return; } if(e.target===$('subjSheet')) closeSubj(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&$('subjSheet').classList.contains('on')) closeSubj(); });
+$('subjSheet').addEventListener('click',e=>{
+  const gb=e.target.closest('[data-grade]'); if(gb){ const k=gb.dataset.grade; if(gEdit===k){ gEdit=null; } else { gEdit=k; gDraft={...(grades[k]||{})}; } renderSubjList();
+    if(gEdit){ const ed=$('gEd'); ed.scrollIntoView({block:'nearest',behavior:'smooth'}); const i=ed.querySelector('input'); if(i) i.focus({preventScroll:true}); } return; }
+  const cs=e.target.closest('[data-gst]'); if(cs){ gDraft.st=cs.dataset.gst; cs.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===cs)); return; }
+  const sv=e.target.closest('[data-gsave]'); if(sv){ const k=sv.dataset.gsave, d={}; ['cc','th','thi','tk'].forEach(f=>{ const v=num(gDraft[f]); if(v!=null) d[f]=v; }); if(gDraft.st) d.st=gDraft.st;
+    if(Object.keys(d).length) grades[k]=d; else delete grades[k]; saveGrades(); gEdit=null; renderSubjList(); const b=$('subjList').querySelector(`[data-grade="${k}"]`); if(b) b.focus({preventScroll:true}); return; }
+  const cl=e.target.closest('[data-gclear]'); if(cl){ delete grades[cl.dataset.gclear]; saveGrades(); gEdit=null; renderSubjList(); return; }
+  const b=e.target.closest('[data-pick]'); if(b){ const k=b.dataset.pick; closeSubj(); location.hash=`#${k}-know`; return; }
+  if(e.target===$('subjSheet')) closeSubj(); });
+$('subjSheet').addEventListener('input',e=>{ const f=e.target.dataset.gf; if(f&&gDraft&&gEdit){ gDraft[f]=e.target.value; const el=$('gTk'); if(el){ const t=gTotal(gEdit,gDraft); el.textContent=t==null?'—':fmt(t); } } });
+$('subjSheet').addEventListener('change',e=>{ if(e.target.id==='gPass'){ const v=num(e.target.value); if(v!=null) grades._pass=v; else delete grades._pass; saveGrades(); renderSubjList(); } });
+document.addEventListener('keydown',e=>{ const sh=$('subjSheet'); if(!sh.classList.contains('on')) return;
+  if(e.key==='Escape'){ if(gEdit){ gEdit=null; renderSubjList(); sh.querySelector('.box').focus(); } else closeSubj(); return; }
+  if(e.key==='Tab'){ const box=sh.querySelector('.box'); const f=[...box.querySelectorAll('button,input,[href]')].filter(x=>!x.disabled&&x.offsetParent!==null); if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(e.shiftKey&&(document.activeElement===first||document.activeElement===box)){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+    else if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); } } });
 
 /* ===================== ROUTER ===================== */
 function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id)); }
