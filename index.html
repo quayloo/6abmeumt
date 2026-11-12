@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B7A75">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sổ tay EMBA">
 <title>Sổ tay EMBA 6XD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -198,6 +205,14 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
 .qnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));background:var(--surface);padding-top:6px}
 .empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
+.install{display:flex;gap:14px;align-items:center}
+.install img{width:54px;height:54px;border-radius:14px;flex:none}
+.install .t{flex:1;min-width:0}
+.steps-ios{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.modal{position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;justify-content:center;background:rgba(10,20,18,.5)}
+.modal.on{display:flex}
+.modal .box{width:100%;max-width:560px;background:var(--surface);border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+body.app-mode #fsBtn{display:none}
 /* Timeline */
 .tl{display:flex;flex-direction:column;gap:8px}
 .tl-axis{position:relative;height:16px;font-size:11px;color:var(--muted)}
@@ -239,6 +254,11 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
   <section class="view" id="v-quiz"></section>
 </main>
 
+<div class="modal" id="iosModal" role="dialog" aria-modal="true" aria-labelledby="iosT"><div class="box">
+<div class="row between"><h3 id="iosT">Cài Sổ tay lên iPhone</h3><button class="btn ghost" id="iosClose" style="min-height:38px;padding:6px 12px">Đóng</button></div>
+<ol class="steps-ios"><li>Mở trang này bằng <b>Safari</b> (không dùng trình duyệt trong ứng dụng khác).</li><li>Bấm nút <b>Chia sẻ</b> (hình vuông có mũi tên lên) ở thanh dưới.</li><li>Kéo xuống, chọn <b>Thêm vào Màn hình chính</b>.</li><li>Bấm <b>Thêm</b>. Biểu tượng "Sổ tay EMBA" sẽ xuất hiện trên màn hình chính.</li></ol>
+<p class="small muted">Mở từ biểu tượng này, Sổ tay chạy như một ứng dụng riêng: không thanh địa chỉ, không thanh của claude.ai, mở được cả khi mất mạng.</p>
+</div></div>
 <nav class="bottom" aria-label="Mục của môn học"><div class="in">
   <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
   <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
@@ -655,6 +675,32 @@ function sName(s){ return s==='both'?'Cả hai môn':SUBJ[s].name; }
 function topicKey(s,ch,i){ return `${s}.${ch}.${i}`; }
 function chapProgress(s,ch){ const t=ch.topics.filter(x=>!x.soon); const n=t.filter((x,i)=>understood[topicKey(s,ch.id,ch.topics.indexOf(x))]).length; return [n,t.length]; }
 
+
+/* ---------- Cài đặt app (PWA) ---------- */
+const HOME_URL='https://quayloo.github.io/6abmeumt/';
+const isApp = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone===true;
+if(isApp) document.body.classList.add('app-mode');
+const onPages = /github\.io$/.test(location.hostname);
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; if(!location.hash||location.hash==='#home') renderHome(); });
+window.addEventListener('appinstalled',()=>{ deferredPrompt=null; store.set('emba-installed',true); if(!location.hash||location.hash==='#home') renderHome(); });
+if(onPages && 'serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+function installCard(){
+  if(isApp) return '';
+  let action, note;
+  if(!onPages){ action=`<a class="btn" href="${HOME_URL}" target="_blank" rel="noopener">Mở trang để cài</a>`; note='Trang đang mở trong claude.ai. Mở địa chỉ chính để cài lên điện thoại.'; }
+  else if(deferredPrompt){ action=`<button class="btn" data-install="1">Cài đặt</button>`; note='Thêm biểu tượng ra màn hình chính, mở toàn màn hình, dùng được khi mất mạng.'; }
+  else if(isIOS){ action=`<button class="btn" data-ios="1">Xem cách cài</button>`; note='Trên iPhone: Safari → Chia sẻ → Thêm vào Màn hình chính.'; }
+  else { action=''; note='Mở menu trình duyệt (⋮) và chọn <b>Cài đặt ứng dụng</b> hoặc <b>Thêm vào màn hình chính</b>.'; }
+  return `<div class="card install"><img src="icons/icon-192.png" alt="" onerror="this.style.display='none'"><div class="t"><h3>Cài Sổ tay lên điện thoại</h3><p class="small muted">${note}</p></div>${action}</div>`;
+}
+document.addEventListener('click',async e=>{
+  if(e.target.closest('[data-install]') && deferredPrompt){ deferredPrompt.prompt(); try{ await deferredPrompt.userChoice; }catch(_){} deferredPrompt=null; renderHome(); }
+  if(e.target.closest('[data-ios]')) $('iosModal').classList.add('on');
+  if(e.target.closest('#iosClose') || e.target===$('iosModal')) $('iosModal').classList.remove('on');
+});
+
 /* ===================== HOME ===================== */
 function renderHome(){
   const up = SCHED.filter(x=>U(x.d)>=TODAY);
@@ -669,6 +715,7 @@ function renderHome(){
     <div style="position:relative;z-index:1"><div class="eyebrow">Học kỳ I · EMBA 6XD</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>Thi Kinh tế ứng dụng và Quản trị chiến lược cùng ngày ${dd(EXAM).w} ${dd(EXAM).d}/2026.</p></div>
     <svg class="gauge" viewBox="0 0 120 80" role="img" aria-label="Kim xăng thời gian còn lại"><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="12" stroke-linecap="round"/><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="#F2B940" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="${pct} 100"/><text x="60" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" style="font-family:var(--display)">${leftDays}</text><text x="12" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">E</text><text x="108" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">F</text></svg>
   </div>
+  ${installCard()}
   ${next?`<a class="card" href="#${next.s==='both'?'ktud':next.s}-know" style="text-decoration:none;color:inherit;border-left:5px solid ${next.s==='both'?'var(--gold)':`var(${SUBJ[next.s].c})`}"><div class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</div><div class="row between" style="margin-top:4px"><h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2></div><p style="margin-top:4px">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p></a>`:''}
   <div class="card stack"><div class="row between"><h3>Hạn nộp & lịch thi</h3></div><div class="list">${DEADLINES.filter(x=>U(x.d)>=TODAY).map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span></div>`}).join('')}</div></div>
   <div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${REMIND.map(r=>`<div class="li"><div class="t">${sTag(r.s)}<span class="small" style="font-weight:700">${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>
@@ -781,7 +828,7 @@ function askLink(s,ch,i){ const S=SUBJ[s], t=ch.topics[i]; const body=plain(t.b)
   b.addEventListener('click',e=>{ e.stopPropagation(); if(isFs()){ store.set('emba-fs',false); leave(); } else { store.set('emba-fs',true); go(); } });
   document.addEventListener('fullscreenchange',paint); document.addEventListener('webkitfullscreenchange',paint);
   // Mặc định toàn màn hình: trình duyệt chỉ cho phép sau một lần chạm, nên bật ở lần chạm đầu tiên
-  const auto=(e)=>{ if(e.target.closest&&e.target.closest('#fsBtn')) return; if(store.get('emba-fs',true) && !isFs()) go(); };
+  const auto=(e)=>{ if(document.body.classList.contains('app-mode')) return; if(e.target.closest&&e.target.closest('#fsBtn')) return; if(store.get('emba-fs',true) && !isFs()) go(); };
   document.addEventListener('pointerdown',auto,{once:true,capture:true});
   paint();
 })();
