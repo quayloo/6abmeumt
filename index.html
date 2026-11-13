@@ -598,15 +598,13 @@ const REMIND=[
  {s:'qth',t:'Chưa có đề cương, giảng viên, phòng học, giờ học và hình thức thi — cần hỏi lớp trưởng/phòng đào tạo.'}
 ];
 // Nhắc nhở tự soạn (ngoài lịch học, hạn nộp): {d:'YYYY-MM-DD', h:'HH:MM' (giờ VN), lv:1|2|3, s:môn, title?, x:nội dung}
-// lv 1 = Khẩn, 2 = Quan trọng, 3 = Thông tin. Lịch thay đổi đột xuất: thêm mục lv:1 với d/h = lúc cập nhật → điện thoại nhận trong ~30 phút.
+// lv 1 = Khẩn, 2 = Quan trọng, 3 = Thông tin. Nhắc trên điện thoại do Claude tạo thẳng trong Lịch của máy (ứng dụng Claude) — giữ khớp với các mốc dưới đây.
 const NOTI=[
  {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
- {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'},
- {d:'2026-11-20',h:'21:00',lv:2,s:'ktud',title:'Mai 8h: nói chuyện chuyên gia',x:'Thứ 7 21/11, S202. Đến đúng giờ, đầy đủ để buổi nói chuyện không bị gián đoạn; chiều học tiếp lý thuyết.'}
+ {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'}
 ];
-const NTFY_TOPIC='emba6xd-c79c9acb2278', NTFY_SERVER='https://ntfy.sh';
-/* ALERTS-START — dùng chung cho app (Trang chủ, Cài đặt) và tools/notify.js (GitHub Actions gửi thông báo đẩy) */
-const LV={1:{n:'Khẩn',p:5,tag:'rotating_light',cls:'ko'},2:{n:'Quan trọng',p:4,tag:'bell',cls:'g'},3:{n:'Thông tin',p:2,tag:'memo',cls:'c'}};
+/* ALERTS-START — lịch nhắc hiển thị trong app (Trang chủ, Cài đặt); cùng mốc với nhắc nhở trên Lịch điện thoại */
+const LV={1:{n:'Khẩn',cls:'ko'},2:{n:'Quan trọng',cls:'g'},3:{n:'Thông tin',cls:'c'}};
 function alertsFrom(D){ // D={SCHED,DEADLINES,EXAM,NOTI,REMIND,short:{mã:'KTƯD',…}}
   const P=n=>String(n).padStart(2,'0');
   const vn=(d,h,m)=>Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10),h-7,m||0);       // giờ Việt Nam → ms UTC
@@ -619,23 +617,15 @@ function alertsFrom(D){ // D={SCHED,DEADLINES,EXAM,NOTI,REMIND,short:{mã:'KTƯD
   const A=[], put=(key,at,lv,s,title,msg,ev)=>A.push({id:hs(key),at,lv,s,title,msg,ev});
   D.SCHED.forEach(x=>{ const main=x.d===D.EXAM&&x.s==='both', exam=main||/^Thi /.test(x.x), k=x.d+x.s+x.x;
     if(exam){ const nm=main?'Thi '+sh(x.s)+' (dự kiến)':x.x;
-      [[7,'Còn 7 ngày'],[3,'Còn 3 ngày'],[1,'Ngày mai']].forEach(([n,l])=>put('ex'+n+k,vn(add(x.d,-n),20,0),1,x.s,l+': '+nm,wd(x.d)+' '+dm(x.d)+' · '+x.t,k));
-      put('ex0'+k,vn(x.d,6,30),1,x.s,'Hôm nay: '+nm,x.t,k); }
+      [[3,'Còn 3 ngày'],[1,'Ngày mai']].forEach(([n,l])=>put('ex'+n+k,vn(add(x.d,-n),20,0),1,x.s,l+': '+nm,wd(x.d)+' '+dm(x.d)+' · '+x.t,k));
+      const tm=main?null:st(x.t); put('ex0'+k,tm?vn(x.d,tm[0],tm[1])-3600e3:vn(x.d,6,30),1,x.s,(tm?'1 giờ nữa: ':'Hôm nay: ')+nm,x.t,k); }
     else { const [h,m]=st(x.t);
-      put('c1'+k,vn(add(x.d,-1),20,30),2,x.s,'Ngày mai học '+sh(x.s),wd(x.d)+' '+dm(x.d)+' · '+x.t+'\n'+x.x,k);
+      put('c1'+k,vn(add(x.d,-1),20,0),2,x.s,'Ngày mai học '+sh(x.s),wd(x.d)+' '+dm(x.d)+' · '+x.t+'\n'+x.x,k);
       put('c0'+k,vn(x.d,h,m)-3600e3,2,x.s,'1 giờ nữa vào học '+sh(x.s),x.t+' · '+x.x,k); } });
   D.DEADLINES.filter(x=>!(x.d===D.EXAM&&x.s==='both')&&!/^Thi /.test(x.t)).forEach(x=>{ const k='dl'+x.d+x.s+x.t;
-    [[7,2,'Còn 7 ngày'],[3,2,'Còn 3 ngày'],[1,1,'Ngày mai']].forEach(([n,lv,l])=>put('d'+n+k,vn(add(x.d,-n),20,0),lv,x.s,l+' đến hạn: '+x.t,sh(x.s)+' · '+wd(x.d)+' '+dm(x.d)+' · '+x.x,k));
+    [[1,1,'Ngày mai']].forEach(([n,lv,l])=>put('d'+n+k,vn(add(x.d,-n),20,0),lv,x.s,l+' đến hạn: '+x.t,sh(x.s)+' · '+wd(x.d)+' '+dm(x.d)+' · '+x.x,k));
     put('d0'+k,vn(x.d,7,0),1,x.s,'Hôm nay đến hạn: '+x.t,sh(x.s)+' · '+x.x,k); });
   (D.NOTI||[]).forEach(x=>{ const [h,m]=(x.h||'20:00').split(':').map(Number); put('n'+x.d+x.h+x.x,vn(x.d,h,m),x.lv||3,x.s,x.title||sh(x.s),x.x,'n'+x.d+x.x); });
-  // Bản tin tuần (Thông tin): tối Chủ nhật 20:00 — buổi học, hạn nộp 7 ngày tới và các lưu ý quan trọng
-  const all=D.SCHED.map(x=>x.d).concat(D.DEADLINES.map(x=>x.d)).sort(); if(all.length){
-    let d=all[0]; while(wd(d)!=='CN') d=add(d,-1); d=add(d,-7);
-    for(;d<=all[all.length-1];d=add(d,7)){ const end=add(d,7);
-      const cl=D.SCHED.filter(x=>x.d>d&&x.d<=end).map(x=>'• '+wd(x.d)+' '+dm(x.d)+' '+sh(x.s)+': '+(x.d===D.EXAM&&x.s==='both'?'THI (dự kiến)':x.x));
-      const dl=D.DEADLINES.filter(x=>x.d>d&&x.d<=end&&!/^Thi /.test(x.t)).map(x=>'• Hạn '+wd(x.d)+' '+dm(x.d)+': '+x.t);
-      if(!cl.length&&!dl.length) continue;
-      put('w'+d,vn(d,20,0),3,'both','Tuần tới ('+dm(add(d,1))+'–'+dm(end)+')',cl.concat(dl).join('\n'),'w'+d); } }
   return A.sort((a,b)=>a.at-b.at); }
 /* ALERTS-END */
 const SUBJ={
@@ -3234,8 +3224,8 @@ function outlineHTML(s){
   ${S.quiz.some(q=>q.k==='Vấn đáp'||q.k==='Tự luận')?sec('?','','Câu hỏi tự luận / vấn đáp cần chuẩn bị',`<ul>${S.quiz.map((q,i)=>q.k==='Vấn đáp'||q.k==='Tự luận'?`<li>${q.q} <span class="small muted">(${q.cd})</span></li>`:'').join('')}</ul><button class="btn" data-f="${S.quiz.some(q=>q.k==='Vấn đáp')?'vd':'all'}">Luyện ngay</button>`):''}`;
 }
 
-/* ---------- Nhắc nhở & thông báo (ntfy) ---------- */
-// Lịch nhắc sinh từ alertsFrom() (khối ALERTS) — GitHub Actions chạy tools/notify.js để đẩy lên điện thoại qua ntfy.sh.
+/* ---------- Nhắc nhở & thông báo ---------- */
+// Lịch nhắc sinh từ alertsFrom() (khối ALERTS) — hiển thị trong app; nhắc thật nằm trong Lịch điện thoại.
 let _alerts=null;
 function getAlerts(){ if(!_alerts) _alerts=alertsFrom({SCHED,DEADLINES,EXAM,NOTI,short:Object.fromEntries(Object.entries(SUBJ).map(([k,v])=>[k,v.short]))}); return _alerts; }
 const lvPill=lv=>`<span class="pill ${LV[lv].cls}">${LV[lv].n}</span>`;
@@ -3258,27 +3248,17 @@ function homeNoti(){
     ${nx.length?`<details class="sol"><summary>Lịch nhắc tiếp theo</summary><div class="in"><div class="list">${nx.map(a=>alertRow(a,'Sẽ nhắc '+fmtAt(a.at))).join('')}</div></div></details>`:''}
   </div>`; }
 function notiHTML(){
-  const deep='ntfy://ntfy.sh/'+NTFY_TOPIC, web=NTFY_SERVER+'/'+NTFY_TOPIC;
-  const store=isIOS?`<a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">App Store</a>`:`<a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">Google Play</a>`;
   const nx=getAlerts().filter(a=>a.at>Date.now()).slice(0,10);
   return `<div class="card stack"><h3>Nhắc nhở & thông báo</h3>
-    <p class="small muted">Điện thoại tự báo cả khi không mở Sổ tay, qua ứng dụng miễn phí <b>ntfy</b>. Ba cấp độ:</p>
+    <p class="small muted">Nhắc nhở nằm trong <b>Lịch của điện thoại</b> (tài khoản Google), do Claude tạo qua ứng dụng Claude — điện thoại tự báo cả khi không mở Sổ tay. Ba cấp độ:</p>
     <div class="list">
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(1)}</div><span class="small">Ngày thi (trước 7, 3, 1 ngày và sáng hôm thi), hạn nộp ngày mai và hôm nay, thay đổi lịch đột xuất. Ưu tiên cao nhất: kêu, rung mạnh.</span></div></div>
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(2)}</div><span class="small">Buổi học: 20:30 tối hôm trước và 1 giờ trước giờ học; hạn nộp còn 7 ngày, 3 ngày.</span></div></div>
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(3)}</div><span class="small">Bản tin tuần (20:00 Chủ nhật), việc tự học, chuẩn bị phát biểu. Ưu tiên thấp: không kêu.</span></div></div>
+      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(1)}</div><span class="small">Ngày thi: chuông báo trước 3 ngày, tối hôm trước và 1 giờ trước (thi cả ngày dự kiến: 6:30 sáng). Hạn nộp: tối hôm trước và sáng hôm hạn.</span></div></div>
+      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(2)}</div><span class="small">Buổi học: thông báo 20:00 tối hôm trước và 1 giờ trước giờ học.</span></div></div>
+      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(3)}</div><span class="small">Việc tự học, chuẩn bị phát biểu: một thông báo vào giờ hẹn.</span></div></div>
     </div>
-    <b>Cài đặt một lần</b>
-    <ol class="clean small"><li>Cài ứng dụng <b>ntfy</b> (${store}).</li><li>Bấm <b>Mở kênh trong ntfy</b> — hoặc trong ntfy bấm <b>+</b>, nhập tên kênh <code>${NTFY_TOPIC}</code> (để máy chủ mặc định ntfy.sh), bấm Đăng ký. Cho phép ntfy gửi thông báo.</li><li>Bấm <b>Gửi thử</b>: điện thoại phải hiện thông báo trong vài giây.</li></ol>
-    <div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn" href="${deep}" style="text-decoration:none">Mở kênh trong ntfy</a><button class="btn ghost" data-ntfytest="1">Gửi thử</button><button class="btn ghost" data-copy="${NTFY_TOPIC}">Chép tên kênh</button></div>
-    <p class="small muted" id="ntfyMsg"></p>
-    ${nx.length?`<details class="sol"><summary>Lịch nhắc sắp tới</summary><div class="in"><div class="list">${nx.map(a=>alertRow(a,'Sẽ nhắc '+fmtAt(a.at))).join('')}</div></div></details>`:''}
-    <p class="small muted">Nhắc được gửi tự động khoảng 20 phút một lần nên có thể trễ vài chục phút. Muốn bớt thông báo: trong ntfy mở kênh → cài đặt kênh để tắt âm, hoặc (Android) chọn mức ưu tiên tối thiểu. Xem thêm trên web: <a href="${web}" target="_blank" rel="noopener">${web.replace('https://','')}</a>.</p>
+    <p class="small muted">Khi có lịch mới hoặc lịch thay đổi, nhắn Claude trong ứng dụng Claude trên điện thoại để thêm, sửa sự kiện.</p>
+    ${nx.length?`<details class="sol"><summary>Lịch nhắc sắp tới</summary><div class="in"><div class="list">${nx.map(a=>alertRow(a,'Nhắc '+fmtAt(a.at))).join('')}</div></div></details>`:''}
   </div>`; }
-document.addEventListener('click',e=>{ const b=e.target.closest('[data-ntfytest]'); if(!b) return; const m=$('ntfyMsg'); if(m) m.textContent='Đang gửi…';
-  fetch(NTFY_SERVER,{method:'POST',body:JSON.stringify({topic:NTFY_TOPIC,title:'Quan trọng · Thông báo thử',message:'Sổ tay EMBA đã kết nối với điện thoại.',priority:4,tags:['bell']})})
-   .then(r=>{ if(!r.ok) throw 0; if(m) m.textContent='Đã gửi. Nếu điện thoại chưa hiện, kiểm tra đã đăng ký đúng tên kênh và cho phép ntfy gửi thông báo.'; })
-   .catch(()=>{ if(m) m.textContent='Không gửi được từ trang này (bản trong claude.ai bị chặn mạng). Mở trang chính quayloo.github.io/6abmeumt để thử.'; }); });
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
