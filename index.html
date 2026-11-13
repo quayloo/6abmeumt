@@ -533,7 +533,7 @@ body.app-mode #fsBtn{display:none}
 
 <script>
 (function(){
-const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} if(window.syncDirty) window.syncDirty(k);}};
 (function(){ try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persisted().then(p=>{ if(!p) navigator.storage.persist(); }); }catch(e){} })();
 (function(){ try{ const t=JSON.parse(localStorage.getItem('emba-theme')||'"auto"'); if(t==='light'||t==='dark') document.documentElement.dataset.theme=t; }catch(e){} })();
 const now=new Date(), TODAY=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
@@ -1774,13 +1774,80 @@ function calHTML(){
       <div class="row" style="gap:6px;flex-wrap:nowrap"><input readonly value="${ICS_URL}" style="flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:13px" onfocus="this.select()"><button class="btn ghost" data-copy="${ICS_URL}" style="min-height:40px">Chép</button></div>
     </div></details></div>`; }
 
+/* ---------- Sao lưu tự động qua GitHub Gist ---------- */
+// Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
+const SYNC_FILE='so-tay-emba.json', SYNC_DESC='Sổ tay EMBA 6XD – tiến độ học (tự động)';
+const SYNC_SKIP=['emba-subj','emba-lastbackup','emba-install-hide','emba-installed','emba-side-mini','emba-fs','emba-wake','emba-theme'];
+const syncable=k=>/^emba-/.test(k)&&!SYNC_SKIP.includes(k);
+const TOKEN_URL='https://github.com/settings/tokens/new?scopes=gist&description='+encodeURIComponent('Sổ tay EMBA – sao lưu');
+let syncCfg=(()=>{ try{ return JSON.parse(localStorage.getItem('sync-cfg')||'null'); }catch(e){ return null; } })();
+let syncState={busy:false,msg:'',err:false}, syncT=null;
+const saveCfg=()=>{ try{ if(syncCfg) localStorage.setItem('sync-cfg',JSON.stringify(syncCfg)); else localStorage.removeItem('sync-cfg'); }catch(e){} };
+const syncOK=()=>onPages&&syncCfg&&syncCfg.token&&syncCfg.gist;
+function localData(){ const o={}; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(syncable(k)) o[k]=localStorage.getItem(k); } return o; }
+function gh(path,opt){ opt=opt||{}; return fetch('https://api.github.com'+path,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+syncCfg.token,...(opt.body?{'Content-Type':'application/json'}:{})}}).then(async r=>{ if(!r.ok){ const t=r.status===401?'Mã truy cập sai hoặc đã hết hạn':r.status===404?'Không tìm thấy gist (mã thiếu quyền gist?)':'Lỗi GitHub '+r.status; throw new Error(t); } return r.status===204?null:r.json(); }); }
+async function readRemote(){ const g=await gh('/gists/'+syncCfg.gist); const f=g.files&&g.files[SYNC_FILE]; if(!f) return null;
+  let txt=f.content; if(f.truncated&&f.raw_url) txt=await fetch(f.raw_url).then(r=>r.text()); try{ return JSON.parse(txt); }catch(e){ return null; } }
+async function syncPush(keepalive){ if(!syncOK()) return; const savedAt=new Date().toISOString();
+  const body=JSON.stringify({files:{[SYNC_FILE]:{content:JSON.stringify({v:1,savedAt,device:navigator.userAgent.slice(0,120),data:localData()})}}});
+  syncState={busy:true,msg:'Đang lưu…'}; paintSync();
+  try{ await gh('/gists/'+syncCfg.gist,{method:'PATCH',body,keepalive:!!keepalive}); syncCfg.base=savedAt; syncCfg.dirty=false; syncCfg.last=Date.now(); saveCfg(); syncState={msg:'Đã lưu'}; }
+  catch(e){ syncState={msg:e.message,err:true}; } paintSync(); }
+function applyData(d,wholesale){ if(wholesale) Object.keys(localData()).forEach(k=>{ if(!(k in d)) localStorage.removeItem(k); }); Object.keys(d).forEach(k=>{ if(syncable(k)) localStorage.setItem(k,d[k]); }); }
+function mergeData(remote,local){ const out={...remote}; Object.keys(local).forEach(k=>{ if(!(k in out)){ out[k]=local[k]; return; }
+  try{ const a=JSON.parse(out[k]), b=JSON.parse(local[k]); if(a&&b&&typeof a==='object'&&typeof b==='object'&&!Array.isArray(a)&&!Array.isArray(b)) out[k]=JSON.stringify({...a,...b}); else out[k]=local[k]; }catch(e){ out[k]=local[k]; } }); return out; }
+async function syncPull(){ if(!syncOK()) return; try{ const r=await readRemote(); if(!r){ syncCfg.dirty=true; saveCfg(); return syncPush(); }
+    if(r.savedAt===syncCfg.base){ if(syncCfg.dirty) await syncPush(); else { syncState={msg:'Đã đồng bộ'}; paintSync(); } return; }
+    // Máy khác vừa lưu
+    if(sessionStorage.getItem('sync-reloaded')===r.savedAt) return;
+    if(syncCfg.dirty){ applyData(mergeData(r.data||{},localData()),true); syncCfg.dirty=true; saveCfg(); await syncPush(); }
+    else { applyData(r.data||{},true); syncCfg.base=r.savedAt; syncCfg.last=Date.now(); saveCfg(); }
+    sessionStorage.setItem('sync-reloaded',syncCfg.base||r.savedAt); location.reload();
+  }catch(e){ syncState={msg:e.message,err:true}; paintSync(); } }
+window.syncDirty=k=>{ if(!syncOK()||!syncable(k)) return; syncCfg.dirty=true; saveCfg(); clearTimeout(syncT); syncT=setTimeout(()=>syncPush(),4000); };
+document.addEventListener('visibilitychange',()=>{ if(!syncOK()) return;
+  if(document.visibilityState==='hidden'){ if(syncCfg.dirty){ clearTimeout(syncT); syncPush(true); } window._hiddenAt=Date.now(); }
+  else if(window._hiddenAt&&Date.now()-window._hiddenAt>60000) syncPull(); });
+async function syncConnect(token){ syncCfg={token:token.trim()}; syncState={busy:true,msg:'Đang kết nối…'}; paintSync();
+  try{ const list=await gh('/gists?per_page=100'); const g=(list||[]).find(x=>x.files&&x.files[SYNC_FILE]);
+    if(g){ syncCfg.gist=g.id; saveCfg(); const r=await readRemote();
+      if(r&&r.data&&Object.keys(r.data).length){ syncState={ask:true,remoteAt:r.savedAt,msg:''}; paintSync(); return; } }
+    else { const ng=await gh('/gists',{method:'POST',body:JSON.stringify({description:SYNC_DESC,public:false,files:{[SYNC_FILE]:{content:'{}'}}})}); syncCfg.gist=ng.id; saveCfg(); }
+    await syncPush(); }
+  catch(e){ syncCfg=null; saveCfg(); syncState={msg:e.message,err:true}; paintSync(); } }
+function paintSync(){ const el=$('syncBox'); if(el) el.outerHTML=syncHTML(); }
+function syncHTML(){
+  const t=syncCfg&&syncCfg.last?new Date(syncCfg.last):null, when=t?`${t.toLocaleDateString('vi-VN')} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`:'';
+  if(!onPages) return `<div class="card stack" id="syncBox"><h3>Sao lưu tự động</h3><p class="small muted">Chỉ chạy trên Sổ tay chính (bản cài trên điện thoại): <a href="${HOME_URL}#settings" target="_blank" rel="noopener">mở trang chính</a>.</p></div>`;
+  if(syncState.ask) return `<div class="card stack" id="syncBox"><h3>Sao lưu tự động</h3><p>Trên GitHub đã có tiến độ lưu lúc <b>${new Date(syncState.remoteAt).toLocaleString('vi-VN')}</b>. Dùng bản nào?</p>
+    <div class="btnrow"><button class="btn" data-sync="pull">Tải về máy này</button><button class="btn ghost" data-sync="merge">Gộp với máy này</button></div><p class="small muted">"Tải về" thay tiến độ trên máy này bằng bản trên GitHub. "Gộp" giữ cả hai (ưu tiên máy này nếu trùng).</p></div>`;
+  if(!syncOK()) return `<div class="card stack" id="syncBox"><h3>Sao lưu tự động</h3>
+    <p class="small muted">Tiến độ tự lưu vào một ghi chú riêng tư (gist) trên GitHub của anh sau mỗi thay đổi; máy khác dán cùng mã là tự tải về.</p>
+    <ol class="clean small"><li>Bấm <a href="${TOKEN_URL}" target="_blank" rel="noopener"><b>Tạo mã trên GitHub</b></a> (đã chọn sẵn quyền <b>gist</b>) → chọn thời hạn (vd. 1 năm) → <b>Generate token</b> → chép mã <code>ghp_…</code>.</li><li>Dán vào ô dưới → Kết nối.</li></ol>
+    <div class="row" style="gap:6px;flex-wrap:nowrap"><input id="syncTok" type="password" placeholder="ghp_…" autocomplete="off" style="flex:1;min-width:0;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 12px;font-size:15px"><button class="btn" data-sync="connect" ${syncState.busy?'disabled':''}>Kết nối</button></div>
+    ${syncState.msg?`<p class="small" style="color:${syncState.err?'var(--bad)':'var(--muted)'}">${syncState.msg}</p>`:''}
+    <p class="small muted">Mã chỉ lưu trên máy này, chỉ có quyền đọc/ghi gist — không truy cập được repo hay tài khoản.</p></div>`;
+  return `<div class="card stack" id="syncBox"><div class="row between"><h3>Sao lưu tự động</h3><span class="pill ${syncState.err?'ko':'g'}">${syncState.err?'Lỗi':'Đang bật'}</span></div>
+    <p class="small ${syncState.err?'':'muted'}" style="${syncState.err?'color:var(--bad)':''}">${syncState.busy?'Đang lưu…':syncState.err?syncState.msg:(when?`Lần lưu gần nhất: <b>${when}</b>`:'Chưa lưu lần nào')}${syncCfg.dirty&&!syncState.busy?' · còn thay đổi chưa lưu':''}</p>
+    <div class="btnrow"><button class="btn ghost" data-sync="now">Lưu ngay</button><button class="btn ghost" data-sync="check">Lấy bản mới nhất</button></div>
+    <button class="btn ghost" data-sync="off" style="min-height:38px">Tắt sao lưu tự động trên máy này</button></div>`; }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-sync]'); if(!b) return; const a=b.dataset.sync;
+  if(a==='connect'){ const v=($('syncTok')||{}).value||''; if(!v.trim()){ syncState={msg:'Hãy dán mã truy cập',err:true}; paintSync(); return; } syncConnect(v); }
+  else if(a==='pull'){ readRemote().then(r=>{ applyData((r&&r.data)||{},true); syncCfg.base=r.savedAt; syncCfg.dirty=false; syncCfg.last=Date.now(); saveCfg(); location.reload(); }).catch(err=>{ syncState={msg:err.message,err:true}; paintSync(); }); }
+  else if(a==='merge'){ readRemote().then(r=>{ applyData(mergeData((r&&r.data)||{},localData()),true); syncState={}; return syncPush(); }).then(()=>location.reload()).catch(err=>{ syncState={msg:err.message,err:true}; paintSync(); }); }
+  else if(a==='now'){ syncPush(); }
+  else if(a==='check'){ sessionStorage.removeItem('sync-reloaded'); syncPull(); }
+  else if(a==='off'){ if(!b.dataset.sure){ b.dataset.sure='1'; b.textContent='Bấm lần nữa để tắt'; return; } syncCfg=null; saveCfg(); syncState={}; paintSync(); }
+});
+if(syncOK()) setTimeout(syncPull,800);
+
 /* ---------- Sao lưu / khôi phục tiến độ ---------- */
 function bkExport(){ const o={}; for(let k=0;k<localStorage.length;k++){ const key=localStorage.key(k); if(/^emba-/.test(key)&&key!=='emba-lastbackup') o[key]=localStorage.getItem(key); }
   return 'EMBA1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o)))); }
 function bkImport(code){ code=(code||'').trim(); if(!code.startsWith('EMBA1:')) throw new Error('Mã không đúng định dạng (phải bắt đầu bằng EMBA1:)');
   const o=JSON.parse(decodeURIComponent(escape(atob(code.slice(6))))); let n=0; Object.keys(o).forEach(k=>{ if(/^emba-/.test(k)){ localStorage.setItem(k,o[k]); n++; } }); return n; }
 function backupHTML(){ const lb=store.get('emba-lastbackup',null);
-  return `<div class="card stack bk"><h3>Sao lưu tiến độ học</h3>
+  return `<div class="card stack bk"><h3>Sao lưu bằng mã (thủ công)</h3>
   <p class="small muted">Chủ đề đã hiểu, kết quả ôn tập, điểm, việc cần làm… chỉ lưu trên trình duyệt này. Sao lưu để chuyển sang máy khác hoặc phòng khi xóa dữ liệu trình duyệt.${lb?` Lần sao lưu gần nhất: <b>${new Date(lb).toLocaleDateString('vi-VN')}</b>.`:' Chưa sao lưu lần nào.'}</p>
   <div class="btnrow"><button class="btn" data-bkout="1">Tạo mã sao lưu</button><button class="btn ghost" data-bkin="1">Khôi phục từ mã</button></div>
   <div id="bkArea"></div></div>`; }
@@ -1791,6 +1858,7 @@ function renderSettings(){
   const seg=(key,val,opts)=>`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0;padding:0">${opts.map(([v,l])=>`<button class="chip ${val===v?'on':''}" data-set="${key}" data-val='${JSON.stringify(v)}'>${l}</button>`).join('')}</div>`;
   $('v-settings').innerHTML=`
   ${calHTML()}
+  ${syncHTML()}
   ${backupHTML()}
   <div class="card stack"><h3>Ôn tập</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Thời gian luyện vấn đáp</span>${seg('emba-vd-min',vdMin,[[3,'3 phút'],[4,'4 phút'],[5,'5 phút']])}</div></div>
   <div class="card stack"><h3>Giao diện</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Màu nền</span>${seg('emba-theme',th,[['auto','Theo máy'],['light','Sáng'],['dark','Tối']])}</div>
