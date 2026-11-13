@@ -49,7 +49,7 @@ button{cursor:pointer}
 .muted{color:var(--muted)} .small{font-size:13px}
 
 /* Top bar */
-.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 10px calc(14px + env(safe-area-inset-left));background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:6px;padding:calc(10px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 10px calc(14px + env(safe-area-inset-left));background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .homebtn{flex:none;width:44px;height:44px;border-radius:13px;border:1.5px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
 .homebtn.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .homebtn svg{width:22px;height:22px}
@@ -136,7 +136,6 @@ button{cursor:pointer}
 .subjsheet .box:focus-visible{outline:none}
 body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 @media (prefers-reduced-motion: no-preference){ .subjsheet.on .box{animation:up .22s ease-out both} @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}} }
-.days{flex:none;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);white-space:nowrap}
 
 /* Bottom bar */
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(19,32,29,.08);padding:6px calc(8px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left))}
@@ -376,6 +375,9 @@ html,body{overscroll-behavior-x:none}
 .btnrow{display:flex;gap:8px;flex-wrap:wrap} .btnrow .btn{flex:1;min-width:140px}
 .icsbox{display:flex;flex-direction:column;gap:8px;font-size:14px}
 .icsbox ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+#fsBtn{display:none!important}
+.top .homebtn{width:40px;height:44px}
+.pickbtn{gap:6px!important;padding:0 8px 0 10px!important;font-size:clamp(13px,3.7vw,15px)!important}
 .empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
 .install{display:flex;gap:14px;align-items:center;flex-wrap:wrap;position:relative;padding-right:46px}
@@ -453,7 +455,7 @@ body.app-mode #fsBtn{display:none}
   .topic{scroll-margin-top:24px}
   .fig svg{max-width:560px;margin:0 auto;display:block}
   /* Lộ trình, bài tập: lưới 2 cột */
-  #v-know.on,#v-quiz.on,#v-grades.on,#v-road.on,#v-work.on,#v-search.on{max-width:860px}
+  #v-know.on,#v-quiz.on,#v-grades.on,#v-road.on,#v-work.on,#v-search.on,#v-settings.on{max-width:860px}
   .sbox{top:0}
   .qnav2{bottom:12px}
   #v-quiz .dots{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0}
@@ -500,7 +502,7 @@ body.app-mode #fsBtn{display:none}
     <button type="button" class="pickbtn" id="subjBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="subjSheet"><span class="dot"></span><span class="lbl" id="subjLbl">Chọn môn học</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
   </div>
   <a class="homebtn" href="#search" id="searchBtn" aria-label="Tìm trong Sổ tay" title="Tìm trong Sổ tay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a>
-  <span class="days" id="days">30 ngày</span>
+  <a class="homebtn" href="#settings" id="setBtn" aria-label="Cài đặt" title="Cài đặt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
   <button class="homebtn" id="fsBtn" aria-label="Toàn màn hình" title="Toàn màn hình" hidden><svg id="fsIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
 </header>
 
@@ -513,6 +515,7 @@ body.app-mode #fsBtn{display:none}
   <section class="view" id="v-quiz"></section>
   <section class="view" id="v-grades"></section>
   <section class="view" id="v-search"></section>
+  <section class="view" id="v-settings"></section>
 </main>
 
 <div class="modal" id="iosModal" role="dialog" aria-modal="true" aria-labelledby="iosT"><div class="box">
@@ -531,6 +534,7 @@ body.app-mode #fsBtn{display:none}
 <script>
 (function(){
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+(function(){ try{ const t=JSON.parse(localStorage.getItem('emba-theme')||'"auto"'); if(t==='light'||t==='dark') document.documentElement.dataset.theme=t; }catch(e){} })();
 const now=new Date(), TODAY=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
 const dayMs=864e5, U=s=>Date.parse(s), WD=['CN','T2','T3','T4','T5','T6','T7'];
 const dd=s=>{const d=new Date(U(s));return {w:WD[d.getUTCDay()],d:`${d.getUTCDate()}/${d.getUTCMonth()+1}`}};
@@ -1543,7 +1547,7 @@ const qKey=s=>s==='ktud'?'emba-quiz':'emba-quiz-'+s;
 let quizRes = store.get(qKey(cur),{}); let picks={}; let qFilter='all', qCur=0;
 const $=id=>document.getElementById(id);
 const leftDays=Math.max(0,Math.round((U(EXAM)-TODAY)/dayMs));
-$('days').textContent = leftDays===0 ? 'Hôm nay thi' : `${leftDays} ngày`;
+
 function setSubjColors(s){ const S=SUBJ[s]; document.documentElement.style.setProperty('--c',`var(${S.c})`); document.documentElement.style.setProperty('--cs',`var(${S.cs})`); }
 function sTag(s){ return s==='both'?'<span class="tag" style="background:var(--gold)"></span>':`<span class="tag" style="background:var(${SUBJ[s].c})"></span>`; }
 function sName(s){ return s==='both'?'Cả hai môn':SUBJ[s].name; }
@@ -1614,7 +1618,7 @@ function renderRoad(s){
   const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
   $('v-road').innerHTML = `
   ${roadStops(s)}
-  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div>${icsBox()}</div>`:''}
+  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div><a class="btn ghost" href="#settings" style="text-decoration:none">Thêm lịch học & thi vào điện thoại →</a></div>`:''}
   ${dl.length?`<div class="card stack"><h3>Hạn nộp</h3><div class="list">${dl.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li" ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b><span class="small muted">${x.x}</span></div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</div>`}).join('')}</div></div>`:''}
   ${rm.length?`<div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>`;
@@ -1742,15 +1746,38 @@ function outlineHTML(s){
   ${S.quiz.some(q=>q.k==='Vấn đáp'||q.k==='Tự luận')?sec('?','','Câu hỏi tự luận / vấn đáp cần chuẩn bị',`<ul>${S.quiz.map((q,i)=>q.k==='Vấn đáp'||q.k==='Tự luận'?`<li>${q.q} <span class="small muted">(${q.cd})</span></li>`:'').join('')}</ul><button class="btn" data-f="${S.quiz.some(q=>q.k==='Vấn đáp')?'vd':'all'}">Luyện ngay</button>`):''}`;
 }
 
-/* ---------- Thêm lịch vào điện thoại (.ics) ---------- */
-const ICS_URL=HOME_URL+'lich-emba.ics';
-function icsBox(){ return `<details class="sol"><summary>Thêm lịch học & thi vào điện thoại</summary><div class="in icsbox">
-  <p>Lịch gồm buổi học, hạn nộp và ngày thi của <b>tất cả các môn</b>, có nhắc trước buổi học 1 giờ và trước hạn nộp 1 ngày. Đăng ký một lần, lịch tự cập nhật khi Sổ tay thay đổi.</p>
-  <ol><li><b>iPhone:</b> bấm <a href="${ICS_URL.replace('https://','webcal://')}">Đăng ký lịch EMBA</a> → Đăng ký.</li>
-  <li><b>Android / Google Calendar:</b> trên máy tính mở calendar.google.com → Lịch khác → <b>Từ URL</b> → dán địa chỉ bên dưới.</li>
-  <li>Hoặc <a href="${ICS_URL}">tải file lịch</a> để nhập một lần (không tự cập nhật).</li></ol>
-  <div class="row" style="gap:6px;flex-wrap:nowrap"><input readonly value="${ICS_URL}" style="flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:13px" onfocus="this.select()"><button class="btn ghost" data-copy="${ICS_URL}" style="min-height:40px">Chép</button></div>
-</div></details>`; }
+/* ---------- Thêm lịch vào điện thoại ---------- */
+const ICS_URL=HOME_URL+'lich-emba.ics', ICS_WEBCAL=ICS_URL.replace('https://','webcal://');
+const GCAL_SUB='https://calendar.google.com/calendar/r?cid='+encodeURIComponent(ICS_WEBCAL);
+const isAndroid=/android/i.test(navigator.userAgent);
+function gcalEvent(x,deadline){ // link thêm MỘT sự kiện vào Google Calendar
+  const S=SUBJ[x.s], name=S?S.short:'KTƯD + QTCL', pad=n=>String(n).padStart(2,'0');
+  const ymd=x.d.replace(/-/g,''), next=(()=>{ const d=new Date(Date.UTC(+x.d.slice(0,4),+x.d.slice(5,7)-1,+x.d.slice(8,10)+1)); return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}`; })();
+  let dates=`${ymd}/${next}`, text, det;
+  if(deadline){ text=`Hạn: ${name} – ${x.t}`; det=x.x; }
+  else { text=x.d===EXAM?`THI: ${name} (dự kiến)`:`${name}: ${x.x}`; det=`${S?S.name:'Cả hai môn'} · ${x.t}`;
+    const t=x.t, m=t.match(/(\d{1,2})h(\d{2})?/); let st=null,en=null;
+    if(x.d!==EXAM){ if(/cả ngày/i.test(t)){st=[7,30];en=[17,0];} else if(m){st=[+m[1],+(m[2]||0)];en=[21,0];} else if(/tối/i.test(t)){st=[18,0];en=[21,0];} else if(/sáng/i.test(t)){st=[7,30];en=[11,30];} }
+    if(st) dates=`${ymd}T${pad(st[0])}${pad(st[1])}00/${ymd}T${pad(en[0])}${pad(en[1])}00`; }
+  const loc=(x.t.match(/S\d{3}/)||[])[0]||(/online/i.test(x.t)?'Online':'');
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(text)+'&dates='+dates+'&ctz=Asia/Ho_Chi_Minh&details='+encodeURIComponent(det)+(loc?'&location='+encodeURIComponent(loc):''); }
+function calHTML(){
+  const up=SCHED.filter(x=>U(x.d)>=TODAY).map(x=>({x,dl:false})).concat(DEADLINES.filter(x=>x.d!==EXAM&&U(x.d)>=TODAY).map(x=>({x,dl:true}))).sort((a,b)=>U(a.x.d)-U(b.x.d));
+  const android=`<div class="stack"><b>Android (Google Calendar)</b><ol class="clean">
+      <li>Bấm nút dưới → đăng nhập đúng tài khoản Google đang dùng trên điện thoại → bấm <b>Thêm</b>.</li>
+      <li>Mở ứng dụng Google Calendar → ☰ → kéo xuống thấy lịch <b>EMBA 6XD</b> → đánh dấu để hiện. Nếu chưa thấy: ☰ → Cài đặt → EMBA 6XD → bật <b>Đồng bộ</b>.</li></ol>
+      <a class="btn" href="${GCAL_SUB}" target="_blank" rel="noopener" style="text-decoration:none">Thêm lịch EMBA vào Google Calendar</a>
+      <p class="small muted">Nếu bước 1 không hiện nút Thêm: mở link trên bằng Chrome và chọn "Trang web cho máy tính", hoặc làm trên máy tính. Google cập nhật lịch đăng ký vài giờ/lần.</p></div>`;
+  const ios=`<div class="stack"><b>iPhone (Lịch của Apple)</b><ol class="clean"><li>Bấm nút dưới → <b>Đăng ký</b> → <b>Thêm</b>.</li></ol>
+      <a class="btn ${isAndroid?'ghost':''}" href="${ICS_WEBCAL}" style="text-decoration:none">Đăng ký lịch EMBA trên iPhone</a></div>`;
+  return `<div class="card stack icsbox"><h3>Lịch học & thi trên điện thoại</h3>
+    <p class="small muted">Một lịch chung cho mọi môn: buổi học (nhắc trước 1 giờ), hạn nộp và ngày thi (nhắc từ hôm trước). Đăng ký một lần, lịch tự cập nhật khi Sổ tay thay đổi.</p>
+    ${isAndroid?android+ios:ios+android}
+    <details class="sol"><summary>Cách đơn giản nhất: thêm từng buổi (${up.length})</summary><div class="in stack">
+      <p class="small muted">Mỗi dòng mở thẳng màn hình "Thêm sự kiện" của Google Calendar, chỉ cần bấm <b>Lưu</b>. Không tự cập nhật khi lịch thay đổi.</p>
+      <div class="list">${up.map(({x,dl})=>{ const D=dd(x.d); return `<a class="li hl" href="${gcalEvent(x,dl)}" target="_blank" rel="noopener"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${dl?'Hạn: '+x.t:(x.d===EXAM?'Thi (dự kiến)':x.x)}</b><span class="small muted">${dl?x.x:x.t}</span></div><span class="pill c">+ Lịch</span></a>`; }).join('')}</div></div></details>
+    <details class="sol"><summary>Địa chỉ lịch (dùng thủ công)</summary><div class="in stack"><div class="row" style="gap:6px;flex-wrap:nowrap"><input readonly value="${ICS_URL}" style="flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:13px" onfocus="this.select()"><button class="btn ghost" data-copy="${ICS_URL}" style="min-height:40px">Chép</button></div><p class="small muted">Google Calendar trên máy tính: Lịch khác (+) → Từ URL → dán địa chỉ.</p></div></details>
+  </div>`; }
 
 /* ---------- Sao lưu / khôi phục tiến độ ---------- */
 function bkExport(){ const o={}; for(let k=0;k<localStorage.length;k++){ const key=localStorage.key(k); if(/^emba-/.test(key)&&key!=='emba-lastbackup') o[key]=localStorage.getItem(key); }
@@ -1762,6 +1789,33 @@ function backupHTML(){ const lb=store.get('emba-lastbackup',null);
   <p class="small muted">Chủ đề đã hiểu, kết quả ôn tập, điểm, việc cần làm… chỉ lưu trên trình duyệt này. Sao lưu để chuyển sang máy khác hoặc phòng khi xóa dữ liệu trình duyệt.${lb?` Lần sao lưu gần nhất: <b>${new Date(lb).toLocaleDateString('vi-VN')}</b>.`:' Chưa sao lưu lần nào.'}</p>
   <div class="btnrow"><button class="btn" data-bkout="1">Tạo mã sao lưu</button><button class="btn ghost" data-bkin="1">Khôi phục từ mã</button></div>
   <div id="bkArea"></div></div>`; }
+
+/* ---------- Cài đặt (#settings) ---------- */
+function renderSettings(){
+  const th=store.get('emba-theme','auto'), wake=store.get('emba-wake',true), fsOn=store.get('emba-fs',true);
+  const seg=(key,val,opts)=>`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0;padding:0">${opts.map(([v,l])=>`<button class="chip ${val===v?'on':''}" data-set="${key}" data-val='${JSON.stringify(v)}'>${l}</button>`).join('')}</div>`;
+  $('v-settings').innerHTML=`
+  ${calHTML()}
+  ${backupHTML()}
+  <div class="card stack"><h3>Ôn tập</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Thời gian luyện vấn đáp</span>${seg('emba-vd-min',vdMin,[[3,'3 phút'],[4,'4 phút'],[5,'5 phút']])}</div></div>
+  <div class="card stack"><h3>Giao diện</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Màu nền</span>${seg('emba-theme',th,[['auto','Theo máy'],['light','Sáng'],['dark','Tối']])}</div>
+    ${window.WAKE_OK?`<div class="row between" style="flex-wrap:wrap;gap:8px"><span>Giữ màn hình sáng khi học<br><span class="small muted">Tự tắt sau 20 phút không chạm</span></span>${seg('emba-wake',wake,[[true,'Bật'],[false,'Tắt']])}</div>`:''}
+    ${window.FS_OK?`<div class="row between" style="flex-wrap:wrap;gap:8px"><span>Toàn màn hình<br><span class="small muted">Ẩn thanh địa chỉ của trình duyệt</span></span>${seg('emba-fs',fsOn,[[true,'Bật'],[false,'Tắt']])}</div>`:''}</div>
+  <div class="card stack"><h3>Ứng dụng</h3>
+    <div class="row between" style="gap:8px"><span>Cài Sổ tay lên màn hình chính</span><button class="btn ghost" data-showinstall="1" style="min-height:40px">Hướng dẫn</button></div>
+    <div class="row between" style="gap:8px"><span>Tải bản mới nhất</span><button class="btn ghost" data-reload="1" style="min-height:40px">Tải lại</button></div>
+    <p class="small muted">Còn ${leftDays} ngày đến kỳ thi (${dd(EXAM).w} ${dd(EXAM).d}). Phím tắt máy tính: / tìm kiếm · 1–4 chuyển tab · H trang chủ.</p></div>`;
+}
+document.addEventListener('click',e=>{
+  const st=e.target.closest('[data-set]'); if(st){ const k=st.dataset.set, v=JSON.parse(st.dataset.val); store.set(k,v);
+    if(k==='emba-vd-min') vdMin=v;
+    if(k==='emba-theme'){ if(v==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=v; }
+    if(k==='emba-wake'&&!v&&window.wakeOff) window.wakeOff();
+    if(k==='emba-fs'){ const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement); if(v!==isFs) $('fsBtn').click(); }
+    renderSettings(); return; }
+  if(e.target.closest('[data-reload]')){ location.reload(); return; }
+  if(e.target.closest('[data-showinstall]')){ store.set('emba-install-hide',false); location.hash='#home'; return; }
+});
 
 /* ---------- Tìm kiếm toàn Sổ tay ---------- */
 let sQ='', sIdx=null, pendTp=null, pendEx=null, pendQ=null;
@@ -1830,8 +1884,8 @@ function askLink(s,ch,i){ const S=SUBJ[s], t=ch.topics[i]; const body=plain(t.b)
   const root=document.documentElement, b=$('fsBtn'), ico=$('fsIco');
   const req=root.requestFullscreen||root.webkitRequestFullscreen, ex=document.exitFullscreen||document.webkitExitFullscreen;
   const enabled=(document.fullscreenEnabled||document.webkitFullscreenEnabled)&&req;
-  if(!enabled) return;               // ví dụ Safari trên iPhone: không hỗ trợ, ẩn nút
-  b.hidden=false;
+  if(!enabled) return;               // ví dụ Safari trên iPhone: không hỗ trợ
+  window.FS_OK=true;                 // nút bật/tắt nằm trong Cài đặt (nút #fsBtn ẩn khỏi thanh trên)
   const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
   const paint=()=>{ const on=isFs(); b.setAttribute('aria-label',on?'Thoát toàn màn hình':'Toàn màn hình'); b.title=b.getAttribute('aria-label'); b.classList.toggle('on',on);
     ico.innerHTML=on?'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>':'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'; };
@@ -1934,7 +1988,7 @@ function renderGrades(){ const keys=Object.keys(SUBJ), G=gStats();
   <div class="glist">${keys.map(k=>{ const S=SUBJ[k], st=gStatus(k), tk=gTotal(k,grades[k]), op=gOpen===k;
     return `<div class="gcard ${op?'open':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><button type="button" class="ghd" data-gtoggle="${k}" aria-expanded="${op}"><span class="ic">${S.short}</span><span class="gnm"><b>${S.name}</b><span class="spill ${st}">${GST[st]}</span></span><span class="gtot" data-gtot="${k}">${tk==null?'—':fmt(tk)}</span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>${op?gForm(k):''}</div>`; }).join('')}</div>
   <div class="card stack"><label class="spass" style="padding:0">Ngưỡng đạt học phần <input inputmode="decimal" id="gPass" value="${fmt(passMark())}"> điểm</label><p class="small muted">Trạng thái "Tự động": có điểm thì so với ngưỡng đạt (Đã qua / Thi lại); chưa có điểm thì còn buổi học là Đang học, hết lịch là Đã học – chờ điểm. Ngưỡng 5,5 đang đặt tạm — đối chiếu quy chế đào tạo thạc sĩ của ĐH Thương mại. Điểm chỉ lưu trên thiết bị này.</p></div>
-  ${backupHTML()}`; }
+  <a class="card hl" href="#settings" style="flex-direction:row;align-items:center"><span style="flex:1"><b>Sao lưu tiến độ</b><br><span class="small muted">Chuyển sang mục Cài đặt</span></span><svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>`; }
 const gv=$('v-grades');
 gv.addEventListener('input',e=>{ const k=e.target.dataset.gk, f=e.target.dataset.gf; if(k&&f){ gDraft[k][f]=e.target.value; const t=gTotal(k,gDraft[k]); gv.querySelector(`[data-gtot="${k}"]`).textContent=t==null?'—':fmt(t); } });
 gv.addEventListener('change',e=>{ if(e.target.id==='gPass'){ const v=num(e.target.value); if(v!=null) grades._pass=v; else delete grades._pass; store.set('emba-grades',grades); renderGrades(); } });
@@ -1967,17 +2021,17 @@ const TABS=['road','know','work','quiz']; let swDir=null;
     if(k<0||k>=TABS.length) return;
     swDir=dx<0?'swl':'swr'; location.hash=`#${m[1]}-${TABS[k]}`; },{passive:true});
 })();
-const narrow=()=>innerWidth<440;
 function route(){
   const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/);
   const pk=$('picker'), lbl=$('subjLbl');
   document.querySelectorAll('.bottom a').forEach(a=>a.classList.remove('on'));
-  $('searchBtn').classList.toggle('on',h==='search');
-  if(h==='search'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=narrow()?'Chọn môn':'Tìm kiếm'; pk.className='picker nosubj'; renderSearch(); show('search'); return; }
-  if(h==='grades'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=narrow()?'Điểm':'Điểm & trạng thái'; pk.className='picker nosubj'; renderGrades(); show('grades'); return; }
-  if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); lbl.textContent=narrow()?'Chọn môn':'Chọn môn học'; pk.className='picker nosubj'; renderHome(); show('home'); return; }
+  $('searchBtn').classList.toggle('on',h==='search'); $('setBtn').classList.toggle('on',h==='settings');
+  if(h==='settings'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent='Cài đặt'; pk.className='picker nosubj'; renderSettings(); show('settings'); return; }
+  if(h==='search'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent='Tìm kiếm'; pk.className='picker nosubj'; renderSearch(); show('search'); return; }
+  if(h==='grades'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent='Điểm & trạng thái'; pk.className='picker nosubj'; renderGrades(); show('grades'); return; }
+  if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); lbl.textContent='Chọn môn học'; pk.className='picker nosubj'; renderHome(); show('home'); return; }
   const [,s,p]=m; if(s!==cur){ cur=s; quizRes=store.get(qKey(s),{}); qFilter='all'; qCur=0; picks={}; qSet=null; sess={}; qReview=false; } store.set('emba-subj',s); setSubjColors(s);
-  document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=narrow()?SUBJ[s].short:SUBJ[s].name; lbl.title=SUBJ[s].name; pk.className='picker active';
+  document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=SUBJ[s].name; pk.className='picker active';
   let tab='know';
   if(p==='road'){ renderRoad(s); show('road'); tab='road'; }
   else if(p==='know'){ renderKnow(s); show('know'); scrollTo(0,0); openPending('tp-'); }
@@ -1988,7 +2042,7 @@ function route(){
 }
 /* ---------- Thanh bên (máy tính) ---------- */
 const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',know:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/>',work:'<path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/>',quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/>',grade:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'};
-ICO.menu='<path d="M4 6h16M4 12h16M4 18h16"/>'; ICO.search='<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'; ICO.road='<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>'; ICO.close='<path d="M15 6l-6 6 6 6"/>';
+ICO.menu='<path d="M4 6h16M4 12h16M4 18h16"/>'; ICO.gear='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>'; ICO.search='<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'; ICO.road='<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>'; ICO.close='<path d="M15 6l-6 6 6 6"/>';
 let sideMini=store.get('emba-side-mini',true);
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[n]}</svg>`;
 function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024px)').matches) return;
@@ -2000,7 +2054,7 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   document.body.classList.toggle('side-mini',sideMini);
   const tgl=`<button type="button" class="stgl" id="sideTgl" aria-label="${sideMini?'Mở menu':'Thu gọn menu'}" title="${sideMini?'Mở menu':'Thu gọn menu'}" aria-expanded="${!sideMini}">${ic(sideMini?'menu':'close')}</button>`;
   if(sideMini){
-    el.innerHTML=`${tgl}<a class="ri ${h===''||h==='home'?'on':''}" href="#home" title="Trang chủ" aria-label="Trang chủ">${ic('home')}</a><a class="ri ${h==='search'?'on':''}" href="#search" title="Tìm kiếm" aria-label="Tìm kiếm">${ic('search')}</a><a class="ri ${h==='grades'?'on':''}" href="#grades" title="Điểm & trạng thái" aria-label="Điểm & trạng thái">${ic('grade')}</a><span class="rsep"></span>
+    el.innerHTML=`${tgl}<a class="ri ${h===''||h==='home'?'on':''}" href="#home" title="Trang chủ" aria-label="Trang chủ">${ic('home')}</a><a class="ri ${h==='search'?'on':''}" href="#search" title="Tìm kiếm" aria-label="Tìm kiếm">${ic('search')}</a><a class="ri ${h==='grades'?'on':''}" href="#grades" title="Điểm & trạng thái" aria-label="Điểm & trạng thái">${ic('grade')}</a><a class="ri ${h==='settings'?'on':''}" href="#settings" title="Cài đặt" aria-label="Cài đặt">${ic('gear')}</a><span class="rsep"></span>
     ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-road" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['road','Lộ trình'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
     <span class="rcount" title="Số ngày đến kỳ thi"><b>${leftDays}</b>ngày</span>`;
     return; }
@@ -2009,6 +2063,7 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   <a class="si ${h===''||h==='home'?'on':''}" href="#home">${ic('home')}Trang chủ</a>
   <a class="si ${h==='search'?'on':''}" href="#search">${ic('search')}Tìm kiếm</a>
   <a class="si ${h==='grades'?'on':''}" href="#grades">${ic('grade')}Điểm & trạng thái</a>
+  <a class="si ${h==='settings'?'on':''}" href="#settings">${ic('gear')}Cài đặt</a>
   <div class="sl">Môn học</div>${subj}
   <div class="foot"><span>Phím tắt: <b>/</b> tìm kiếm · <b>M</b> ẩn/hiện menu · <b>1</b> Lộ trình · <b>2</b> Kiến thức · <b>3</b> Bài tập · <b>4</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
 $('side').addEventListener('click',e=>{ if(e.target.closest('#sideTgl')){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); const t=$('sideTgl'); if(t) t.focus({preventScroll:true}); } });
@@ -2023,9 +2078,9 @@ document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INP
 let lastHash=null;
 window.addEventListener('hashchange',()=>{ route(); renderSide(); if(location.hash!==lastHash) window.scrollTo(0,0); lastHash=location.hash; });
 /* ---------- Giữ màn hình sáng (Screen Wake Lock) ---------- */
-(function(){ if(!('wakeLock' in navigator)) return; let wl=null, idle=null; const IDLE=20*60*1000;
-  async function on(){ try{ if(!wl&&document.visibilityState==='visible'){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null;}); } }catch(e){} }
-  function off(){ try{ if(wl){ wl.release(); wl=null; } }catch(e){} }
+(function(){ if(!('wakeLock' in navigator)) return; let wl=null, idle=null; const IDLE=20*60*1000; window.WAKE_OK=true;
+  async function on(){ try{ if(!store.get('emba-wake',true)) return; if(!wl&&document.visibilityState==='visible'){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null;}); } }catch(e){} }
+  function off(){ try{ if(wl){ wl.release(); wl=null; } }catch(e){} } window.wakeOff=off;
   function poke(){ on(); clearTimeout(idle); idle=setTimeout(off,IDLE); }
   ['pointerdown','touchstart','keydown','scroll'].forEach(ev=>document.addEventListener(ev,poke,{passive:true}));
   document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') poke(); });
