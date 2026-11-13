@@ -70,17 +70,20 @@ TRIGGER:-PT1H
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-UID:emba6xd-2026-11-21-ktud-dmbvan@quayloo.github.io
+UID:emba6xd-2026-11-21-ktud-hdj3hv@quayloo.github.io
 DTSTAMP:20261113T000000Z
 DTSTART:20261121T003000Z
 DTEND:20261121T100000Z
-SUMMARY:KTƯD: Buổi lý thuyết cuối + thảo luận 2 tiết
-DESCRIPTION:Kinh tế ứng dụng · Cả ngày · S202 · Buổi lý thu
- yết cuối + thảo luận 2 tiết
+SUMMARY:KTƯD: Sáng 8h–11h: nói chuyện chuyên gia · Chiều: học
+  tiếp lý thuyết (buổi lý thuyết cuối) + thảo luận
+DESCRIPTION:Kinh tế ứng dụng · Cả ngày · S202 · Sáng 8h–11h
+ : nói chuyện chuyên gia · Chiều: học tiếp lý thuyết (buổi
+  lý thuyết cuối) + thảo luận
 LOCATION:S202
 BEGIN:VALARM
 ACTION:DISPLAY
-DESCRIPTION:KTƯD: Buổi lý thuyết cuối + thảo luận 2 tiết
+DESCRIPTION:KTƯD: Sáng 8h–11h: nói chuyện chuyên gia · Chiều: h
+ ọc tiếp lý thuyết (buổi lý thuyết cuối) + thảo luận
 TRIGGER:-PT1H
 END:VALARM
 END:VEVENT
