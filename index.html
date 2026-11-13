@@ -187,6 +187,10 @@ svg text{font-family:var(--body)}
 .hero h1{color:#fff;font-size:24px;margin-top:4px}
 .hero p{opacity:.9;font-size:14px;margin-top:6px}
 .gauge{width:118px;position:relative;z-index:1}
+.hero-s{display:block;padding:18px 20px}
+.hero-s h1{font-size:23px}
+.hnext{text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px}
+.hnext h2{font-size:19px}
 
 /* Roadmap */
 .road{position:relative;display:flex;flex-direction:column;gap:12px;padding-left:34px}
@@ -410,7 +414,7 @@ body.app-mode #fsBtn{display:none}
   #v-home.on{display:block;column-count:2;column-gap:18px}
   #v-home > *{break-inside:avoid;margin-bottom:18px}
   #v-home > .card.stack,#v-home > a.card{display:flex;flex-direction:column}
-  #v-home > .hero,#v-home > .install,#v-home > .card:has(.tl){column-span:all}
+  #v-home > .hero,#v-home > .install{column-span:all}
   #v-home > .install{flex-wrap:nowrap} #v-home > .install > .btn{flex:none}
   /* Bài chuyên đề: nội dung + mục lục dính bên phải */
   #v-chap.on{display:grid;grid-template-columns:minmax(0,760px) 232px;justify-content:center;column-gap:28px;row-gap:14px;align-items:start}
@@ -525,12 +529,12 @@ const DEADLINES=[
 ];
 const REMIND=[
  {s:'ktud',t:'Cô sẽ đặt câu hỏi để lớp trả lời trước rồi mới chốt; không ai xung phong thì gọi tên. Mục tiêu 7–10 người phát biểu mỗi buổi (điểm chuyên cần 10%).'},
- {s:'ktud',t:'Bài kiểm tra giữa kỳ (trắc nghiệm + tự luận) dự kiến khi hết Chuyên đề 3 — cần hỏi lại ngày cụ thể (21/11 hoặc 25/11).'},
+ {s:'ktud',imp:1,t:'Bài kiểm tra giữa kỳ (trắc nghiệm + tự luận) dự kiến khi hết Chuyên đề 3 — cần hỏi lại ngày cụ thể (21/11 hoặc 25/11).'},
  {s:'ktud',t:'Bài nhóm: Times New Roman 12, giãn dòng 1,2; có trang bìa, mục lục, nội dung, tài liệu tham khảo.'},
  {s:'ktud',t:'"Kinh tế học chỉ đưa ra một phần thông tin, giúp đặt đúng câu hỏi" — tự luận nên nêu rõ giả định và điều kiện áp dụng.'},
- {s:'qtcl',t:'Thi hết học phần QTCL là thi VẤN ĐÁP (60%) — ôn theo dạng trình bày: khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
+ {s:'qtcl',imp:1,t:'Thi hết học phần QTCL là thi VẤN ĐÁP (60%) — ôn theo dạng trình bày: khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
  {s:'qtcl',t:'Thảo luận: nhóm trình bày nộp Word + PPT; nhóm phản biện, nhóm dẫn dắt nộp Word. Bài nào cũng có bảng đánh giá từng thành viên.'},
- {s:'qtcl',t:'Chuyên cần 10%: vắng trên 40% số tiết thì 0 điểm và không đủ điều kiện dự thi.'},
+ {s:'qtcl',imp:1,t:'Chuyên cần 10%: vắng trên 40% số tiết thì 0 điểm và không đủ điều kiện dự thi.'},
  {s:'both',t:'Lịch thi trên thời khóa biểu là lịch dự kiến.'}
 ];
 const SUBJ={
@@ -1548,25 +1552,20 @@ document.addEventListener('click',async e=>{
 
 /* ===================== HOME ===================== */
 function renderHome(){
-  const up = SCHED.filter(x=>U(x.d)>=TODAY);
-  const next = up[0];
-  const total=Math.round((U(EXAM)-U('2026-11-12'))/dayMs);
-  const pct=Math.max(3,Math.min(100,leftDays/total*100));
-  const T0=U('2026-11-13'),T1=U(EXAM),sp=T1-T0,pos=d=>(U(d)-T0)/sp*100, tp=Math.min(100,Math.max(0,(TODAY-T0)/sp*100));
-  const rows=[['Học Kinh tế ứng dụng','2026-11-13','2026-11-25','var(--ktud)'],['Học Quản trị chiến lược','2026-11-14','2026-12-02','var(--qtcl)'],['Viết bài nhóm 3','2026-11-13','2026-11-29','var(--gold)'],['Nộp + thuyết trình','2026-12-05',null,'var(--gold)'],['Ôn thi tổng','2026-12-06','2026-12-11','var(--violet)'],['Thi hai môn',EXAM,null,'var(--bad)']];
-  const ok=Object.keys(SUBJ).reduce((n,k)=>n+Object.values(store.get(qKey(k),{})).filter(x=>x==='ok').length,0), qTot=Object.keys(SUBJ).reduce((n,k)=>n+SUBJ[k].quiz.length,0);
+  const up=SCHED.filter(x=>U(x.d)>=TODAY && x.d!==EXAM), next=up[0], after=up[1];
+  const soon=DEADLINES.filter(x=>x.d!==EXAM && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs);
+  const imp=REMIND.filter(r=>r.imp);
+  const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
+  const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
   $('v-home').innerHTML = `
-  <div class="hero">
-    <div style="position:relative;z-index:1"><div class="eyebrow">Học kỳ I · EMBA 6XD</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>Thi Kinh tế ứng dụng và Quản trị chiến lược cùng ngày ${dd(EXAM).w} ${dd(EXAM).d}/2026.</p></div>
-    <svg class="gauge" viewBox="0 0 120 80" role="img" aria-label="Kim xăng thời gian còn lại"><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="12" stroke-linecap="round"/><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="#F2B940" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="${pct} 100"/><text x="60" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" style="font-family:var(--display)">${leftDays}</text><text x="12" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">E</text><text x="108" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">F</text></svg>
-  </div>
+  <div class="hero hero-s"><div style="position:relative;z-index:1"><div class="eyebrow">EMBA 6XD · Học kỳ I</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>${dd(EXAM).w} ${dd(EXAM).d} · Kinh tế ứng dụng + Quản trị chiến lược (dự kiến)</p></div></div>
   ${installCard()}
-  ${next?`<a class="card" href="#${next.s==='both'?'ktud':next.s}-road" style="text-decoration:none;color:inherit;border-left:5px solid ${next.s==='both'?'var(--gold)':`var(${SUBJ[next.s].c})`}"><div class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</div><div class="row between" style="margin-top:4px"><h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2></div><p style="margin-top:4px">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p></a>`:''}
-  <div class="card stack"><div class="row between"><h3>Hạn nộp & lịch thi</h3></div><div class="list">${DEADLINES.filter(x=>U(x.d)>=TODAY).map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span></div>`}).join('')}</div></div>
-  <div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${REMIND.map(r=>`<div class="li"><div class="t">${sTag(r.s)}<span class="small" style="font-weight:700">${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>
-  <div class="card stack"><h3>Lịch học sắp tới</h3><div class="list">${up.slice(next?1:0,7).map(x=>{const D=dd(x.d);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${sName(x.s)}</b><span class="small muted">${x.t} · ${x.x}</span></div></div>`}).join('')}</div><p class="small muted">Ca 1: 7h30 · Ca 2: 13h30 · Ca 3: 18h00 · Nghỉ T3 24/11 (VHVN)</p></div>
-  <div class="card stack"><h3>Lộ trình đến ngày thi</h3><div class="tl"><div class="tl-axis">${['2026-11-13','2026-11-20','2026-11-27','2026-12-04','2026-12-12'].map(d=>`<span style="left:${pos(d)}%">${dd(d).d}</span>`).join('')}</div>${rows.map(r=>`<div class="tl-row">${r[0]}<div class="tl-track">${r[2]?`<span class="tl-bar" style="left:${pos(r[1])}%;width:${pos(r[2])-pos(r[1])}%;background:${r[3]}"></span>`:`<span class="tl-dot" style="left:${pos(r[1])}%;background:${r[3]}"></span>`}${TODAY>=T0&&TODAY<=T1?`<span class="tl-today" style="left:${tp}%"></span>`:''}</div></div>`).join('')}</div></div>
-  <div class="card stack"><h3>Chọn môn để học</h3>${Object.keys(SUBJ).map(s=>{const S=SUBJ[s];const ch=S.chapters.filter(c=>c.status!=='soon').length;return `<a class="btn block" href="#${s}-road" style="background:var(${S.c});justify-content:space-between"><span>${S.name}</span><span class="small" style="opacity:.85">${ch} chuyên đề · ${S.quiz.length} câu ôn</span></a>`}).join('')}<p class="small muted">Đã trả lời đúng ${ok}/${qTot} câu ôn tập. Tiến độ lưu trên trình duyệt này.</p></div>`;
+  ${next?`<a class="card hnext" href="#${next.s==='both'?'ktud':next.s}-road" style="border-left:5px solid ${col(next.s)}"><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
+    <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p>${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p>
+    ${after?`<p class="small muted">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</p>`:''}</a>`:''}
+  ${soon.length?`<div class="card stack"><h3>Sắp đến hạn</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<a class="li" href="#${x.s==='both'?'ktud':x.s}-road" style="text-decoration:none;color:inherit"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span></a>`}).join('')}</div></div>`:''}
+  ${imp.length?`<div class="card stack"><h3>Lưu ý quan trọng</h3><div class="list">${imp.map(r=>`<div class="li"><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>`:''}
+  ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
 
 /* ===================== KNOWLEDGE (roadmap) ===================== */
