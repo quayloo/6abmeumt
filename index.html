@@ -1783,7 +1783,9 @@ function calHTML(){
 const SYNC_FILE='so-tay-emba.json', SYNC_DESC='Sổ tay EMBA 6XD – tiến độ học (tự động)';
 const SYNC_SKIP=['emba-subj','emba-lastbackup','emba-install-hide','emba-installed','emba-side-mini','emba-fs','emba-wake','emba-theme'];
 const syncable=k=>/^emba-/.test(k)&&!SYNC_SKIP.includes(k);
-const TOKEN_URL='https://github.com/settings/tokens/new?scopes=gist&description='+encodeURIComponent('Sổ tay EMBA – sao lưu');
+const TOKEN_URL=()=>{ const ua=navigator.userAgent, dev=/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(ua)?'Android':/Mac/.test(ua)?'Mac':/Windows/.test(ua)?'Windows':'máy khác';
+  const d=new Date(), t=d.getDate()+'/'+(d.getMonth()+1)+' '+String(d.getHours()).padStart(2,'0')+'h'+String(d.getMinutes()).padStart(2,'0');
+  return 'https://github.com/settings/tokens/new?scopes=gist&description='+encodeURIComponent('Sổ tay EMBA – '+dev+' '+t); };
 let syncCfg=(()=>{ try{ return JSON.parse(localStorage.getItem('sync-cfg')||'null'); }catch(e){ return null; } })();
 let syncState={busy:false,msg:'',err:false}, syncT=null;
 const saveCfg=()=>{ try{ if(syncCfg) localStorage.setItem('sync-cfg',JSON.stringify(syncCfg)); else localStorage.removeItem('sync-cfg'); }catch(e){} };
@@ -1827,7 +1829,7 @@ function syncHTML(){
     <div class="btnrow"><button class="btn" data-sync="pull">Tải về máy này</button><button class="btn ghost" data-sync="merge">Gộp với máy này</button></div><p class="small muted">"Tải về" thay tiến độ trên máy này bằng bản trên GitHub. "Gộp" giữ cả hai (ưu tiên máy này nếu trùng).</p></div>`;
   if(!syncOK()) return `<div class="card stack" id="syncBox"><h3>Sao lưu tự động</h3>
     <p class="small muted">Tiến độ tự lưu vào một ghi chú riêng tư (gist) trên GitHub của anh sau mỗi thay đổi; máy khác dán cùng mã là tự tải về.</p>
-    <ol class="clean small"><li>Bấm <a href="${TOKEN_URL}" target="_blank" rel="noopener"><b>Tạo mã trên GitHub</b></a> (đã chọn sẵn quyền <b>gist</b>) → chọn thời hạn (vd. 1 năm) → <b>Generate token</b> → chép mã <code>ghp_…</code>.</li><li>Dán vào ô dưới → Kết nối.</li></ol>
+    <ol class="clean small"><li>Bấm <a href="${TOKEN_URL()}" target="_blank" rel="noopener"><b>Tạo mã trên GitHub</b></a> (đã chọn sẵn quyền <b>gist</b>) → chọn thời hạn (vd. 1 năm) → <b>Generate token</b> → chép mã <code>ghp_…</code>.</li><li>Dán vào ô dưới → Kết nối.</li></ol>
     <div class="row" style="gap:6px;flex-wrap:nowrap"><input id="syncTok" type="password" placeholder="ghp_…" autocomplete="off" style="flex:1;min-width:0;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 12px;font-size:15px"><button class="btn" data-sync="connect" ${syncState.busy?'disabled':''}>Kết nối</button></div>
     ${syncState.msg?`<p class="small" style="color:${syncState.err?'var(--bad)':'var(--muted)'}">${syncState.msg}</p>`:''}
     <p class="small muted">Mã chỉ lưu trên máy này, chỉ có quyền đọc/ghi gist — không truy cập được repo hay tài khoản.</p></div>`;
