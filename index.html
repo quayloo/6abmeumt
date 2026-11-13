@@ -191,6 +191,15 @@ svg text{font-family:var(--body)}
 .hero-s h1{font-size:23px}
 .hnext{text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px}
 .hnext h2{font-size:19px}
+.hnext{gap:0}
+.hl{text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px}
+a.hl{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a.hl:active{opacity:.6}
+.li.hl{flex-direction:row;align-items:center}
+.hafter{flex-direction:row;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.go{flex:none;width:18px;height:18px;color:var(--muted)}
+.hero-s p a{color:#fff;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.5)}
+@media (hover:hover){ a.hl:hover .go{color:var(--c)} }
 
 /* Roadmap */
 .road{position:relative;display:flex;flex-direction:column;gap:12px;padding-left:34px}
@@ -1556,15 +1565,19 @@ function renderHome(){
   const soon=DEADLINES.filter(x=>x.d!==EXAM && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs);
   const imp=REMIND.filter(r=>r.imp);
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
+  const lk=s=>SUBJ[s]?`href="#${s}-road"`:'';           // mục chung cả hai môn ('both') không gắn link
+  const tag=(s,a='a')=>SUBJ[s]?'a':'div';
+  const go='<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
   const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
+  const subjLinks=Object.keys(SUBJ).map(k=>`<a href="#${k}-road">${SUBJ[k].name}</a>`).join(' + ');
   $('v-home').innerHTML = `
-  <div class="hero hero-s"><div style="position:relative;z-index:1"><div class="eyebrow">EMBA 6XD · Học kỳ I</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>${dd(EXAM).w} ${dd(EXAM).d} · Kinh tế ứng dụng + Quản trị chiến lược (dự kiến)</p></div></div>
+  <div class="hero hero-s"><div style="position:relative;z-index:1"><div class="eyebrow">EMBA 6XD · Học kỳ I</div><h1>Còn ${leftDays} ngày đến kỳ thi</h1><p>${dd(EXAM).w} ${dd(EXAM).d} · ${subjLinks} (dự kiến)</p></div></div>
   ${installCard()}
-  ${next?`<a class="card hnext" href="#${next.s==='both'?'ktud':next.s}-road" style="border-left:5px solid ${col(next.s)}"><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
-    <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p>${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p>
-    ${after?`<p class="small muted">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</p>`:''}</a>`:''}
-  ${soon.length?`<div class="card stack"><h3>Sắp đến hạn</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<a class="li" href="#${x.s==='both'?'ktud':x.s}-road" style="text-decoration:none;color:inherit"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span></a>`}).join('')}</div></div>`:''}
-  ${imp.length?`<div class="card stack"><h3>Lưu ý quan trọng</h3><div class="list">${imp.map(r=>`<div class="li"><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>`:''}
+  ${next?`<div class="card hnext" style="border-left:5px solid ${col(next.s)}"><${tag(next.s)} class="hl" ${lk(next.s)}><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
+    <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p class="row" style="gap:6px;flex-wrap:nowrap"><span style="flex:1">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</span>${SUBJ[next.s]?go:''}</p></${tag(next.s)}>
+    ${after?`<${tag(after.s)} class="hl hafter" ${lk(after.s)}><span style="flex:1">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${sTag(after.s)}${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</span>${SUBJ[after.s]?go:''}</${tag(after.s)}>`:''}</div>`:''}
+  ${soon.length?`<div class="card stack"><h3>Sắp đến hạn</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${SUBJ[x.s]?`href="#${x.s}-work"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short+' · ':''}${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span>${SUBJ[x.s]?go:''}</${tag(x.s)}>`}).join('')}</div></div>`:''}
+  ${imp.length?`<div class="card stack"><h3>Lưu ý quan trọng</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div>${SUBJ[r.s]?go:''}</${tag(r.s)}>`).join('')}</div></div>`:''}
   ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
 
