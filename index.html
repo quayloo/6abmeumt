@@ -3236,13 +3236,29 @@ function fmtAt(ms){ const d=new Date(ms), now=new Date(), P=n=>String(n).padStar
   return n===0?hm+' hôm nay':n===-1?hm+' hôm qua':n===1?hm+' ngày mai':hm+' '+['CN','T2','T3','T4','T5','T6','T7'][d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1); }
 function alertRow(a,when){ const S=SUBJ[a.s], el=S?'a':'div';
   return `<${el} class="li hl" ${S?`href="#${a.s}-road"`:''}><div class="t"><div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:3px">${lvPill(a.lv)}<span class="small muted">${when}</span></div><b>${sTag(a.s)}${a.title}</b><span class="small muted" style="white-space:pre-line">${a.msg}</span></div></${el}>`; }
+function upcomingEvents(){
+  // Sự kiện thật (buổi học, hạn nộp, thi, việc hẹn giờ) — đúng tên và thời gian như trong Lịch điện thoại.
+  const P=n=>String(n).padStart(2,'0'), sh=s=>SUBJ[s]?SUBJ[s].short:'KTƯD + QTCL';
+  const at=(d,h,m)=>new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10),h,m||0).getTime();
+  const room=t=>(t.match(/S\d{3}/)||[])[0]||(/online/i.test(t)?'Online':'');
+  const when=t=>{ if(/cả ngày/i.test(t)) return ['Cả ngày',7,30,17,0]; const m=t.match(/(\d{1,2})h(\d{2})?/); if(m) return [m[1]+':'+P(+(m[2]||0)),+m[1],+(m[2]||0),21,0];
+    if(/tối/i.test(t)) return ['18:00',18,0,21,0]; if(/sáng/i.test(t)) return ['Sáng',7,30,11,30]; if(/chiều/i.test(t)) return ['Chiều',13,30,17,0]; return ['Cả ngày',0,0,23,59]; };
+  const E=[];
+  SCHED.forEach(x=>{ const main=x.d===EXAM&&x.s==='both', thi=main||/^Thi /.test(x.x), w=main?['Cả ngày (dự kiến)',0,0,23,59]:when(x.t);
+    const title=main?'THI: KTƯD + QTCL (dự kiến)':thi?'THI: '+x.x.replace(/^Thi (học phần )?/,''):sh(x.s)+' · '+x.x;
+    E.push({d:x.d,s:x.s,lv:thi?1:2,title,time:[w[0],room(x.t)].filter(Boolean).join(' · '),st:at(x.d,w[1],w[2]),en:at(x.d,w[3],w[4])}); });
+  DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both')&&!/^Thi /.test(x.t)).forEach(x=>E.push({d:x.d,s:x.s,lv:1,title:'Hạn: '+x.t,time:/sáng/i.test(x.t)?'Sáng':'Cả ngày',st:at(x.d,0,0),en:at(x.d,23,59),sub:x.x}));
+  NOTI.forEach(x=>{ const [h,m]=(x.h||'20:00').split(':').map(Number); E.push({d:x.d,s:x.s,lv:x.lv||3,title:x.title||sh(x.s),time:x.h,st:at(x.d,h,m),en:at(x.d,h,m)+1800e3,sub:x.x}); });
+  return E.sort((a,b)=>a.st-b.st); }
 function homeNoti(){
-  // Chỉ thông báo sắp tới (đã qua thì ẩn), xếp theo thời gian; lưu ý (REMIND) không đưa vào đây.
-  const now=Date.now(), up=getAlerts().filter(a=>a.at>now&&a.at<=now+14*864e5);
+  // Chỉ sự kiện chưa kết thúc trong 14 ngày tới, xếp theo thời gian; đã qua thì ẩn. Lưu ý (REMIND) ở khối riêng.
+  const now=Date.now(), up=upcomingEvents().filter(e=>e.en>now&&e.st<=now+14*864e5);
   if(!up.length) return '';
+  const row=e=>{ const D=dd(e.d), S=SUBJ[e.s], el=S?'a':'div';
+    return `<${el} class="li hl" ${S?`href="#${e.s}-road"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(e.s)}${e.title}</b><span class="small muted">${e.time}${e.sub?' · '+e.sub:''}</span></div>${lvPill(e.lv)}</${el}>`; };
   const head=up.slice(0,5), more=up.slice(5);
-  return `<div class="card stack"><h3>Thông báo</h3><div class="list">${head.map(a=>alertRow(a,fmtAt(a.at))).join('')}</div>
-    ${more.length?`<details class="sol"><summary>Xem thêm ${more.length} thông báo (14 ngày tới)</summary><div class="in"><div class="list">${more.map(a=>alertRow(a,fmtAt(a.at))).join('')}</div></div></details>`:''}</div>`; }
+  return `<div class="card stack"><h3>Thông báo</h3><div class="list">${head.map(row).join('')}</div>
+    ${more.length?`<details class="sol"><summary>Xem thêm ${more.length} sự kiện (14 ngày tới)</summary><div class="in"><div class="list">${more.map(row).join('')}</div></div></details>`:''}</div>`; }
 function homeNotes(){
   const imp=REMIND.filter(r=>r.imp); if(!imp.length) return '';
   const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road"`:'';
