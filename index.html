@@ -597,37 +597,12 @@ const REMIND=[
  {s:'qth',t:'Tự nghiên cứu (5 tiết mỗi buổi, không lên lớp): 5/12, 8/12, 9/12.'},
  {s:'qth',t:'Chưa có đề cương, giảng viên, phòng học, giờ học và hình thức thi — cần hỏi lớp trưởng/phòng đào tạo.'}
 ];
-// Nhắc nhở tự soạn (ngoài lịch học, hạn nộp): {d:'YYYY-MM-DD', h:'HH:MM' (giờ VN), lv:1|2|3, s:môn, title?, x:nội dung}
+// Nhắc nhở có ngày giờ (ngoài lịch học, hạn nộp) — hiện ở khối "Nhắc nhở" Trang chủ: {d:'YYYY-MM-DD', h:'HH:MM', lv:1|2|3, s:môn, title?, x:nội dung}
 // lv 1 = Khẩn, 2 = Quan trọng, 3 = Thông tin. Nhắc trên điện thoại do Claude tạo thẳng trong Lịch của máy (ứng dụng Claude) — giữ khớp với các mốc dưới đây.
 const NOTI=[
  {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
  {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'}
 ];
-/* ALERTS-START — lịch nhắc hiển thị trong app (Trang chủ, Cài đặt); cùng mốc với nhắc nhở trên Lịch điện thoại */
-const LV={1:{n:'Khẩn',cls:'ko'},2:{n:'Quan trọng',cls:'g'},3:{n:'Thông tin',cls:'c'}};
-function alertsFrom(D){ // D={SCHED,DEADLINES,EXAM,NOTI,REMIND,short:{mã:'KTƯD',…}}
-  const P=n=>String(n).padStart(2,'0');
-  const vn=(d,h,m)=>Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10),h-7,m||0);       // giờ Việt Nam → ms UTC
-  const add=(d,n)=>{ const x=new Date(Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)+n)); return x.getUTCFullYear()+'-'+P(x.getUTCMonth()+1)+'-'+P(x.getUTCDate()); };
-  const wd=d=>['CN','T2','T3','T4','T5','T6','T7'][new Date(Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10))).getUTCDay()];
-  const dm=d=>(+d.slice(8,10))+'/'+(+d.slice(5,7));
-  const sh=s=>D.short[s]||'KTƯD + QTCL';
-  const hs=t=>{ let x=5381; for(const c of String(t)) x=((x*33)^c.codePointAt(0))>>>0; return x.toString(36); };
-  const st=t=>{ if(/cả ngày/i.test(t)) return [7,30]; const m=t.match(/(\d{1,2})h(\d{2})?/); if(m) return [+m[1],+(m[2]||0)]; if(/tối/i.test(t)) return [18,0]; if(/sáng/i.test(t)) return [7,30]; if(/chiều/i.test(t)) return [13,30]; return [7,30]; };
-  const A=[], put=(key,at,lv,s,title,msg,ev)=>A.push({id:hs(key),at,lv,s,title,msg,ev});
-  D.SCHED.forEach(x=>{ const main=x.d===D.EXAM&&x.s==='both', exam=main||/^Thi /.test(x.x), k=x.d+x.s+x.x;
-    if(exam){ const nm=main?'Thi '+sh(x.s)+' (dự kiến)':x.x;
-      [[3,'Còn 3 ngày'],[1,'Ngày mai']].forEach(([n,l])=>put('ex'+n+k,vn(add(x.d,-n),20,0),1,x.s,l+': '+nm,wd(x.d)+' '+dm(x.d)+' · '+x.t,k));
-      const tm=main?null:st(x.t); put('ex0'+k,tm?vn(x.d,tm[0],tm[1])-3600e3:vn(x.d,6,30),1,x.s,(tm?'1 giờ nữa: ':'Hôm nay: ')+nm,x.t,k); }
-    else { const [h,m]=st(x.t);
-      put('c1'+k,vn(add(x.d,-1),20,0),2,x.s,'Ngày mai học '+sh(x.s),wd(x.d)+' '+dm(x.d)+' · '+x.t+'\n'+x.x,k);
-      put('c0'+k,vn(x.d,h,m)-3600e3,2,x.s,'1 giờ nữa vào học '+sh(x.s),x.t+' · '+x.x,k); } });
-  D.DEADLINES.filter(x=>!(x.d===D.EXAM&&x.s==='both')&&!/^Thi /.test(x.t)).forEach(x=>{ const k='dl'+x.d+x.s+x.t;
-    [[1,1,'Ngày mai']].forEach(([n,lv,l])=>put('d'+n+k,vn(add(x.d,-n),20,0),lv,x.s,l+' đến hạn: '+x.t,sh(x.s)+' · '+wd(x.d)+' '+dm(x.d)+' · '+x.x,k));
-    put('d0'+k,vn(x.d,7,0),1,x.s,'Hôm nay đến hạn: '+x.t,sh(x.s)+' · '+x.x,k); });
-  (D.NOTI||[]).forEach(x=>{ const [h,m]=(x.h||'20:00').split(':').map(Number); put('n'+x.d+x.h+x.x,vn(x.d,h,m),x.lv||3,x.s,x.title||sh(x.s),x.x,'n'+x.d+x.x); });
-  return A.sort((a,b)=>a.at-b.at); }
-/* ALERTS-END */
 const SUBJ={
  ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
   info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
@@ -3062,7 +3037,9 @@ document.addEventListener('click',async e=>{
 /* ===================== HOME ===================== */
 function renderHome(){
   const up=SCHED.filter(x=>U(x.d)>=TODAY && x.d!==EXAM && !/^Thi /.test(x.x)), next=up[0], after=up[1];
-  const soon=DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both') && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs);
+  const soon=DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both') && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs)
+    .concat(NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),x:(x.h?x.h+' · ':'')+x.x,noti:1})))
+    .sort((a,b)=>U(a.d)-U(b.d));
   const imp=REMIND.filter(r=>r.imp);
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
   const lk=s=>SUBJ[s]?`href="#${s}-road"`:'';           // mục chung cả hai môn ('both') không gắn link
@@ -3076,8 +3053,7 @@ function renderHome(){
   ${next?`<div class="card hnext" style="border-left:5px solid ${col(next.s)}"><${tag(next.s)} class="hl" ${lk(next.s)}><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
     <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p class="row" style="gap:6px;flex-wrap:nowrap"><span style="flex:1">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</span>${SUBJ[next.s]?go:''}</p></${tag(next.s)}>
     ${after?`<${tag(after.s)} class="hl hafter" ${lk(after.s)}><span style="flex:1">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${sTag(after.s)}${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</span>${SUBJ[after.s]?go:''}</${tag(after.s)}>`:''}</div>`:''}
-  ${soon.length?`<div class="card stack"><h3>Sắp đến hạn</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${SUBJ[x.s]?`href="#${x.s}-${/^Thi /.test(x.t)?'road':'work'}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short+' · ':''}${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span>${SUBJ[x.s]?go:''}</${tag(x.s)}>`}).join('')}</div></div>`:''}
-  ${homeNoti()}
+  ${soon.length?`<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${SUBJ[x.s]?`href="#${x.s}-${/^Thi /.test(x.t)||x.noti?'road':'work'}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short+' · ':''}${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span>${SUBJ[x.s]?go:''}</${tag(x.s)}>`}).join('')}</div></div>`:''}
   ${homeNotes()}
   ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
@@ -3225,44 +3201,10 @@ function outlineHTML(s){
   ${S.quiz.some(q=>q.k==='Vấn đáp'||q.k==='Tự luận')?sec('?','','Câu hỏi tự luận / vấn đáp cần chuẩn bị',`<ul>${S.quiz.map((q,i)=>q.k==='Vấn đáp'||q.k==='Tự luận'?`<li>${q.q} <span class="small muted">(${q.cd})</span></li>`:'').join('')}</ul><button class="btn" data-f="${S.quiz.some(q=>q.k==='Vấn đáp')?'vd':'all'}">Luyện ngay</button>`):''}`;
 }
 
-/* ---------- Nhắc nhở & thông báo ---------- */
-// Lịch nhắc sinh từ alertsFrom() (khối ALERTS) — hiển thị trong app; nhắc thật nằm trong Lịch điện thoại.
-let _alerts=null;
-function getAlerts(){ if(!_alerts) _alerts=alertsFrom({SCHED,DEADLINES,EXAM,NOTI,short:Object.fromEntries(Object.entries(SUBJ).map(([k,v])=>[k,v.short]))}); return _alerts; }
-const lvPill=lv=>`<span class="pill ${LV[lv].cls}">${LV[lv].n}</span>`;
-function fmtAt(ms){ const d=new Date(ms), now=new Date(), P=n=>String(n).padStart(2,'0');
-  const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()), n=Math.round((day-t0)/864e5);
-  const hm=P(d.getHours())+':'+P(d.getMinutes());
-  return n===0?hm+' hôm nay':n===-1?hm+' hôm qua':n===1?hm+' ngày mai':hm+' '+['CN','T2','T3','T4','T5','T6','T7'][d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1); }
-function alertRow(a,when){ const S=SUBJ[a.s], el=S?'a':'div';
-  return `<${el} class="li hl" ${S?`href="#${a.s}-road"`:''}><div class="t"><div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:3px">${lvPill(a.lv)}<span class="small muted">${when}</span></div><b>${sTag(a.s)}${a.title}</b><span class="small muted" style="white-space:pre-line">${a.msg}</span></div></${el}>`; }
-function upcomingEvents(){
-  // Sự kiện thật (buổi học, hạn nộp, thi, việc hẹn giờ) — đúng tên và thời gian như trong Lịch điện thoại.
-  const P=n=>String(n).padStart(2,'0'), sh=s=>SUBJ[s]?SUBJ[s].short:'KTƯD + QTCL';
-  const at=(d,h,m)=>new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10),h,m||0).getTime();
-  const room=t=>(t.match(/S\d{3}/)||[])[0]||(/online/i.test(t)?'Online':'');
-  const when=t=>{ if(/cả ngày/i.test(t)) return ['Cả ngày',7,30,17,0]; const m=t.match(/(\d{1,2})h(\d{2})?/); if(m) return [m[1]+':'+P(+(m[2]||0)),+m[1],+(m[2]||0),21,0];
-    if(/tối/i.test(t)) return ['18:00',18,0,21,0]; if(/sáng/i.test(t)) return ['Sáng',7,30,11,30]; if(/chiều/i.test(t)) return ['Chiều',13,30,17,0]; return ['Cả ngày',0,0,23,59]; };
-  const E=[];
-  SCHED.forEach(x=>{ const main=x.d===EXAM&&x.s==='both', thi=main||/^Thi /.test(x.x), w=main?['Cả ngày (dự kiến)',0,0,23,59]:when(x.t);
-    const title=main?'THI: KTƯD + QTCL (dự kiến)':thi?'THI: '+x.x.replace(/^Thi (học phần )?/,''):sh(x.s)+' · '+x.x;
-    E.push({d:x.d,s:x.s,lv:thi?1:2,title,time:[w[0],room(x.t)].filter(Boolean).join(' · '),st:at(x.d,w[1],w[2]),en:at(x.d,w[3],w[4])}); });
-  DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both')&&!/^Thi /.test(x.t)).forEach(x=>E.push({d:x.d,s:x.s,lv:1,title:'Hạn: '+x.t,time:/sáng/i.test(x.t)?'Sáng':'Cả ngày',st:at(x.d,0,0),en:at(x.d,23,59),sub:x.x}));
-  NOTI.forEach(x=>{ const [h,m]=(x.h||'20:00').split(':').map(Number); E.push({d:x.d,s:x.s,lv:x.lv||3,title:x.title||sh(x.s),time:x.h,st:at(x.d,h,m),en:at(x.d,h,m)+1800e3,sub:x.x}); });
-  return E.sort((a,b)=>a.st-b.st); }
-function homeNoti(){
-  // Chỉ sự kiện chưa kết thúc trong 14 ngày tới, xếp theo thời gian; đã qua thì ẩn. Lưu ý (REMIND) ở khối riêng.
-  const now=Date.now(), up=upcomingEvents().filter(e=>e.en>now&&e.st<=now+14*864e5);
-  if(!up.length) return '';
-  const row=e=>{ const D=dd(e.d), S=SUBJ[e.s], el=S?'a':'div';
-    return `<${el} class="li hl" ${S?`href="#${e.s}-road"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(e.s)}${e.title}</b><span class="small muted">${e.time}${e.sub?' · '+e.sub:''}</span></div>${lvPill(e.lv)}</${el}>`; };
-  const head=up.slice(0,5), more=up.slice(5);
-  return `<div class="card stack"><h3>Thông báo</h3><div class="list">${head.map(row).join('')}</div>
-    ${more.length?`<details class="sol"><summary>Xem thêm ${more.length} sự kiện (14 ngày tới)</summary><div class="in"><div class="list">${more.map(row).join('')}</div></div></details>`:''}</div>`; }
 function homeNotes(){
   const imp=REMIND.filter(r=>r.imp); if(!imp.length) return '';
   const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road"`:'';
-  return `<div class="card stack"><h3>Lưu ý quan trọng</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
+  return `<div class="card stack"><h3>Lưu ý</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
