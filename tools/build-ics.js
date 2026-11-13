@@ -27,8 +27,9 @@ const ev = [];
 const h = t => { let x = 5381; for (const c of String(t)) x = ((x * 33) ^ c.codePointAt(0)) >>> 0; return x.toString(36); };
 SCHED.forEach(x => {
   const room = (x.t.match(/S\d{3}/) || [])[0] || (/online/i.test(x.t) ? 'Online' : '');
-  const summary = x.d === EXAM ? `THI: ${tag(x.s)} (dự kiến)` : `${tag(x.s)}: ${x.x}`;
-  const tm = x.d === EXAM ? null : timeOf(x.t);
+  const main = x.d === EXAM && x.s === 'both', isThi = /^Thi /.test(x.x);
+  const summary = main ? `THI: ${tag(x.s)} (dự kiến)` : isThi ? `THI: ${x.x.replace(/^Thi (học phần )?/, '')}` : `${tag(x.s)}: ${x.x}`;
+  const tm = main ? null : timeOf(x.t);
   const L = ['BEGIN:VEVENT', `UID:emba6xd-${x.d}-${x.s}-${h(x.x)}@quayloo.github.io`, `DTSTAMP:${stamp}`];
   if (tm) L.push(`DTSTART:${utc(x.d, tm[0], tm[1])}`, `DTEND:${utc(x.d, tm[2], tm[3])}`); else L.push(`DTSTART;VALUE=DATE:${day(x.d)}`, `DTEND;VALUE=DATE:${nextDay(x.d)}`);
   L.push(`SUMMARY:${esc(summary)}`, `DESCRIPTION:${esc((SUBJ[x.s] ? SUBJ[x.s].name : 'Cả hai môn') + ' · ' + x.t + ' · ' + x.x)}`);
@@ -36,11 +37,11 @@ SCHED.forEach(x => {
   L.push('BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${esc(summary)}`, `TRIGGER:${tm ? '-PT1H' : '-PT15H'}`, 'END:VALARM', 'END:VEVENT');
   ev.push(...L);
 });
-DEADLINES.filter(x => x.d !== EXAM).forEach(x => {
+DEADLINES.filter(x => x.d !== EXAM && !/^Thi /.test(x.t)).forEach(x => {
   const summary = `Hạn: ${tag(x.s)} – ${x.t}`;
   ev.push('BEGIN:VEVENT', `UID:emba6xd-dl-${x.d}-${x.s}-${h(x.t)}@quayloo.github.io`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${day(x.d)}`, `DTEND;VALUE=DATE:${nextDay(x.d)}`,
     `SUMMARY:${esc(summary)}`, `DESCRIPTION:${esc(x.x)}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${esc(summary)}`, 'TRIGGER:-PT15H', 'END:VALARM', 'END:VEVENT');
 });
 const out = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sổ tay EMBA 6XD//VI', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:EMBA 6XD', 'X-WR-TIMEZONE:Asia/Ho_Chi_Minh', 'REFRESH-INTERVAL;VALUE=DURATION:PT12H', 'X-PUBLISHED-TTL:PT12H', ...ev, 'END:VCALENDAR'].map(fold).join('\r\n') + '\r\n';
 fs.writeFileSync(path.join(root, 'lich-emba.ics'), out);
-console.log('Đã ghi lich-emba.ics:', SCHED.length, 'buổi/ngày thi,', DEADLINES.filter(x => x.d !== EXAM).length, 'hạn nộp');
+console.log('Đã ghi lich-emba.ics:', SCHED.length, 'buổi/ngày thi,', DEADLINES.filter(x => x.d !== EXAM && !/^Thi /.test(x.t)).length, 'hạn nộp');
