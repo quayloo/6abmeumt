@@ -1,0 +1,22 @@
+name: Nhắc nhở EMBA
+on:
+  schedule:
+    - cron: '4,24,44 * * * *'   # mỗi 20 phút (giờ UTC); GitHub có thể chạy trễ vài chục phút
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Gửi một thông báo thử'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/notify.js ${{ inputs.test && '--test' || '' }}
