@@ -581,7 +581,7 @@ const DEADLINES=[
 const REMIND=[
  {s:'ktud',t:'Mỗi buổi có phần hỏi – đáp: lớp trả lời trước rồi mới chốt, không ai xung phong thì gọi tên; mục tiêu 7–10 người phát biểu mỗi buổi (tính vào chuyên cần 10%).'},
  {s:'ktud',imp:1,t:'Bài kiểm tra giữa kỳ (trắc nghiệm + tự luận) dự kiến khi hết Chuyên đề 3 — cần hỏi lại ngày cụ thể (21/11 hoặc 25/11).'},
- {s:'ktud',imp:1,t:'Thứ 7 21/11: sáng 8h–11h có buổi nói chuyện chuyên gia — đến đúng giờ, đầy đủ để buổi nói chuyện không bị gián đoạn; chiều học tiếp lý thuyết.'},
+ {s:'ktud',t:'Thứ 7 21/11: sáng 8h–11h có buổi nói chuyện chuyên gia — đến đúng giờ, đầy đủ để buổi nói chuyện không bị gián đoạn; chiều học tiếp lý thuyết.'},
  {s:'ktud',t:'Tự nghiên cứu theo slide CĐ3: hiệu ứng thay thế, hiệu ứng thu nhập; tình huống thiết kế gói đào tạo trực tuyến (3 phương án).'},
  {s:'ktud',t:'Chuẩn bị cho buổi 21/11: phân mảnh ngân sách có ý nghĩa gì đối với quyết định của nhà quản trị?'},
  {s:'ktud',t:'Slide chương 3 đã gửi trên nhóm lớp; slide chương 4 gửi sau.'},
@@ -3078,6 +3078,7 @@ function renderHome(){
     ${after?`<${tag(after.s)} class="hl hafter" ${lk(after.s)}><span style="flex:1">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${sTag(after.s)}${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</span>${SUBJ[after.s]?go:''}</${tag(after.s)}>`:''}</div>`:''}
   ${soon.length?`<div class="card stack"><h3>Sắp đến hạn</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${SUBJ[x.s]?`href="#${x.s}-${/^Thi /.test(x.t)?'road':'work'}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short+' · ':''}${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span>${SUBJ[x.s]?go:''}</${tag(x.s)}>`}).join('')}</div></div>`:''}
   ${homeNoti()}
+  ${homeNotes()}
   ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
 
@@ -3236,29 +3237,16 @@ function fmtAt(ms){ const d=new Date(ms), now=new Date(), P=n=>String(n).padStar
 function alertRow(a,when){ const S=SUBJ[a.s], el=S?'a':'div';
   return `<${el} class="li hl" ${S?`href="#${a.s}-road"`:''}><div class="t"><div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:3px">${lvPill(a.lv)}<span class="small muted">${when}</span></div><b>${sTag(a.s)}${a.title}</b><span class="small muted" style="white-space:pre-line">${a.msg}</span></div></${el}>`; }
 function homeNoti(){
-  const now=Date.now(), A=getAlerts();
-  const seen=new Set(), rec=[]; A.filter(a=>a.at<=now&&a.at>now-48*3600e3).reverse().forEach(a=>{ if(!seen.has(a.ev)){ seen.add(a.ev); rec.push(a); } });
-  rec.sort((a,b)=>a.lv-b.lv||b.at-a.at);
-  const imp=REMIND.filter(r=>r.imp), nx=A.filter(a=>a.at>now).slice(0,5);
-  if(!rec.length&&!imp.length&&!nx.length) return '';
+  // Chỉ thông báo sắp tới (đã qua thì ẩn), xếp theo thời gian; lưu ý (REMIND) không đưa vào đây.
+  const now=Date.now(), up=getAlerts().filter(a=>a.at>now&&a.at<=now+14*864e5);
+  if(!up.length) return '';
+  const head=up.slice(0,5), more=up.slice(5);
+  return `<div class="card stack"><h3>Thông báo</h3><div class="list">${head.map(a=>alertRow(a,fmtAt(a.at))).join('')}</div>
+    ${more.length?`<details class="sol"><summary>Xem thêm ${more.length} thông báo (14 ngày tới)</summary><div class="in"><div class="list">${more.map(a=>alertRow(a,fmtAt(a.at))).join('')}</div></div></details>`:''}</div>`; }
+function homeNotes(){
+  const imp=REMIND.filter(r=>r.imp); if(!imp.length) return '';
   const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road"`:'';
-  return `<div class="card stack"><h3>Thông báo</h3>
-    ${rec.length?`<div class="list">${rec.map(a=>alertRow(a,'Đã nhắc '+fmtAt(a.at))).join('')}</div>`:''}
-    ${imp.length?`<div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(r.lv||2)}<span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span></div><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div>`:''}
-    ${nx.length?`<details class="sol"><summary>Lịch nhắc tiếp theo</summary><div class="in"><div class="list">${nx.map(a=>alertRow(a,'Sẽ nhắc '+fmtAt(a.at))).join('')}</div></div></details>`:''}
-  </div>`; }
-function notiHTML(){
-  const nx=getAlerts().filter(a=>a.at>Date.now()).slice(0,10);
-  return `<div class="card stack"><h3>Nhắc nhở & thông báo</h3>
-    <p class="small muted">Nhắc nhở nằm trong <b>Lịch của điện thoại</b> (tài khoản Google), do Claude tạo qua ứng dụng Claude — điện thoại tự báo cả khi không mở Sổ tay. Ba cấp độ:</p>
-    <div class="list">
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(1)}</div><span class="small">Ngày thi: chuông báo trước 3 ngày, tối hôm trước và 1 giờ trước (thi cả ngày dự kiến: 6:30 sáng). Hạn nộp: tối hôm trước và sáng hôm hạn.</span></div></div>
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(2)}</div><span class="small">Buổi học: thông báo 20:00 tối hôm trước và 1 giờ trước giờ học.</span></div></div>
-      <div class="li"><div class="t"><div class="row" style="gap:6px;margin-bottom:3px">${lvPill(3)}</div><span class="small">Việc tự học, chuẩn bị phát biểu: một thông báo vào giờ hẹn.</span></div></div>
-    </div>
-    <p class="small muted">Khi có lịch mới hoặc lịch thay đổi, nhắn Claude trong ứng dụng Claude trên điện thoại để thêm, sửa sự kiện.</p>
-    ${nx.length?`<details class="sol"><summary>Lịch nhắc sắp tới</summary><div class="in"><div class="list">${nx.map(a=>alertRow(a,'Nhắc '+fmtAt(a.at))).join('')}</div></div></details>`:''}
-  </div>`; }
+  return `<div class="card stack"><h3>Lưu ý quan trọng</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
@@ -3345,7 +3333,6 @@ function renderSettings(){
   const th=store.get('emba-theme','auto'), wake=store.get('emba-wake',true), fsOn=store.get('emba-fs',true);
   const seg=(key,val,opts)=>`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0;padding:0">${opts.map(([v,l])=>`<button class="chip ${val===v?'on':''}" data-set="${key}" data-val='${JSON.stringify(v)}'>${l}</button>`).join('')}</div>`;
   $('v-settings').innerHTML=`
-  ${notiHTML()}
   ${syncHTML()}
   ${backupHTML()}
   <div class="card stack"><h3>Ôn tập</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Thời gian luyện vấn đáp</span>${seg('emba-vd-min',vdMin,[[3,'3 phút'],[4,'4 phút'],[5,'5 phút']])}</div></div>
