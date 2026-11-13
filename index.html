@@ -140,7 +140,7 @@ body.locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 
 /* Bottom bar */
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(19,32,29,.08);padding:6px calc(8px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left))}
-.bottom .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.bottom .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .bottom a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:54px;border-radius:14px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:700}
 .bottom a svg{width:23px;height:23px}
 .bottom a.on{background:var(--cs);color:var(--c)}
@@ -283,6 +283,46 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
 .explain{border-radius:14px;padding:12px 14px;background:var(--surface-2);font-size:14.5px}
 .explain b{display:block;margin-bottom:4px}
 .qnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));background:var(--surface);padding-top:6px}
+/* Accordion (Kiến thức, Bài tập) */
+.chacc{display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:var(--ink);scroll-margin-top:84px}
+.chacc .chn{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px var(--display);background:var(--surface-2);color:var(--muted);border:3px solid var(--line)}
+.chacc.done .chn{background:var(--c);border-color:var(--c);color:#fff}
+.chacc.open{border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)}
+.chacc.open .chn{background:var(--c);border-color:var(--c);color:#fff}
+.chacc .chm{flex:1;min-width:0}
+.chacc h3{margin:4px 0 2px}
+.chacc.soon{opacity:.62;box-shadow:none;background:transparent;border-style:dashed}
+.chev{flex:none;width:22px;height:22px;color:var(--muted);transition:transform .2s;margin-top:6px}
+.chacc.open .chev,details.acc[open]>summary .chev{transform:rotate(180deg)}
+.chbody{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
+details.acc.card{padding:0;scroll-margin-top:84px}
+details.acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;min-height:58px}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary .acc-t{flex:1;min-width:0;font:700 15.5px/1.35 var(--body)}
+details.acc>summary .chev{margin-top:0}
+details.acc[open]>summary{border-bottom:1px solid var(--line)}
+details.acc>.acc-b{padding:14px 16px 16px}
+.sech{margin:8px 0 -4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+/* Ôn tập tối giản */
+.qbar{display:flex;align-items:center;gap:10px}
+.qsel{display:flex;align-items:center;gap:4px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 10px 6px 14px;font-weight:700;font-size:13.5px;min-height:40px;max-width:52%}
+.qsel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qsel svg{flex:none;width:18px;height:18px;transition:transform .2s}
+.qsel[aria-expanded="true"] svg{transform:rotate(180deg)}
+.qn{margin-left:auto;font-size:14px;color:var(--muted)} .qn b{color:var(--ink);font:800 18px var(--display)}
+.qc{display:flex;gap:10px;font-size:14px;font-weight:800} .qc i{font-style:normal} .qc .g{color:var(--good)} .qc .r{color:var(--bad)}
+.qline{height:4px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:-6px} .qline i{display:block;height:100%;background:var(--c);transition:width .3s}
+.qmenu{display:flex;flex-direction:column;gap:10px}
+.qmenu .lab2{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.qmenu .chips,.qmenu .dots{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+.qcard .qtop{display:flex;gap:6px;flex-wrap:wrap}
+.qnav2{display:grid;grid-template-columns:64px 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));padding-top:8px;background:linear-gradient(to bottom,transparent,var(--bg) 30%)}
+.qsum{text-align:center;align-items:center}
+.qsum .big{font:800 48px/1 var(--display);color:var(--c)}
+.qsum .rows{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
+.qsum .rw{display:grid;grid-template-columns:52px 1fr 56px;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
+.qsum .rw .bar{margin:0}
+.qsum .btns{width:100%;display:flex;flex-direction:column;gap:8px}
 .empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
 .install{display:flex;gap:14px;align-items:center;flex-wrap:wrap;position:relative;padding-right:46px}
@@ -367,9 +407,9 @@ body.app-mode #fsBtn{display:none}
   .topic{scroll-margin-top:24px}
   .fig svg{max-width:560px;margin:0 auto;display:block}
   /* Lộ trình, bài tập: lưới 2 cột */
-  #v-work.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
-  #v-work > :not(.card),#v-work > :first-child + .card,#v-work > .card:last-child{grid-column:1/-1}
-  #v-know.on,#v-quiz.on,#v-grades.on{max-width:860px}
+  #v-know.on,#v-quiz.on,#v-grades.on,#v-road.on,#v-work.on{max-width:860px}
+  .chacc,details.acc.card{scroll-margin-top:20px}
+  .qnav2{bottom:12px}
   #v-quiz .dots{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0}
   /* Popup chọn môn: hộp giữa màn hình */
   .subjsheet{justify-content:center;align-items:center}
@@ -420,6 +460,7 @@ body.app-mode #fsBtn{display:none}
 <aside class="side" id="side" aria-label="Điều hướng"></aside>
 <main>
   <section class="view" id="v-home"></section>
+  <section class="view" id="v-road"></section>
   <section class="view" id="v-know"></section>
   <section class="view" id="v-chap"></section>
   <section class="view" id="v-work"></section>
@@ -434,6 +475,7 @@ body.app-mode #fsBtn{display:none}
 </div></div>
 <div class="subjsheet" id="subjSheet" role="dialog" aria-modal="true" aria-labelledby="subjT"><div class="box" tabindex="-1"><div class="shead"><div class="grab"></div><div class="shrow"><div><h3 id="subjT">Chọn môn học</h3><div class="ssum" id="subjSum"></div></div><button type="button" class="mgbtn" id="gradeBtn" aria-label="Quản lý điểm và trạng thái môn học"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Điểm số</span></button></div></div><div class="stack" id="subjList"></div></div></div>
 <nav class="bottom" aria-label="Mục của môn học"><div class="in">
+  <a href="#" data-tab="road"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Lộ trình</a>
   <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
   <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
   <a href="#" data-tab="quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg>Ôn tập</a>
@@ -1362,7 +1404,8 @@ SUBJ.qtcl.chapters=[
 ];
 
 SUBJ.qtcl.work={
- head:`<div class="card stack" style="border-left:5px solid var(--qtcl)"><div class="row between"><h3>Thảo luận nhóm</h3><span class="pill">18/11 · 28/11 · 2/12</span></div>
+ note:'Đề tự soạn theo nội dung slide (slide môn này không có bài tập số). Lời giải ẩn — làm ra giấy trước rồi mới mở.',
+ head:{t:'Thảo luận nhóm',pill:'18/11 · 28/11 · 2/12',b:`
   <p><b>Điểm thực hành 30%</b> gồm bài kiểm tra và thảo luận. Mỗi nhóm chuẩn bị bài theo phân công:</p>
   <ul class="clean"><li><b>Nhóm trình bày:</b> bản Word + PowerPoint.</li><li><b>Nhóm phản biện, nhóm dẫn dắt:</b> bản Word.</li><li>Mọi nhóm đều phải có <b>bảng đánh giá từng thành viên</b>: TT · thành viên · công việc được phân công · nhóm đánh giá (A, B…) · xác nhận.</li></ul>
   <p><b>Nội dung trình bày:</b> giới thiệu công ty/ngành nhóm chọn để phân tích → tiến hành phân tích theo nội dung câu hỏi.</p>
@@ -1370,7 +1413,7 @@ SUBJ.qtcl.work={
   <details class="sol"><summary>Khung bài phân tích gợi ý (bổ sung)</summary><div class="in stack">
    <ol class="clean"><li><b>Giới thiệu DN/ngành:</b> lịch sử, quy mô, SBU chính, tầm nhìn – sứ mạng – giá trị cốt lõi (CĐ1).</li><li><b>Môi trường vĩ mô:</b> PESTEL, chọn 2–3 tác nhân theo cường độ – phạm vi – dài hạn.</li><li><b>Ngành:</b> 5 lực lượng (kết luận cường độ từng lực) và/hoặc mạng giá trị (người bổ trợ, cơ hội hợp tác).</li><li><b>Bên trong:</b> chuỗi giá trị, năng lực cốt lõi theo VRINE.</li><li><b>Tổng hợp:</b> BCG (nếu DN đa ngành), TOWS động → định hướng phát triển CLKD.</li><li><b>Đề xuất:</b> đường giá trị và lưới ERRC, hoặc Canvas cho hướng đi mới.</li><li><b>Tổ chức thực hiện:</b> 7S cần điều chỉnh gì, kiểm soát bằng PDCA.</li></ol>
    <p class="small muted">Số liệu doanh nghiệp, ngành phải lấy năm gần nhất và ghi nguồn (báo cáo thường niên, Tổng cục Thống kê, hiệp hội ngành).</p>
-  </div></details></div>`,
+  </div></details>`},
  ex:[
   {t:'Giá trị tạo ra và thặng dư khách hàng',cd:'CĐ1',q:'Một quán cà phê đặc sản: khách sẵn sàng trả tối đa 80.000đ/ly, giá bán 55.000đ, chi phí 35.000đ/ly. Đối thủ cạnh tranh bên cạnh: khách sẵn sàng trả 70.000đ, giá 50.000đ. (a) Tính U − P, P − C, U − C của quán. (b) Khách sẽ chọn quán nào? (c) Nếu quán tăng giá lên 65.000đ thì sao?',
    steps:['<b>(a)</b> U − P = 80.000 − 55.000 = <b>25.000đ</b> (thặng dư khách hàng); P − C = 55.000 − 35.000 = <b>20.000đ</b> (lợi nhuận/ly); U − C = 80.000 − 35.000 = <b>45.000đ</b> = 25.000 + 20.000 (giá trị tạo ra).','<b>(b)</b> Thặng dư khách nhận ở đối thủ = 70.000 − 50.000 = 20.000đ &lt; 25.000đ → khách chọn quán, dù quán bán đắt hơn 5.000đ.','<b>(c)</b> Giá 65.000đ: thặng dư khách = 80.000 − 65.000 = 15.000đ &lt; 20.000đ của đối thủ → khách chuyển sang đối thủ, dù lợi nhuận/ly của quán tăng lên 30.000đ.'],
@@ -1502,33 +1545,51 @@ function renderHome(){
     <svg class="gauge" viewBox="0 0 120 80" role="img" aria-label="Kim xăng thời gian còn lại"><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="12" stroke-linecap="round"/><path d="M12 70 A48 48 0 0 1 108 70" fill="none" stroke="#F2B940" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="${pct} 100"/><text x="60" y="66" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" style="font-family:var(--display)">${leftDays}</text><text x="12" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">E</text><text x="108" y="80" font-size="8" fill="rgba(255,255,255,.7)" text-anchor="middle">F</text></svg>
   </div>
   ${installCard()}
-  ${next?`<a class="card" href="#${next.s==='both'?'ktud':next.s}-know" style="text-decoration:none;color:inherit;border-left:5px solid ${next.s==='both'?'var(--gold)':`var(${SUBJ[next.s].c})`}"><div class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</div><div class="row between" style="margin-top:4px"><h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2></div><p style="margin-top:4px">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p></a>`:''}
+  ${next?`<a class="card" href="#${next.s==='both'?'ktud':next.s}-road" style="text-decoration:none;color:inherit;border-left:5px solid ${next.s==='both'?'var(--gold)':`var(${SUBJ[next.s].c})`}"><div class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</div><div class="row between" style="margin-top:4px"><h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2></div><p style="margin-top:4px">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</p></a>`:''}
   <div class="card stack"><div class="row between"><h3>Hạn nộp & lịch thi</h3></div><div class="list">${DEADLINES.filter(x=>U(x.d)>=TODAY).map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${x.x}</span></div><span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span></div>`}).join('')}</div></div>
   <div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${REMIND.map(r=>`<div class="li"><div class="t">${sTag(r.s)}<span class="small" style="font-weight:700">${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></div>`).join('')}</div></div>
   <div class="card stack"><h3>Lịch học sắp tới</h3><div class="list">${up.slice(next?1:0,7).map(x=>{const D=dd(x.d);return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${sName(x.s)}</b><span class="small muted">${x.t} · ${x.x}</span></div></div>`}).join('')}</div><p class="small muted">Ca 1: 7h30 · Ca 2: 13h30 · Ca 3: 18h00 · Nghỉ T3 24/11 (VHVN)</p></div>
   <div class="card stack"><h3>Lộ trình đến ngày thi</h3><div class="tl"><div class="tl-axis">${['2026-11-13','2026-11-20','2026-11-27','2026-12-04','2026-12-12'].map(d=>`<span style="left:${pos(d)}%">${dd(d).d}</span>`).join('')}</div>${rows.map(r=>`<div class="tl-row">${r[0]}<div class="tl-track">${r[2]?`<span class="tl-bar" style="left:${pos(r[1])}%;width:${pos(r[2])-pos(r[1])}%;background:${r[3]}"></span>`:`<span class="tl-dot" style="left:${pos(r[1])}%;background:${r[3]}"></span>`}${TODAY>=T0&&TODAY<=T1?`<span class="tl-today" style="left:${tp}%"></span>`:''}</div></div>`).join('')}</div></div>
-  <div class="card stack"><h3>Chọn môn để học</h3>${Object.keys(SUBJ).map(s=>{const S=SUBJ[s];const ch=S.chapters.filter(c=>c.status!=='soon').length;return `<a class="btn block" href="#${s}-know" style="background:var(${S.c});justify-content:space-between"><span>${S.name}</span><span class="small" style="opacity:.85">${ch} chuyên đề · ${S.quiz.length} câu ôn</span></a>`}).join('')}<p class="small muted">Đã trả lời đúng ${ok}/${qTot} câu ôn tập. Tiến độ lưu trên trình duyệt này.</p></div>`;
+  <div class="card stack"><h3>Chọn môn để học</h3>${Object.keys(SUBJ).map(s=>{const S=SUBJ[s];const ch=S.chapters.filter(c=>c.status!=='soon').length;return `<a class="btn block" href="#${s}-road" style="background:var(${S.c});justify-content:space-between"><span>${S.name}</span><span class="small" style="opacity:.85">${ch} chuyên đề · ${S.quiz.length} câu ôn</span></a>`}).join('')}<p class="small muted">Đã trả lời đúng ${ok}/${qTot} câu ôn tập. Tiến độ lưu trên trình duyệt này.</p></div>`;
 }
 
 /* ===================== KNOWLEDGE (roadmap) ===================== */
-function renderKnow(s){
-  const S=SUBJ[s];
-  $('v-know').innerHTML = `
-  <div><div class="eyebrow">${S.name} · Kiến thức</div><h1 style="margin-top:4px">Lộ trình học</h1></div>
-  <details class="sol"><summary>Thông tin môn học</summary><div class="in"><div class="list">${S.info.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div></div></details>
-  <div class="road">${S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="stop soon" data-n="${ch.n}"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div>`;
+const CHEV='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+const STL={now:'Đang học',pre:'Học trước theo slide',done:'Đã học'};
+let lastOpen=null;
+function focusEl(id){ requestAnimationFrame(()=>{ const el=$(id); if(el) el.scrollIntoView({block:'start'}); }); }
+function infoList(S){ return `<div class="list">${S.info.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div>`; }
+function roadStops(s){ const S=SUBJ[s]; return `<div class="road">${S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="stop soon" data-n="${ch.n}"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div>`;
      const [n,t]=chapProgress(s,ch); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
-     return `<a class="stop ${st||(ch.status==='done'?'':'')}" data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${({now:'Đang học',pre:'Học trước theo slide',done:'Đã học'})[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>
-  `;
+     return `<a class="stop ${st}" data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>`; }
+
+/* ===================== LỘ TRÌNH ===================== */
+function renderRoad(s){
+  const S=SUBJ[s], mine=x=>x.s===s||x.s==='both';
+  const sch=SCHED.filter(mine), dl=DEADLINES.filter(mine), rm=REMIND.filter(mine);
+  const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
+  $('v-road').innerHTML = `
+  <div><div class="eyebrow">${S.name} · Lộ trình</div><h1 style="margin-top:4px">Lộ trình học</h1></div>
+  ${roadStops(s)}
+  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
+  ${dl.length?`<div class="card stack"><h3>Hạn nộp</h3><div class="list">${dl.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li" ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b><span class="small muted">${x.x}</span></div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</div>`}).join('')}</div></div>`:''}
+  ${rm.length?`<div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
+  <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>`;
 }
 
-/* ===================== CHAPTER ===================== */
-function renderChap(s,id){
-  const S=SUBJ[s], ch=S.chapters.find(c=>c.id===id); if(!ch){ location.hash=`#${s}-know`; return; }
+/* ===================== KIẾN THỨC (thu gọn từng chuyên đề) ===================== */
+function renderKnow(s,openId){
+  const S=SUBJ[s];
+  $('v-know').innerHTML = `
+  <div><div class="eyebrow">${S.name} · Kiến thức</div><h1 style="margin-top:4px">Kiến thức</h1><p class="small muted" style="margin-top:4px">Chạm vào một chuyên đề để mở; chạm lại để thu gọn.</p></div>
+  ${S.chapters.map(ch=>{
+    if(ch.status==='soon'||!ch.topics.length) return `<div class="card chacc soon" id="ch-${ch.id}"><span class="chn">${ch.n}</span><div class="chm"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div></div>`;
+    const [n,t]=chapProgress(s,ch), op=ch.id===openId;
+    return `<a class="card chacc ${op?'open':''} ${n===t&&t>0?'done':''}" id="ch-${ch.id}" href="#${s}-${op?'know':ch.id}" aria-expanded="${op}"><span class="chn">${ch.n}</span><div class="chm"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t}</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></div>${CHEV}</a>${op?`<div class="chbody">${chapBody(s,ch)}</div>`:''}`; }).join('')}`;
+}
+function chapBody(s,ch){
   const sm=ch.sum;
-  $('v-chap').innerHTML = `
-  <a class="back" href="#${s}-know">← Lộ trình</a>
-  <div class="chhead"><div class="eyebrow">Chuyên đề ${ch.n} · ${ch.src||''}</div><h1>${ch.title}</h1><p class="muted">${ch.sub}</p></div>
+  return `${ch.src?`<div class="eyebrow" style="color:var(--muted)">Nguồn: ${ch.src}</div>`:''}
   ${ch.intro?`<div class="card flat intro"><div class="eyebrow" style="margin-bottom:6px">Chuyên đề này nói về gì</div>${ch.intro}</div>`:''}
   <nav class="toc" aria-label="Các chủ đề">${ch.topics.map((t,i)=>`<a href="#${s}-${ch.id}" data-jump="t${i}" class="${understood[topicKey(s,ch.id,i)]?'ok':''}">${i+1}. ${t.t}</a>`).join('')}<a href="#${s}-${ch.id}" data-jump="tsum">Tóm tắt</a></nav>
   ${ch.topics.map((t,i)=>`<article class="card topic" id="t${i}" ${t.soon?'style="opacity:.75;border-style:dashed"':''}>
@@ -1546,58 +1607,68 @@ function renderChap(s,id){
 }
 
 /* ===================== WORK ===================== */
+function accItem(s,title,pill,body){ return `<details class="card acc" name="acc-${s}"><summary><span class="acc-t">${title}</span>${pill||''}${CHEV}</summary><div class="acc-b stack">${body}</div></details>`; }
 function renderWork(s){
   const S=SUBJ[s], W=S.work;
-  const exCards=X=>X.map((x,i)=>`<div class="card stack"><div class="row between"><h3>${i+1}. ${x.t}</h3><span class="pill c">${x.cd}</span></div><p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details></div>`).join('');
-  if(W&&s!=='ktud'){ $('v-work').innerHTML=`<div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1></div>
-  ${W.head||''}
-  ${W.todo&&W.todo.length?`<div class="card stack" style="grid-column:1/-1"><h3>Việc cần làm</h3><div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${s}.${i}" ${todoDone[s+'.'+i]?'checked':''}><span>${t}</span></label>`).join('')}</div></div>`:''}
-  <h2>Bài tập vận dụng</h2><p class="small muted">Đề tự soạn theo nội dung slide (slide môn này không có bài tập số), lời giải ẩn — làm ra giấy trước rồi mới mở.</p>
-  ${exCards(W.ex)}
-  ${W.discuss&&W.discuss.length?`<h2>Câu hỏi giảng viên đặt trong slide</h2><div class="card"><ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}`; return; }
-  if(!W){ $('v-work').innerHTML=`<div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1></div><div class="empty"><h3>Chưa có đề</h3><p>Môn có 3 buổi thảo luận cuối kỳ (18/11, 28/11, 2/12), nhiều khả năng có bài nhóm.</p></div>`; return; }
-  $('v-work').innerHTML = `
-  <div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1></div>
-  <div class="card stack" style="border-left:5px solid var(--gold)"><div class="row between"><h3>Bài nhóm 3</h3><span class="pill ko">Nộp sáng 5/12</span></div>
-    <p><b>Chủ đề:</b> Các nguyên lý kinh tế học về hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm của doanh nghiệp.</p>
+  const hd=`<div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1><p class="small muted" style="margin-top:4px">Chạm vào từng mục để mở; mở mục khác thì mục trước tự thu lại.</p></div>`;
+  if(!W){ $('v-work').innerHTML=hd+`<div class="empty"><h3>Chưa có đề</h3><p>Đề bài tập, thảo luận sẽ được thêm khi có.</p></div>`; return; }
+  const tk=i=>s==='ktud'?String(i):s+'.'+i;
+  const tdone=(W.todo||[]).filter((t,i)=>todoDone[tk(i)]).length;
+  const todo=W.todo&&W.todo.length?accItem(s,'Việc cần làm',`<span class="pill num" data-tdc="${s}">${tdone}/${W.todo.length}</span>`,`<div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${t}</span></label>`).join('')}</div>`):'';
+  const ex=W.ex.map((x,i)=>accItem(s,`${i+1}. ${x.t}`,`<span class="pill c">${x.cd}</span>`,`<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`)).join('');
+  const disc=W.discuss&&W.discuss.length?`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`:'';
+  let top='', tail='';
+  if(s==='ktud'){
+    top=accItem(s,'Bài nhóm 3','<span class="pill ko">Nộp sáng 5/12</span>',`<p><b>Chủ đề:</b> Các nguyên lý kinh tế học về hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm của doanh nghiệp.</p>
     <p class="small muted">Word 10–12 trang A4, Times New Roman 12, giãn dòng 1,2; bìa, mục lục, nội dung, tài liệu tham khảo. Gửi chthuhien@gmail.com, thuyết trình cả ngày 5/12.</p>
     <details class="sol"><summary>Xem dàn ý đề xuất</summary><div class="in stack">
       <p><i>Hành vi người tiêu dùng và chiến lược giá – sản phẩm: Nghiên cứu trường hợp Petrolimex trong giai đoạn chuyển đổi xăng sinh học E10.</i></p>
       <ol class="clean"><li><b>Mở đầu (~0,5 tr):</b> E10 thay xăng khoáng, xe điện tăng, cơ chế giá thị trường hóa.</li><li><b>I. Nguyên lý (~3,5 tr):</b> TU, MU giảm dần; đường bàng quan, MRS, ngân sách; tác động thay thế – thu nhập; WTP; kinh tế học hành vi.</li><li><b>II. Ứng dụng (~3 tr):</b> nguyên lý → chiến lược giá → chiến lược sản phẩm, dùng khung 3 hướng vận dụng của cô.</li><li><b>III. Petrolimex (~4 tr):</b> E10 (TT 50/2025, bán toàn hệ thống từ 20/5/2026, đề xuất chênh lệch 1.000–1.500đ/lít, sản lượng thí điểm +40%); Petrolimex ID (50 điểm/10.000đ không tiền mặt so với 50 điểm/20.000đ tiền mặt; thẻ BIDV-Visa 1,5%); cửa hàng tiện lợi Ohmee Express.</li><li><b>Kết luận</b> và tài liệu tham khảo.</li></ol>
       <p class="small muted">Nguồn: <a href="https://nhadautu.vn/xang-e10-phu-song-toan-quoc-nguoi-dung-dang-lo-dieu-gi-d105297.html">Nhà đầu tư</a> · <a href="https://www.sggp.org.vn/tiep-tuc-duy-tri-xang-e5-song-song-xang-e10-post854455.html">SGGP</a> · <a href="https://tapchicongthuong.vn/petrolimex-day-nhanh-chuyen-doi-kinh-doanh-xang-e10-tu-giua-thang-5-2026-517638.htm">TC Công Thương</a> · <a href="https://tienphong.vn/epaper/2026/TP-82/5/">Tiền Phong</a> · <a href="https://baodautu.vn/thanh-toan-thong-minh--loi-ich-dong-hanh-cung-petrolimex-d156794.html">Báo Đầu tư</a> · <a href="https://vcci.com.vn/en/news/petrolimex-mo-rong-tien-ich-tai-cua-hang-xang-dau">VCCI</a></p>
-    </div></details>
-    <h4>Việc cần làm</h4><div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${i}" ${todoDone[i]?'checked':''}><span>${t}</span></label>`).join('')}</div>
-  </div>
-  <h2>Bài tập trong slide</h2>
-  ${W.ex.map((x,i)=>`<div class="card stack"><div class="row between"><h3>${i+1}. ${x.t}</h3><span class="pill c">${x.cd}</span></div><p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details></div>`).join('')}
-  <h2>Câu hỏi thảo luận trên lớp</h2>
-  <div class="card"><ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-  <div class="card stack"><h3>Đề các nhóm</h3><div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm của anh</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div></div>`;
+    </div></details>`);
+    tail=`<h2 class="sech">Thảo luận</h2>${accItem(s,'Câu hỏi thảo luận trên lớp','',disc)}${accItem(s,'Đề các nhóm','',`<div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm của anh</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div>`)}`;
+    $('v-work').innerHTML=`${hd}<h2 class="sech">Bài nhóm</h2>${top}${todo}<h2 class="sech">Bài tập trong slide</h2>${ex}${tail}`; return; }
+  if(W.head) top=accItem(s,W.head.t,W.head.pill?`<span class="pill">${W.head.pill}</span>`:'',W.head.b);
+  $('v-work').innerHTML=`${hd}${top||todo?`<h2 class="sech">Thảo luận nhóm</h2>`:''}${top}${todo}<h2 class="sech">Bài tập vận dụng</h2><p class="small muted">${W.note||''}</p>${ex}${disc?`<h2 class="sech">Câu hỏi giảng viên đặt</h2>${accItem(s,'Câu hỏi trong slide','',disc)}`:''}`;
 }
 
 /* ===================== QUIZ ===================== */
 const LT=['A','B','C','D'];
-function qList(Q){ return Q.map((q,i)=>i).filter(i=> qFilter==='all'?true: qFilter==='ko'? quizRes[i]==='ko' : Q[i].cd===qFilter); }
+let qSet=null, sess={}, qView=null, qMenu=false, qReview=false;
+function qIds(Q){ if(!qSet) qSet=Q.map((q,i)=>i).filter(i=> qFilter==='all'?true: qFilter==='ko'? quizRes[i]==='ko' : Q[i].cd===qFilter); return qSet; }
+const qDone=i=> !!sess[i] || (qFilter!=='ko' && !!quizRes[i]);
+function setQFilter(f){ qFilter=f; qSet=null; qCur=0; qReview=false; qView='q'; qMenu=false; if(f==='ko'){ sess={}; qIds(SUBJ[cur].quiz).forEach(i=>{ delete picks[i]; }); } }
 function renderQuiz(s){
   const S=SUBJ[s], Q=S.quiz, v=$('v-quiz');
-  if(!Q.length){ v.innerHTML=`<div><div class="eyebrow">${S.name} · Ôn tập</div><h1 style="margin-top:4px">Ngân hàng câu hỏi</h1></div><div class="empty"><h3>Chưa có câu hỏi</h3><p>Câu hỏi sẽ được thêm sau buổi học đầu tiên.</p></div>`; return; }
-  const vals=Object.values(quizRes), ok=vals.filter(x=>x==='ok').length, ko=vals.filter(x=>x==='ko').length;
+  if(!Q.length){ v.innerHTML=`<div class="empty"><h3>Chưa có câu hỏi</h3><p>Câu hỏi sẽ được thêm sau buổi học đầu tiên.</p></div>`; return; }
+  const ids=qIds(Q); if(qCur>=ids.length) qCur=0;
+  const allDone=ids.length>0&&ids.every(qDone);
+  if(qView===null) qView=allDone?'sum':'q';
+  if(qView==='sum'&&!allDone) qView='q';
+  const okN=ids.filter(i=>quizRes[i]==='ok').length, koN=ids.filter(i=>quizRes[i]==='ko').length, doneN=ids.filter(qDone).length;
+  const koAll=Q.map((q,i)=>i).filter(i=>quizRes[i]==='ko').length;
   const cds=[...new Set(Q.map(q=>q.cd))];
-  const ids=qList(Q); if(qCur>=ids.length) qCur=0;
-  let card='';
-  if(!ids.length){ card=`<div class="empty"><h3>${qFilter==='ko'?'Không còn câu sai':'Chưa có câu'}</h3><p>Chọn "Tất cả" để ôn tiếp.</p></div>`; }
-  else { const i=ids[qCur], q=Q[i], p=picks[i];
-    card=`<div class="card stack"><div class="row"><span class="pill c">${q.cd}</span><span class="pill">${q.k}</span><span class="pill num">Câu ${i+1}/${Q.length}</span>${quizRes[i]==='ok'?'<span class="pill ok">Đã đúng</span>':quizRes[i]==='ko'?'<span class="pill ko">Cần ôn lại</span>':''}</div><div class="qtext">${q.q}</div>`;
-    if(q.o){ card+=`<div class="opts">${q.o.map((o,j)=>{let c='';if(p!==undefined){if(j===q.a)c='right';else if(j===p)c='wrong';}return `<button class="opt ${c}" data-o="${j}" ${p!==undefined?'disabled':''}><span class="l">${LT[j]}</span><span>${o}</span></button>`}).join('')}</div>${p!==undefined?`<div class="explain"><b>${p===q.a?'Chính xác!':'Đáp án đúng: '+LT[q.a]}</b>${q.e}${q.w?`<ul class="why">${q.w.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`:''}`; }
-    else { card+= p===undefined?`<button class="btn ghost block" data-show="1">Tự làm ra giấy, rồi bấm xem đáp án</button>`:`<div class="explain"><b>Đáp án: ${q.ans}</b>${q.e}</div><div class="row"><span class="small muted" style="flex-basis:100%">Anh làm đúng không?</span><button class="btn good" style="flex:1" data-self="ok">Đúng</button><button class="btn bad" style="flex:1" data-self="ko">Chưa đúng</button></div>`; }
-    card+=`<div class="qnav"><button class="btn ghost" data-nav="-1">← Câu trước</button><button class="btn" data-nav="1">Câu tiếp →</button></div></div>`; }
-  v.innerHTML=`<div><div class="eyebrow">${S.name} · Ôn tập</div><h1 style="margin-top:4px">Ngân hàng câu hỏi</h1></div>
-  <div class="card flat stat num"><div><b>${vals.length}</b><small>đã làm</small></div><div><b style="color:var(--good)">${ok}</b><small>đúng</small></div><div><b style="color:var(--bad)">${ko}</b><small>cần ôn lại</small></div></div>
-  <div class="chips">${['all',...cds,'ko'].map(f=>`<button class="chip ${qFilter===f?'on':''}" data-f="${f}">${f==='all'?'Tất cả':f==='ko'?'Câu sai':f}</button>`).join('')}<button class="chip" data-reset="1">Làm lại từ đầu</button></div>
-  ${ids.length?`<div class="dots">${ids.map((i,j)=>`<button class="${j===qCur?'cur ':''}${quizRes[i]||''}" data-j="${j}" aria-label="Câu ${i+1}">${i+1}</button>`).join('')}</div>`:''}
-  ${card}`;
+  const fl=qFilter==='all'?'Tất cả câu hỏi':qFilter==='ko'?'Ôn lại câu sai':'Chỉ '+qFilter;
+  let html=`<div class="qbar"><button class="qsel" data-menu="1" aria-expanded="${qMenu}"><span>${fl}</span>${CHEV.replace('class="chev"','')}</button>${qView==='q'?`<span class="qn num"><b>${ids.length?qCur+1:0}</b>/${ids.length}</span>`:'<span class="qn"></span>'}<span class="qc num"><i class="g">✓ ${okN}</i><i class="r">✗ ${koN}</i></span></div>
+  <div class="qline" aria-hidden="true"><i style="width:${ids.length?doneN/ids.length*100:0}%"></i></div>`;
+  if(qMenu) html+=`<div class="card qmenu"><div class="lab2">Phần ôn</div><div class="chips">${['all',...cds].map(f=>`<button class="chip ${qFilter===f?'on':''}" data-f="${f}">${f==='all'?'Tất cả':f}</button>`).join('')}${koAll?`<button class="chip ${qFilter==='ko'?'on':''}" data-f="ko">Câu sai (${koAll})</button>`:''}</div>
+    ${ids.length?`<div class="lab2">Đi tới câu</div><div class="dots">${ids.map((i,j)=>`<button class="${j===qCur&&qView==='q'?'cur ':''}${quizRes[i]||''}" data-j="${j}" aria-label="Câu ${i+1}">${j+1}</button>`).join('')}</div>`:''}
+    <button class="btn ghost" data-reset="1">Làm lại từ đầu${qFilter==='all'?'':' (phần này)'}</button></div>`;
+  if(!ids.length){ v.innerHTML=html+`<div class="empty"><h3>${qFilter==='ko'?'Không còn câu sai':'Chưa có câu'}</h3><p>Mở menu ở trên để chọn phần khác.</p></div>`; return; }
+  if(qView==='sum'){
+    const pct=Math.round(okN/ids.length*100);
+    const byCd=[...new Set(ids.map(i=>Q[i].cd))].map(c=>{ const g=ids.filter(i=>Q[i].cd===c); const o=g.filter(i=>quizRes[i]==='ok').length; return `<div class="rw"><span>${c}</span><div class="bar"><i style="width:${o/g.length*100}%"></i></div><span class="num" style="text-align:right">${o}/${g.length}</span></div>`; }).join('');
+    v.innerHTML=html+`<div class="card stack qsum"><div class="eyebrow">Đã làm xong · ${fl}</div><div class="big num">${okN}/${ids.length}</div><p class="muted">câu đúng · ${pct}%${koN?` · ${koN} câu cần ôn lại`:''}</p><div class="rows">${byCd}</div>
+      <div class="btns">${koN?`<button class="btn" data-f="ko">Ôn lại ${koN} câu sai</button>`:''}<button class="btn ghost" data-review="1">Xem lại từng câu</button><button class="btn ghost" data-reset="1">Làm lại từ đầu</button></div></div>`;
+    return; }
+  const i=ids[qCur], q=Q[i], p=picks[i], last=qCur===ids.length-1;
+  let card=`<div class="card stack qcard"><div class="qtop"><span class="pill c">${q.cd}</span><span class="pill">${q.k}</span>${quizRes[i]==='ok'?'<span class="pill ok">Đã đúng</span>':quizRes[i]==='ko'?'<span class="pill ko">Cần ôn lại</span>':''}</div><div class="qtext">${q.q}</div>`;
+  if(q.o){ card+=`<div class="opts">${q.o.map((o,j)=>{let c='';if(p!==undefined){if(j===q.a)c='right';else if(j===p)c='wrong';}return `<button class="opt ${c}" data-o="${j}" ${p!==undefined?'disabled':''}><span class="l">${LT[j]}</span><span>${o}</span></button>`}).join('')}</div>${p!==undefined?`<div class="explain"><b>${p===q.a?'Chính xác!':'Đáp án đúng: '+LT[q.a]}</b>${q.e}${q.w?`<ul class="why">${q.w.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`:''}`; }
+  else { card+= p===undefined?`<button class="btn ghost block" data-show="1">Tự làm ra giấy, rồi bấm xem đáp án</button>`:`<div class="explain"><b>Đáp án: ${q.ans}</b>${q.e}</div><div class="row"><span class="small muted" style="flex-basis:100%">Anh làm đúng không?</span><button class="btn good" style="flex:1" data-self="ok">Đúng</button><button class="btn bad" style="flex:1" data-self="ko">Chưa đúng</button></div>`; }
+  card+=`</div>`;
+  const toSum=allDone&&(!qReview||last);
+  v.innerHTML=html+card+`<div class="qnav2"><button class="btn ghost" data-nav="-1" aria-label="Câu trước">←</button><button class="btn" data-nav="1">${toSum?'Xem kết quả':'Câu tiếp →'}</button></div>`;
 }
-
 
 /* ---------- Ask link ---------- */
 function plain(h){ const d=document.createElement('div'); d.innerHTML=h; return d.textContent.replace(/\s+/g,' ').trim(); }
@@ -1633,16 +1704,23 @@ document.addEventListener('click',e=>{
   const jp=e.target.closest('[data-jump]'); if(jp){ e.preventDefault(); const t=$(jp.dataset.jump); if(t) t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); return; }
   const bt=e.target.closest('.bottom a'); if(bt){ e.preventDefault(); location.hash=`#${cur}-${bt.dataset.tab}`; return; }
   const v=$('v-quiz'); if(!v.contains(e.target)) return;
-  const Q=SUBJ[cur].quiz, ids=qList(Q), i=ids[qCur];
-  const o=e.target.closest('[data-o]'); if(o&&picks[i]===undefined){ const j=+o.dataset.o; picks[i]=j; quizRes[i]=j===Q[i].a?'ok':'ko'; store.set(qKey(cur),quizRes); renderQuiz(cur); return; }
+  const Q=SUBJ[cur].quiz, ids=qIds(Q), i=ids[qCur], top=()=>scrollTo({top:0});
+  if(e.target.closest('[data-menu]')){ qMenu=!qMenu; renderQuiz(cur); return; }
+  const f=e.target.closest('[data-f]'); if(f){ setQFilter(f.dataset.f); renderQuiz(cur); top(); return; }
+  if(e.target.closest('[data-reset]')){ if(qFilter==='all') quizRes={}; else ids.forEach(k=>delete quizRes[k]); ids.forEach(k=>{ delete picks[k]; delete sess[k]; }); if(qFilter==='all'){ picks={}; sess={}; } store.set(qKey(cur),quizRes); qSet=null; qCur=0; qView='q'; qReview=false; qMenu=false; renderQuiz(cur); top(); return; }
+  if(e.target.closest('[data-review]')){ qView='q'; qReview=true; qCur=0; renderQuiz(cur); top(); return; }
+  const dj=e.target.closest('[data-j]'); if(dj){ qCur=+dj.dataset.j; qView='q'; qMenu=false; renderQuiz(cur); top(); return; }
+  if(qView!=='q') return;
+  const o=e.target.closest('[data-o]'); if(o&&picks[i]===undefined){ const j=+o.dataset.o; picks[i]=j; sess[i]=1; quizRes[i]=j===Q[i].a?'ok':'ko'; store.set(qKey(cur),quizRes); renderQuiz(cur); return; }
   if(e.target.closest('[data-show]')){ picks[i]=-1; renderQuiz(cur); return; }
-  const sf=e.target.closest('[data-self]'); if(sf){ quizRes[i]=sf.dataset.self; store.set(qKey(cur),quizRes); qCur=Math.min(qCur+1,ids.length-1); renderQuiz(cur); return; }
-  const n=e.target.closest('[data-nav]'); if(n){ qCur=(qCur+ +n.dataset.nav+ids.length)%ids.length; renderQuiz(cur); return; }
-  const dj=e.target.closest('[data-j]'); if(dj){ qCur=+dj.dataset.j; renderQuiz(cur); return; }
-  const f=e.target.closest('[data-f]'); if(f){ qFilter=f.dataset.f; qCur=0; renderQuiz(cur); return; }
-  if(e.target.closest('[data-reset]')){ quizRes={}; picks={}; store.set(qKey(cur),quizRes); qCur=0; renderQuiz(cur); }
+  const sf=e.target.closest('[data-self]'); if(sf){ quizRes[i]=sf.dataset.self; sess[i]=1; store.set(qKey(cur),quizRes); renderQuiz(cur); return; }
+  const n=e.target.closest('[data-nav]'); if(n){ const d=+n.dataset.nav; const allDone=ids.every(qDone);
+    if(d>0&&allDone&&(!qReview||qCur===ids.length-1)){ qView='sum'; qReview=false; }
+    else qCur=(qCur+d+ids.length)%ids.length;
+    renderQuiz(cur); top(); return; }
 });
-document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); } });
+document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); const box=t.closest('.acc'); const c=box&&box.querySelector('[data-tdc]'); if(c){ const all=box.querySelectorAll('[data-td]'); c.textContent=[...all].filter(x=>x.checked).length+'/'+all.length; } } });
+document.addEventListener('toggle',e=>{ const d=e.target; if(!d.classList||!d.classList.contains('acc')||!d.open) return; const nm=d.getAttribute('name'); document.querySelectorAll('details.acc[open]').forEach(x=>{ if(x!==d&&x.getAttribute('name')===nm) x.open=false; }); requestAnimationFrame(()=>{ const r=d.getBoundingClientRect(); if(r.top<56||r.top>innerHeight*.45) d.scrollIntoView({block:'start'}); }); },true);
 let grades=store.get('emba-grades',{}); let gDraft={}, gOpen=null;
 const GST={dang:'Đang học',cho:'Đã học – chờ điểm',qua:'Đã qua',thilai:'Thi lại',hoclai:'Học lại'};
 const GORD=['dang','cho','thilai','hoclai','qua'];
@@ -1680,7 +1758,7 @@ function closeSubj(restore=true){ if(!$('subjSheet').classList.contains('on')) r
 $('subjBtn').addEventListener('click',openSubj);
 $('subjSheet').addEventListener('click',e=>{
   if(e.target.closest('#gradeBtn')){ closeSubj(false); location.hash='#grades'; return; }
-  const b=e.target.closest('[data-pick]'); if(b){ closeSubj(false); location.hash=`#${b.dataset.pick}-know`; return; }
+  const b=e.target.closest('[data-pick]'); if(b){ closeSubj(false); location.hash=`#${b.dataset.pick}-road`; return; }
   if(e.target===$('subjSheet')) closeSubj(); });
 document.addEventListener('keydown',e=>{ const sh=$('subjSheet'); if(!sh.classList.contains('on')) return;
   if(e.key==='Escape'){ closeSubj(); return; }
@@ -1721,31 +1799,32 @@ function route(){
   document.querySelectorAll('.bottom a').forEach(a=>a.classList.remove('on'));
   if(h==='grades'){ document.body.classList.add('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent='Điểm & trạng thái'; pk.className='picker nosubj'; renderGrades(); show('grades'); return; }
   if(!m){ document.body.classList.add('home-mode'); $('homeBtn').classList.add('on'); lbl.textContent='Chọn môn học'; pk.className='picker nosubj'; renderHome(); show('home'); return; }
-  const [,s,p]=m; if(s!==cur){ cur=s; quizRes=store.get(qKey(s),{}); qFilter='all'; qCur=0; picks={}; } store.set('emba-subj',s); setSubjColors(s);
+  const [,s,p]=m; if(s!==cur){ cur=s; quizRes=store.get(qKey(s),{}); qFilter='all'; qCur=0; picks={}; qSet=null; sess={}; qReview=false; } store.set('emba-subj',s); setSubjColors(s);
   document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=SUBJ[s].name; pk.className='picker active';
   let tab='know';
-  if(p==='know'){ renderKnow(s); show('know'); }
+  if(p==='road'){ renderRoad(s); show('road'); tab='road'; }
+  else if(p==='know'){ const prev=lastOpen; renderKnow(s,null); show('know'); if(prev&&prev.s===s) focusEl('ch-'+prev.id); lastOpen=null; }
   else if(p==='work'){ renderWork(s); show('work'); tab='work'; }
-  else if(p==='quiz'){ renderQuiz(s); show('quiz'); tab='quiz'; }
-  else { renderChap(s,p); show('chap'); }
+  else if(p==='quiz'){ qView=null; qMenu=false; renderQuiz(s); show('quiz'); tab='quiz'; }
+  else { if(!SUBJ[s].chapters.some(c=>c.id===p)){ location.hash=`#${s}-know`; return; } renderKnow(s,p); show('know'); lastOpen={s,id:p}; focusEl('ch-'+p); }
   document.querySelector(`.bottom a[data-tab="${tab}"]`).classList.add('on');
 }
 /* ---------- Thanh bên (máy tính) ---------- */
 const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',know:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/>',work:'<path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/>',quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/>',grade:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'};
-ICO.menu='<path d="M4 6h16M4 12h16M4 18h16"/>'; ICO.close='<path d="M15 6l-6 6 6 6"/>';
+ICO.menu='<path d="M4 6h16M4 12h16M4 18h16"/>'; ICO.road='<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>'; ICO.close='<path d="M15 6l-6 6 6 6"/>';
 let sideMini=store.get('emba-side-mini',true);
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[n]}</svg>`;
 function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024px)').matches) return;
   const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/); const cs=m?m[1]:null, pg=m?m[2]:null;
-  const tab=!m?null:(pg==='work'?'work':pg==='quiz'?'quiz':'know');
+  const tab=!m?null:(pg==='work'?'work':pg==='quiz'?'quiz':pg==='road'?'road':'know');
   const subj=Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], st=gStatus(k), [n,t]=subjProgress(k), on=cs===k;
-    return `<div class="sj ${on?'on':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><a href="#${k}-know"><span class="ic">${S.short}</span><span class="nm"><b>${S.name}</b><small><span class="spill ${st}" style="font-size:10.5px;padding:1px 7px">${GST[st]}</span>${t?`${n}/${t}`:''}</small>${t?`<span class="bar"><i style="width:${n/t*100}%"></i></span>`:''}</span></a>
-    ${on?`<div class="tabs">${[['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a href="#${k}-${id}" class="${tab===id?'on':''}">${ic(id)}${l}</a>`).join('')}</div>`:''}</div>`; }).join('');
+    return `<div class="sj ${on?'on':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><a href="#${k}-road"><span class="ic">${S.short}</span><span class="nm"><b>${S.name}</b><small><span class="spill ${st}" style="font-size:10.5px;padding:1px 7px">${GST[st]}</span>${t?`${n}/${t}`:''}</small>${t?`<span class="bar"><i style="width:${n/t*100}%"></i></span>`:''}</span></a>
+    ${on?`<div class="tabs">${[['road','Lộ trình'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a href="#${k}-${id}" class="${tab===id?'on':''}">${ic(id)}${l}</a>`).join('')}</div>`:''}</div>`; }).join('');
   document.body.classList.toggle('side-mini',sideMini);
   const tgl=`<button type="button" class="stgl" id="sideTgl" aria-label="${sideMini?'Mở menu':'Thu gọn menu'}" title="${sideMini?'Mở menu':'Thu gọn menu'}" aria-expanded="${!sideMini}">${ic(sideMini?'menu':'close')}</button>`;
   if(sideMini){
     el.innerHTML=`${tgl}<a class="ri ${h===''||h==='home'?'on':''}" href="#home" title="Trang chủ" aria-label="Trang chủ">${ic('home')}</a><a class="ri ${h==='grades'?'on':''}" href="#grades" title="Điểm & trạng thái" aria-label="Điểm & trạng thái">${ic('grade')}</a><span class="rsep"></span>
-    ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-know" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
+    ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-road" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['road','Lộ trình'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
     <span class="rcount" title="Số ngày đến kỳ thi"><b>${leftDays}</b>ngày</span>`;
     return; }
   el.innerHTML=`<div class="shd"><a class="brand" href="#home"><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><span><b>Sổ tay EMBA</b><small>Khóa 6XD · ĐHTM</small></span></a>${tgl}</div>
@@ -1753,11 +1832,11 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   <a class="si ${h===''||h==='home'?'on':''}" href="#home">${ic('home')}Trang chủ</a>
   <a class="si ${h==='grades'?'on':''}" href="#grades">${ic('grade')}Điểm & trạng thái</a>
   <div class="sl">Môn học</div>${subj}
-  <div class="foot"><span>Phím tắt: <b>M</b> ẩn/hiện menu · <b>1</b> Kiến thức · <b>2</b> Bài tập · <b>3</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
+  <div class="foot"><span>Phím tắt: <b>M</b> ẩn/hiện menu · <b>1</b> Lộ trình · <b>2</b> Kiến thức · <b>3</b> Bài tập · <b>4</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
 $('side').addEventListener('click',e=>{ if(e.target.closest('#sideTgl')){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); const t=$('sideTgl'); if(t) t.focus({preventScroll:true}); } });
 matchMedia('(min-width:1024px)').addEventListener('change',()=>{ renderSide(); });
 document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)||$('subjSheet').classList.contains('on')) return;
-  const m=(location.hash||'').match(/^#(ktud|qtcl)-/); const k={'1':'know','2':'work','3':'quiz'}[e.key];
+  const m=(location.hash||'').match(/^#(ktud|qtcl)-/); const k={'1':'road','2':'know','3':'work','4':'quiz'}[e.key];
   if(k&&m){ location.hash=`#${m[1]}-${k}`; return; } if(e.key==='h'||e.key==='H'){ location.hash='#home'; return; }
   if((e.key==='m'||e.key==='M')&&matchMedia('(min-width:1024px)').matches){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); return; }
   if($('v-quiz').classList.contains('on')){ const L={a:0,b:1,c:2,d:3}[e.key.toLowerCase()];
