@@ -364,6 +364,10 @@ html,body{overscroll-behavior-x:none}
 .sbox input{flex:1;min-width:0;height:48px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 14px;font:500 16px var(--body)}
 .sbox input:focus{outline:none;border-color:var(--c)}
 .sres{display:flex;flex-direction:column;gap:8px}
+.sflt{display:flex;flex-wrap:wrap;gap:6px}.sflt::-webkit-scrollbar{display:none}
+.sflt .chip{min-height:34px;padding:6px 12px;font-size:13px;color:var(--ink)}.sflt .chip.on{color:#fff}.sflt .chip[disabled]{opacity:.45}
+.linkbtn{border:0;background:none;padding:0;color:var(--c);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.sflt .sn{font-weight:600;opacity:.7;margin-left:2px}
 .sr{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .sr .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted);font-weight:700}
 .sr b{font-size:15px}
@@ -1881,7 +1885,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------- Tìm kiếm toàn Sổ tay ---------- */
-let sQ='', sIdx=null, pendTp=null, pendEx=null, pendQ=null;
+let sQ='', sS='all', sT='all'; try{ [sS,sT]=JSON.parse(sessionStorage.getItem('emba-sflt'))||['all','all']; }catch(e){} let sIdx=null, pendTp=null, pendEx=null, pendQ=null;
 const nz=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đĐ]/g,'d').toLowerCase();
 const nzc=t=>t.split('').map(c=>nz(c)[0]||' ').join('');
 const escH=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1908,11 +1912,16 @@ function searchRes(){ const words=nz(sQ).split(/\s+/).filter(w=>w.length>0); if(
   return sIdx.map(o=>{ let sc=0; for(const w of words){ const inT=findW(o.nt,w)>=0, inX=findW(o.nx,w)>=0; if(!inT&&!inX) return null; sc+=inT?5:1; }
     if(phrase){ if(findW(o.nt,phrase)>=0) sc+=30; else if(findW(o.nx,phrase)>=0) sc+=12; }
     if(accent){ if(o.lt.includes(raw)) sc+=20; else if(o.lx.includes(raw)) sc+=8; }
-    if(o.ty==='Kiến thức') sc+=1; return {o,sc}; }).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,60); }
-function renderSearchResults(){ const box=$('sres'); if(!box) return; const words=nz(sQ).split(/\s+/).filter(Boolean); const R=searchRes();
+    if(o.ty==='Kiến thức') sc+=1; return {o,sc}; }).filter(Boolean).sort((a,b)=>b.sc-a.sc); }
+const sTab=o=>o.ty==='Tóm tắt'?'Kiến thức':o.ty, S_TABS=['Kiến thức','Bài tập','Ôn tập'];
+function sFltHTML(all){ if(!all.length) return '';
+  const cS=k=>all.filter(({o})=>(k==='all'||o.s===k)&&(sT==='all'||sTab(o)===sT)).length, cT=k=>all.filter(({o})=>(sS==='all'||o.s===sS)&&(k==='all'||sTab(o)===k)).length;
+  const chip=(attr,k,lab,n,on)=>`<button class="chip${on?' on':''}" data-${attr}="${k}"${!n&&!on?' disabled':''} aria-pressed="${on}">${lab} <span class="sn">${n}</span></button>`;
+  return `<div class="sflt">${Object.keys(SUBJ).map(k=>chip('sfs',k,SUBJ[k].short,cS(k),sS===k)).join('')}</div><div class="sflt">${S_TABS.map(k=>chip('sft',k,k,cT(k),sT===k)).join('')}</div>`; }
+function renderSearchResults(){ const box=$('sres'); if(!box) return; const words=nz(sQ).split(/\s+/).filter(Boolean); const all=searchRes(), R=all.filter(({o})=>(sS==='all'||o.s===sS)&&(sT==='all'||sTab(o)===sT)).slice(0,60);
   box.innerHTML = !words.length?`<p class="small muted">Gõ từ khóa, có dấu hoặc không dấu: ví dụ <i>bcg</i>, <i>co gian</i>, <i>chi phí cơ hội</i>, <i>VRINE</i>.</p>`
-   : !R.length?`<div class="empty"><h3>Không tìm thấy</h3><p>Thử từ khóa khác hoặc bỏ bớt từ.</p></div>`
-   : `<p class="small muted">${R.length>=60?'60+':R.length} kết quả</p>`+R.map(({o},k)=>`<a class="sr" href="#${o.s}-road" data-sgo="${k}"><span class="meta"><span class="stag" style="background:var(${SUBJ[o.s].c})">${SUBJ[o.s].short}</span>${o.ty} · ${o.where}</span><b>${mark(o.title.length>140?o.title.slice(0,140)+'…':o.title,words,words.length>1?words.join(' '):null)}</b>${(()=>{const sn=snip(o.text,o.nx,words,words.length>1?words.join(' '):null);return sn?`<p>${sn}</p>`:''})()}</a>`).join('');
+   : !all.length?`<div class="empty"><h3>Không tìm thấy</h3><p>Thử từ khóa khác hoặc bỏ bớt từ.</p></div>`
+   : sFltHTML(all)+(!R.length?`<div class="empty"><h3>Không có kết quả trong bộ lọc này</h3><p>Chọn môn hoặc tab khác.</p></div>`:`<p class="small muted">${R.length>=60?'60+':R.length} kết quả${sS!=='all'||sT!=='all'?` · <button class="linkbtn" data-sfclr>Bỏ lọc</button>`:''}</p>`)+R.map(({o},k)=>`<a class="sr" href="#${o.s}-road" data-sgo="${k}"><span class="meta"><span class="stag" style="background:var(${SUBJ[o.s].c})">${SUBJ[o.s].short}</span>${o.ty} · ${o.where}</span><b>${mark(o.title.length>140?o.title.slice(0,140)+'…':o.title,words,words.length>1?words.join(' '):null)}</b>${(()=>{const sn=snip(o.text,o.nx,words,words.length>1?words.join(' '):null);return sn?`<p>${sn}</p>`:''})()}</a>`).join('');
   box._R=R; }
 function renderSearch(){ $('v-search').innerHTML=`<div class="sbox"><input id="sInput" type="search" placeholder="Tìm trong Sổ tay…" value="${escH(sQ)}" autocomplete="off" enterkeyhint="search" aria-label="Tìm trong Sổ tay"></div><div class="sres" id="sres"></div>`;
   renderSearchResults(); const i=$('sInput'); setTimeout(()=>{ i.focus(); i.setSelectionRange(i.value.length,i.value.length); },60); }
@@ -1922,6 +1931,8 @@ function openPending(pre){ let id=null;
   if(pre==='ex-'&&pendEx!=null){ id='ex-'+pendEx; pendEx=null; }
   if(id){ const d=$(id); if(d){ d.open=true; requestAnimationFrame(()=>d.scrollIntoView({block:'start'})); } } }
 document.addEventListener('click',e=>{
+  if(e.target.closest('[data-sfclr]')){ sS=sT='all'; sessionStorage.removeItem('emba-sflt'); renderSearchResults(); return; }
+  const sf=e.target.closest('[data-sfs],[data-sft]'); if(sf){ if(sf.dataset.sfs) sS=sS===sf.dataset.sfs?'all':sf.dataset.sfs; else sT=sT===sf.dataset.sft?'all':sf.dataset.sft; sessionStorage.setItem('emba-sflt',JSON.stringify([sS,sT])); renderSearchResults(); return; }
   const sg=e.target.closest('[data-sgo]'); if(sg){ e.preventDefault(); const R=$('sres')._R; const {o}=R[+sg.dataset.sgo]; const g=o.go;
     if(g.k==='tp'){ store.set('emba-chap-'+o.s,g.ch); pendTp=g.i; location.hash=`#${o.s}-know`; }
     else if(g.k==='ex'){ pendEx=g.i; location.hash=`#${o.s}-work`; }
