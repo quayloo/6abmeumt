@@ -294,7 +294,18 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
 .chacc.soon{opacity:.62;box-shadow:none;background:transparent;border-style:dashed}
 .chev{flex:none;width:22px;height:22px;color:var(--muted);transition:transform .2s;margin-top:6px}
 .chacc.open .chev,details.acc[open]>summary .chev{transform:rotate(180deg)}
-.chbody{display:flex;flex-direction:column;gap:14px;margin-bottom:6px}
+.khead{display:flex;flex-direction:column;gap:6px;padding:2px 2px 4px}
+.khead .eyebrow{color:var(--muted)}
+.khead h2{font-size:21px;line-height:1.3}
+.khead .bar{margin-top:2px}
+details.tacc>summary{align-items:flex-start}
+details.tacc>summary .tn{flex:none;width:30px;height:30px;border-radius:10px;background:var(--cs);color:var(--c);font:800 13.5px var(--display);display:grid;place-items:center}
+details.tacc.ok>summary .tn{background:var(--c);color:#fff}
+details.tacc>summary .acc-t{padding-top:4px}
+details.tacc>summary .chev{margin-top:4px}
+details.tacc>.acc-b{display:flex;flex-direction:column;gap:10px}
+details.tacc.sumacc>.acc-b{padding:0}
+details.tacc.sumacc .summary{border-radius:0 0 18px 18px}
 details.acc.card{padding:0;scroll-margin-top:84px}
 details.acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;min-height:58px}
 details.acc>summary::-webkit-details-marker{display:none}
@@ -1560,8 +1571,8 @@ let lastOpen=null;
 function focusEl(id){ requestAnimationFrame(()=>{ const el=$(id); if(el) el.scrollIntoView({block:'start'}); }); }
 function infoList(S){ return `<div class="list">${S.info.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div>`; }
 function roadStops(s){ const S=SUBJ[s]; return `<div class="road">${S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="stop soon" data-n="${ch.n}"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div>`;
-     const [n,t]=chapProgress(s,ch); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
-     return `<a class="stop ${st}" data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>`; }
+     const [n,t]=chapProgress(s,ch); const cc=curChap(s); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
+     return `<a class="stop ${st}" ${cc&&cc.id===ch.id?'style="border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)"':''} data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>`; }
 
 /* ===================== LỘ TRÌNH ===================== */
 function renderRoad(s){
@@ -1569,7 +1580,6 @@ function renderRoad(s){
   const sch=SCHED.filter(mine), dl=DEADLINES.filter(mine), rm=REMIND.filter(mine);
   const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
   $('v-road').innerHTML = `
-  <div><div class="eyebrow">${S.name} · Lộ trình</div><h1 style="margin-top:4px">Lộ trình học</h1></div>
   ${roadStops(s)}
   ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
   ${dl.length?`<div class="card stack"><h3>Hạn nộp</h3><div class="list">${dl.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li" ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b><span class="small muted">${x.x}</span></div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</div>`}).join('')}</div></div>`:''}
@@ -1578,39 +1588,32 @@ function renderRoad(s){
 }
 
 /* ===================== KIẾN THỨC (thu gọn từng chuyên đề) ===================== */
-function renderKnow(s,openId){
-  const S=SUBJ[s];
+function curChap(s){ const av=SUBJ[s].chapters.filter(c=>c.status!=='soon'&&c.topics.length); if(!av.length) return null; const id=store.get('emba-chap-'+s,null); return av.find(c=>c.id===id)||av.find(c=>c.status==='now')||av[0]; }
+function renderKnow(s){
+  const ch=curChap(s);
+  if(!ch){ $('v-know').innerHTML=`<div class="empty"><h3>Chưa có chuyên đề</h3><p>Nội dung sẽ được thêm sau buổi học đầu tiên.</p></div>`; return; }
+  const [n,t]=chapProgress(s,ch), sm=ch.sum, nm='tp-'+s;
+  const it=(cls,badge,title,body)=>`<details class="card acc tacc ${cls}" name="${nm}"><summary>${badge}<span class="acc-t">${title}</span>${CHEV}</summary><div class="acc-b">${body}</div></details>`;
   $('v-know').innerHTML = `
-  <div><div class="eyebrow">${S.name} · Kiến thức</div><h1 style="margin-top:4px">Kiến thức</h1><p class="small muted" style="margin-top:4px">Chạm vào một chuyên đề để mở; chạm lại để thu gọn.</p></div>
-  ${S.chapters.map(ch=>{
-    if(ch.status==='soon'||!ch.topics.length) return `<div class="card chacc soon" id="ch-${ch.id}"><span class="chn">${ch.n}</span><div class="chm"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div></div>`;
-    const [n,t]=chapProgress(s,ch), op=ch.id===openId;
-    return `<a class="card chacc ${op?'open':''} ${n===t&&t>0?'done':''}" id="ch-${ch.id}" href="#${s}-${op?'know':ch.id}" aria-expanded="${op}"><span class="chn">${ch.n}</span><div class="chm"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t}</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></div>${CHEV}</a>${op?`<div class="chbody">${chapBody(s,ch)}</div>`:''}`; }).join('')}`;
-}
-function chapBody(s,ch){
-  const sm=ch.sum;
-  return `${ch.src?`<div class="eyebrow" style="color:var(--muted)">Nguồn: ${ch.src}</div>`:''}
-  ${ch.intro?`<div class="card flat intro"><div class="eyebrow" style="margin-bottom:6px">Chuyên đề này nói về gì</div>${ch.intro}</div>`:''}
-  <nav class="toc" aria-label="Các chủ đề">${ch.topics.map((t,i)=>`<a href="#${s}-${ch.id}" data-jump="t${i}" class="${understood[topicKey(s,ch.id,i)]?'ok':''}">${i+1}. ${t.t}</a>`).join('')}<a href="#${s}-${ch.id}" data-jump="tsum">Tóm tắt</a></nav>
-  ${ch.topics.map((t,i)=>`<article class="card topic" id="t${i}" ${t.soon?'style="opacity:.75;border-style:dashed"':''}>
-    <div class="hd" style="align-items:center"><span class="n">${i+1}</span><div><h3>${t.t}</h3>${t.soon?'<div class="src">Sắp học</div>':''}</div></div>
-    <div class="body">${t.b}
-      ${t.m?`<div class="more-box" id="m-${i}" hidden><div class="mtag">Hiểu sâu hơn</div>${t.m}</div>`:''}
-      <div class="acts">${t.m?`<button class="act" data-more="${i}" aria-expanded="false" aria-controls="m-${i}">More</button>`:''}<a class="act ask" href="${askLink(s,ch,i)}" target="_blank" rel="noopener">Ask</a>${t.soon?'':`<button class="act got ${understood[topicKey(s,ch.id,i)]?'on':''}" data-u="${topicKey(s,ch.id,i)}" data-ti="${i}" aria-pressed="${understood[topicKey(s,ch.id,i)]?'true':'false'}">${understood[topicKey(s,ch.id,i)]?'✓ Got it':'Got it'}</button>`}</div>
-    </div></article>`).join('')}
-  ${sm?`<section class="summary topic" id="tsum"><div class="lab">Tóm tắt & kết luận chuyên đề</div><h2>${sm.core}</h2>
+  <div class="khead"><div class="eyebrow">Chuyên đề ${ch.n} · ${STL[ch.status]||''}${ch.src?' · '+ch.src:''}</div><h2>${ch.title}</h2><div class="row between small muted"><span>Chạm từng chủ đề để mở</span><span class="num" id="kprog">${n}/${t} đã hiểu</span></div><div class="bar"><i id="kbar" style="width:${t?n/t*100:0}%"></i></div></div>
+  ${ch.intro?it('','<span class="tn">i</span>','Chuyên đề này nói về gì',`<div>${ch.intro}</div>`):''}
+  ${ch.topics.map((tp,i)=>{ const k=topicKey(s,ch.id,i), u=understood[k];
+    return it(u?'ok':'',`<span class="tn" data-tk="${i}">${u?'✓':i+1}</span>`,tp.t+(tp.soon?' <span class="pill">Sắp học</span>':''),`${tp.b}
+      ${tp.m?`<div class="more-box" id="m-${i}" hidden><div class="mtag">Hiểu sâu hơn</div>${tp.m}</div>`:''}
+      <div class="acts">${tp.m?`<button class="act" data-more="${i}" aria-expanded="false" aria-controls="m-${i}">More</button>`:''}<a class="act ask" href="${askLink(s,ch,i)}" target="_blank" rel="noopener">Ask</a>${tp.soon?'':`<button class="act got ${u?'on':''}" data-u="${k}" data-ti="${i}" aria-pressed="${u?'true':'false'}">${u?'✓ Got it':'Got it'}</button>`}</div>`); }).join('')}
+  ${sm?it('sumacc','<span class="tn">★</span>','Tóm tắt & kết luận chuyên đề',`<section class="summary"><h2>${sm.core}</h2>
     <div class="pillars">${sm.pillars.map(p=>`<div class="pl" style="--pc:${p[3]};background:transparent;border-color:rgba(255,255,255,.15);border-top-color:${p[3]}"><b>${p[0]}</b><h4 style="color:var(--surface)">${p[1]}</h4><p style="color:var(--surface);opacity:.75">${p[2]}</p></div>`).join('')}</div>
     ${sm.recap?`<div class="lab">Ghi nhớ cốt lõi</div><ul>${sm.recap.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
     <div class="lab">Điểm dễ ra thi</div><ul>${sm.exam.map(x=>`<li>${x}</li>`).join('')}</ul>
     <div class="lab">Thuật ngữ</div><div class="terms">${sm.terms.map(([v,e])=>`<div class="term">${v}<i>${e}</i></div>`).join('')}</div>
-    <a class="btn" href="#${s}-quiz" style="background:var(--gold);color:#3D2A00">Ôn câu hỏi ${'CĐ'+ch.n} →</a></section>`:''}`;
+    <a class="btn" href="#${s}-quiz" style="background:var(--gold);color:#3D2A00">Ôn câu hỏi ${'CĐ'+ch.n} →</a></section>`):''}`;
 }
 
 /* ===================== WORK ===================== */
 function accItem(s,title,pill,body){ return `<details class="card acc" name="acc-${s}"><summary><span class="acc-t">${title}</span>${pill||''}${CHEV}</summary><div class="acc-b stack">${body}</div></details>`; }
 function renderWork(s){
   const S=SUBJ[s], W=S.work;
-  const hd=`<div><div class="eyebrow">${S.name} · Bài tập</div><h1 style="margin-top:4px">Bài tập & thảo luận</h1><p class="small muted" style="margin-top:4px">Chạm vào từng mục để mở; mở mục khác thì mục trước tự thu lại.</p></div>`;
+  const hd='';
   if(!W){ $('v-work').innerHTML=hd+`<div class="empty"><h3>Chưa có đề</h3><p>Đề bài tập, thảo luận sẽ được thêm khi có.</p></div>`; return; }
   const tk=i=>s==='ktud'?String(i):s+'.'+i;
   const tdone=(W.todo||[]).filter((t,i)=>todoDone[tk(i)]).length;
@@ -1700,7 +1703,7 @@ function askLink(s,ch,i){ const S=SUBJ[s], t=ch.topics[i]; const body=plain(t.b)
 /* ===================== EVENTS ===================== */
 document.addEventListener('click',e=>{
   const mo=e.target.closest('[data-more]'); if(mo){ const box=$('m-'+mo.dataset.more); const open=box.hidden; box.hidden=!open; mo.textContent=open?'Less':'More'; mo.setAttribute('aria-expanded',String(open)); mo.classList.toggle('on',open); return; }
-  const u=e.target.closest('[data-u]'); if(u){ const v=!understood[u.dataset.u]; understood[u.dataset.u]=v; store.set('emba-understood',understood); u.classList.toggle('on',v); u.textContent=v?'✓ Got it':'Got it'; u.setAttribute('aria-pressed',String(v)); const tc=document.querySelector(`.toc a[data-jump="t${u.dataset.ti}"]`); if(tc) tc.classList.toggle('ok',v); renderSide(); return; }
+  const u=e.target.closest('[data-u]'); if(u){ const v=!understood[u.dataset.u]; understood[u.dataset.u]=v; store.set('emba-understood',understood); u.classList.toggle('on',v); u.textContent=v?'✓ Got it':'Got it'; u.setAttribute('aria-pressed',String(v)); const tc=document.querySelector(`.toc a[data-jump="t${u.dataset.ti}"]`); if(tc) tc.classList.toggle('ok',v); const tk=document.querySelector(`[data-tk="${u.dataset.ti}"]`); if(tk){ tk.textContent=v?'✓':(+u.dataset.ti+1); tk.closest('details').classList.toggle('ok',v); } if(cur){ const ch=curChap(cur); if(ch){ const [a1,b1]=chapProgress(cur,ch); const kp=$('kprog'), kb=$('kbar'); if(kp) kp.textContent=`${a1}/${b1} đã hiểu`; if(kb) kb.style.width=(b1?a1/b1*100:0)+'%'; } } renderSide(); return; }
   const jp=e.target.closest('[data-jump]'); if(jp){ e.preventDefault(); const t=$(jp.dataset.jump); if(t) t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); return; }
   const bt=e.target.closest('.bottom a'); if(bt){ e.preventDefault(); location.hash=`#${cur}-${bt.dataset.tab}`; return; }
   const v=$('v-quiz'); if(!v.contains(e.target)) return;
@@ -1803,10 +1806,10 @@ function route(){
   document.body.classList.remove('home-mode'); $('homeBtn').classList.remove('on'); lbl.textContent=SUBJ[s].name; pk.className='picker active';
   let tab='know';
   if(p==='road'){ renderRoad(s); show('road'); tab='road'; }
-  else if(p==='know'){ const prev=lastOpen; renderKnow(s,null); show('know'); if(prev&&prev.s===s) focusEl('ch-'+prev.id); lastOpen=null; }
+  else if(p==='know'){ renderKnow(s); show('know'); scrollTo(0,0); }
   else if(p==='work'){ renderWork(s); show('work'); tab='work'; }
   else if(p==='quiz'){ qView=null; qMenu=false; renderQuiz(s); show('quiz'); tab='quiz'; }
-  else { if(!SUBJ[s].chapters.some(c=>c.id===p)){ location.hash=`#${s}-know`; return; } renderKnow(s,p); show('know'); lastOpen={s,id:p}; focusEl('ch-'+p); }
+  else { if(SUBJ[s].chapters.some(c=>c.id===p)) store.set('emba-chap-'+s,p); location.replace(`#${s}-know`); return; }
   document.querySelector(`.bottom a[data-tab="${tab}"]`).classList.add('on');
 }
 /* ---------- Thanh bên (máy tính) ---------- */
