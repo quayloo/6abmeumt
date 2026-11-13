@@ -285,7 +285,9 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
 .qnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));background:var(--surface);padding-top:6px}
 .empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
-.install{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.install{display:flex;gap:14px;align-items:center;flex-wrap:wrap;position:relative;padding-right:46px}
+.install .xbtn{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;border:0;background:var(--surface-2);color:var(--muted);display:grid;place-items:center}
+.install .xbtn:hover{color:var(--ink)}
 .install > .btn{flex:1 1 100%}
 .install img{width:54px;height:54px;border-radius:14px;flex:none}
 .install .t{flex:1;min-width:0}
@@ -378,6 +380,31 @@ body.app-mode #fsBtn{display:none}
 }
 @media (min-width:1024px) and (max-width:1279px){ .side{width:248px} main{margin-left:248px;padding:28px 28px 48px} #v-chap.on{grid-template-columns:minmax(0,1fr) 210px;column-gap:20px} }
 @media (min-width:1024px) and (hover:hover){ .card.topic{transition:box-shadow .2s} }
+
+@media (min-width:1024px){
+  .side .shd{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+  .side .shd .brand{flex:1;min-width:0}
+  .side .stgl{flex:none;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center}
+  .side .stgl:hover{background:var(--surface-2)}
+  .side .stgl svg{width:20px;height:20px}
+  .side,main{transition:width .2s ease,margin-left .2s ease}
+  body.side-mini .side{width:76px;align-items:center;padding:16px 10px;gap:6px}
+  body.side-mini main{margin-left:76px}
+  body.side-mini .side .stgl{margin-bottom:8px}
+  .side .ri{width:48px;height:44px;border-radius:13px;display:grid;place-items:center;color:var(--ink);text-decoration:none}
+  .side .ri svg{width:22px;height:22px}
+  .side .ri:hover{background:var(--surface-2)}
+  .side .ri.on{background:var(--ink);color:var(--surface)}
+  .side .ri.sub{height:38px;color:var(--oc)} .side .ri.sub svg{width:19px;height:19px}
+  .side .ri.sub.on{background:var(--ocs);color:var(--oc);box-shadow:inset 0 0 0 1.5px var(--oc)}
+  .side .rsep{width:32px;height:1px;background:var(--line);margin:6px 0}
+  .side .rs{width:48px;height:44px;border-radius:13px;display:grid;place-items:center;text-decoration:none;font:800 10.5px var(--display);letter-spacing:-.02em;background:var(--ocs);color:var(--oc)}
+  .side .rs.on{background:var(--oc);color:#fff}
+  .side .rcount{margin-top:auto;display:flex;flex-direction:column;align-items:center;font-size:10.5px;color:var(--muted);line-height:1.1}
+  .side .rcount b{font:800 18px var(--display);color:var(--ink)}
+  #v-home > .install{padding-right:56px}
+}
+@media (min-width:1024px) and (max-width:1279px){ body.side-mini main{margin-left:76px} }
 </style>
 </head>
 <body>
@@ -867,16 +894,17 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredP
 window.addEventListener('appinstalled',()=>{ deferredPrompt=null; store.set('emba-installed',true); if(!location.hash||location.hash==='#home') renderHome(); });
 if(onPages && 'serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 function installCard(){
-  if(isApp) return '';
+  if(isApp||store.get('emba-install-hide',false)) return '';
   let action, note;
   if(!onPages){ action=`<a class="btn" href="${HOME_URL}" target="_blank" rel="noopener">Mở trang để cài</a>`; note='Trang đang mở trong claude.ai. Mở địa chỉ chính để cài lên điện thoại.'; }
   else if(deferredPrompt){ action=`<button class="btn" data-install="1">Cài đặt</button>`; note='Thêm biểu tượng ra màn hình chính, mở toàn màn hình, dùng được khi mất mạng.'; }
   else if(isIOS){ action=`<button class="btn" data-ios="1">Xem cách cài</button>`; note='Trên iPhone: Safari → Chia sẻ → Thêm vào Màn hình chính.'; }
   else { action=''; note='Mở menu trình duyệt (⋮) và chọn <b>Cài đặt ứng dụng</b> hoặc <b>Thêm vào màn hình chính</b>.'; }
-  return `<div class="card install"><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><div class="t"><h3>Cài Sổ tay lên điện thoại</h3><p class="small muted">${note}</p></div>${action}</div>`;
+  return `<div class="card install"><button type="button" class="xbtn" data-installhide="1" aria-label="Ẩn thông báo cài đặt" title="Ẩn thông báo này"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><div class="t"><h3>Cài Sổ tay lên điện thoại</h3><p class="small muted">${note}</p></div>${action}</div>`;
 }
 document.addEventListener('click',async e=>{
   if(e.target.closest('[data-install]') && deferredPrompt){ deferredPrompt.prompt(); try{ await deferredPrompt.userChoice; }catch(_){} deferredPrompt=null; renderHome(); }
+  if(e.target.closest('[data-installhide]')){ store.set('emba-install-hide',true); const c=e.target.closest('.install'); if(c) c.remove(); return; }
   if(e.target.closest('[data-ios]')) $('iosModal').classList.add('on');
   if(e.target.closest('#iosClose') || e.target===$('iosModal')) $('iosModal').classList.remove('on');
 });
@@ -1119,6 +1147,8 @@ function route(){
 }
 /* ---------- Thanh bên (máy tính) ---------- */
 const ICO={home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',know:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/>',work:'<path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/>',quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/>',grade:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'};
+ICO.menu='<path d="M4 6h16M4 12h16M4 18h16"/>'; ICO.close='<path d="M15 6l-6 6 6 6"/>';
+let sideMini=store.get('emba-side-mini',true);
 const ic=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[n]}</svg>`;
 function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024px)').matches) return;
   const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/); const cs=m?m[1]:null, pg=m?m[2]:null;
@@ -1126,16 +1156,25 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   const subj=Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], st=gStatus(k), [n,t]=subjProgress(k), on=cs===k;
     return `<div class="sj ${on?'on':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><a href="#${k}-know"><span class="ic">${S.short}</span><span class="nm"><b>${S.name}</b><small><span class="spill ${st}" style="font-size:10.5px;padding:1px 7px">${GST[st]}</span>${t?`${n}/${t}`:''}</small>${t?`<span class="bar"><i style="width:${n/t*100}%"></i></span>`:''}</span></a>
     ${on?`<div class="tabs">${[['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a href="#${k}-${id}" class="${tab===id?'on':''}">${ic(id)}${l}</a>`).join('')}</div>`:''}</div>`; }).join('');
-  el.innerHTML=`<a class="brand" href="#home"><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><span><b>Sổ tay EMBA</b><small>Khóa 6XD · ĐH Thương mại</small></span></a>
+  document.body.classList.toggle('side-mini',sideMini);
+  const tgl=`<button type="button" class="stgl" id="sideTgl" aria-label="${sideMini?'Mở menu':'Thu gọn menu'}" title="${sideMini?'Mở menu':'Thu gọn menu'}" aria-expanded="${!sideMini}">${ic(sideMini?'menu':'close')}</button>`;
+  if(sideMini){
+    el.innerHTML=`${tgl}<a class="ri ${h===''||h==='home'?'on':''}" href="#home" title="Trang chủ" aria-label="Trang chủ">${ic('home')}</a><a class="ri ${h==='grades'?'on':''}" href="#grades" title="Điểm & trạng thái" aria-label="Điểm & trạng thái">${ic('grade')}</a><span class="rsep"></span>
+    ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-know" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
+    <span class="rcount" title="Số ngày đến kỳ thi"><b>${leftDays}</b>ngày</span>`;
+    return; }
+  el.innerHTML=`<div class="shd"><a class="brand" href="#home"><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><span><b>Sổ tay EMBA</b><small>Khóa 6XD · ĐHTM</small></span></a>${tgl}</div>
   <div class="count"><b>${leftDays}</b><span>ngày đến kỳ thi<br>${dd(EXAM).w} ${dd(EXAM).d}</span></div>
   <a class="si ${h===''||h==='home'?'on':''}" href="#home">${ic('home')}Trang chủ</a>
   <a class="si ${h==='grades'?'on':''}" href="#grades">${ic('grade')}Điểm & trạng thái</a>
   <div class="sl">Môn học</div>${subj}
-  <div class="foot"><span>Phím tắt: <b>1</b> Kiến thức · <b>2</b> Bài tập · <b>3</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
+  <div class="foot"><span>Phím tắt: <b>M</b> ẩn/hiện menu · <b>1</b> Kiến thức · <b>2</b> Bài tập · <b>3</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
+$('side').addEventListener('click',e=>{ if(e.target.closest('#sideTgl')){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); const t=$('sideTgl'); if(t) t.focus({preventScroll:true}); } });
 matchMedia('(min-width:1024px)').addEventListener('change',()=>{ renderSide(); });
 document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)||$('subjSheet').classList.contains('on')) return;
   const m=(location.hash||'').match(/^#(ktud|qtcl)-/); const k={'1':'know','2':'work','3':'quiz'}[e.key];
   if(k&&m){ location.hash=`#${m[1]}-${k}`; return; } if(e.key==='h'||e.key==='H'){ location.hash='#home'; return; }
+  if((e.key==='m'||e.key==='M')&&matchMedia('(min-width:1024px)').matches){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); return; }
   if($('v-quiz').classList.contains('on')){ const L={a:0,b:1,c:2,d:3}[e.key.toLowerCase()];
     if(L!=null){ const b=$('v-quiz').querySelector(`[data-o="${L}"]:not([disabled])`); if(b){ b.click(); e.preventDefault(); } }
     else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const b=$('v-quiz').querySelector(`[data-nav="${e.key==='ArrowRight'?1:-1}"]`); if(b){ b.click(); e.preventDefault(); } } } });
