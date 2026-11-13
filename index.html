@@ -534,6 +534,7 @@ body.app-mode #fsBtn{display:none}
 <script>
 (function(){
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+(function(){ try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persisted().then(p=>{ if(!p) navigator.storage.persist(); }); }catch(e){} })();
 (function(){ try{ const t=JSON.parse(localStorage.getItem('emba-theme')||'"auto"'); if(t==='light'||t==='dark') document.documentElement.dataset.theme=t; }catch(e){} })();
 const now=new Date(), TODAY=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
 const dayMs=864e5, U=s=>Date.parse(s), WD=['CN','T2','T3','T4','T5','T6','T7'];
@@ -1589,7 +1590,7 @@ function renderHome(){
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
   const lk=s=>SUBJ[s]?`href="#${s}-road"`:'';           // mục chung cả hai môn ('both') không gắn link
   const tag=(s,a='a')=>SUBJ[s]?'a':'div';
-  const go='<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  const go='';
   const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
   const subjLinks=Object.keys(SUBJ).map(k=>`<a href="#${k}-road">${SUBJ[k].name}</a>`).join(' + ');
   $('v-home').innerHTML = `
@@ -1618,7 +1619,7 @@ function renderRoad(s){
   const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
   $('v-road').innerHTML = `
   ${roadStops(s)}
-  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div><a class="btn ghost" href="#settings" style="text-decoration:none">Thêm lịch học & thi vào điện thoại →</a></div>`:''}
+  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
   ${dl.length?`<div class="card stack"><h3>Hạn nộp</h3><div class="list">${dl.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li" ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b><span class="small muted">${x.x}</span></div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</div>`}).join('')}</div></div>`:''}
   ${rm.length?`<div class="card stack"><h3>Nhắc nhở của giảng viên</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>`;
@@ -1763,21 +1764,15 @@ function gcalEvent(x,deadline){ // link thêm MỘT sự kiện vào Google Cale
   return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(text)+'&dates='+dates+'&ctz=Asia/Ho_Chi_Minh&details='+encodeURIComponent(det)+(loc?'&location='+encodeURIComponent(loc):''); }
 function calHTML(){
   const up=SCHED.filter(x=>U(x.d)>=TODAY).map(x=>({x,dl:false})).concat(DEADLINES.filter(x=>x.d!==EXAM&&U(x.d)>=TODAY).map(x=>({x,dl:true}))).sort((a,b)=>U(a.x.d)-U(b.x.d));
-  const android=`<div class="stack"><b>Android (Google Calendar)</b><ol class="clean">
-      <li>Bấm nút dưới → đăng nhập đúng tài khoản Google đang dùng trên điện thoại → bấm <b>Thêm</b>.</li>
-      <li>Mở ứng dụng Google Calendar → ☰ → kéo xuống thấy lịch <b>EMBA 6XD</b> → đánh dấu để hiện. Nếu chưa thấy: ☰ → Cài đặt → EMBA 6XD → bật <b>Đồng bộ</b>.</li></ol>
-      <a class="btn" href="${GCAL_SUB}" target="_blank" rel="noopener" style="text-decoration:none">Thêm lịch EMBA vào Google Calendar</a>
-      <p class="small muted">Nếu bước 1 không hiện nút Thêm: mở link trên bằng Chrome và chọn "Trang web cho máy tính", hoặc làm trên máy tính. Google cập nhật lịch đăng ký vài giờ/lần.</p></div>`;
-  const ios=`<div class="stack"><b>iPhone (Lịch của Apple)</b><ol class="clean"><li>Bấm nút dưới → <b>Đăng ký</b> → <b>Thêm</b>.</li></ol>
-      <a class="btn ${isAndroid?'ghost':''}" href="${ICS_WEBCAL}" style="text-decoration:none">Đăng ký lịch EMBA trên iPhone</a></div>`;
-  return `<div class="card stack icsbox"><h3>Lịch học & thi trên điện thoại</h3>
-    <p class="small muted">Một lịch chung cho mọi môn: buổi học (nhắc trước 1 giờ), hạn nộp và ngày thi (nhắc từ hôm trước). Đăng ký một lần, lịch tự cập nhật khi Sổ tay thay đổi.</p>
-    ${isAndroid?android+ios:ios+android}
-    <details class="sol"><summary>Cách đơn giản nhất: thêm từng buổi (${up.length})</summary><div class="in stack">
-      <p class="small muted">Mỗi dòng mở thẳng màn hình "Thêm sự kiện" của Google Calendar, chỉ cần bấm <b>Lưu</b>. Không tự cập nhật khi lịch thay đổi.</p>
-      <div class="list">${up.map(({x,dl})=>{ const D=dd(x.d); return `<a class="li hl" href="${gcalEvent(x,dl)}" target="_blank" rel="noopener"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${dl?'Hạn: '+x.t:(x.d===EXAM?'Thi (dự kiến)':x.x)}</b><span class="small muted">${dl?x.x:x.t}</span></div><span class="pill c">+ Lịch</span></a>`; }).join('')}</div></div></details>
-    <details class="sol"><summary>Địa chỉ lịch (dùng thủ công)</summary><div class="in stack"><div class="row" style="gap:6px;flex-wrap:nowrap"><input readonly value="${ICS_URL}" style="flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:13px" onfocus="this.select()"><button class="btn ghost" data-copy="${ICS_URL}" style="min-height:40px">Chép</button></div><p class="small muted">Google Calendar trên máy tính: Lịch khác (+) → Từ URL → dán địa chỉ.</p></div></details>
-  </div>`; }
+  const main=isIOS?`<a class="btn" href="${ICS_WEBCAL}" style="text-decoration:none">Đăng ký lịch EMBA</a><p class="small muted">Bấm → Đăng ký → Thêm.</p>`
+    :`<a class="btn" href="${GCAL_SUB}" target="_blank" rel="noopener" style="text-decoration:none">Thêm vào Google Calendar</a><p class="small muted">Bấm → chọn tài khoản → Thêm. Nếu app Lịch chưa hiện: ☰ → tích "EMBA 6XD".</p>`;
+  return `<div class="card stack icsbox"><h3>Lịch học & thi trên điện thoại</h3>${main}
+    <details class="sol"><summary>Cách khác</summary><div class="in stack">
+      <b>Thêm từng buổi</b><p class="small muted">Bấm từng dòng rồi Lưu. Không tự cập nhật.</p>
+      <div class="list">${up.map(({x,dl})=>{ const D=dd(x.d); return `<a class="li hl" href="${gcalEvent(x,dl)}" target="_blank" rel="noopener"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${dl?'Hạn: '+x.t:(x.d===EXAM?'Thi (dự kiến)':x.x)}</b><span class="small muted">${dl?x.x:x.t}</span></div><span class="pill c">+</span></a>`; }).join('')}</div>
+      ${isIOS?`<a class="btn ghost" href="${GCAL_SUB}" target="_blank" rel="noopener" style="text-decoration:none">Thêm vào Google Calendar</a>`:`<a class="btn ghost" href="${ICS_WEBCAL}" style="text-decoration:none">Đăng ký trên iPhone</a>`}
+      <div class="row" style="gap:6px;flex-wrap:nowrap"><input readonly value="${ICS_URL}" style="flex:1;min-width:0;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:13px" onfocus="this.select()"><button class="btn ghost" data-copy="${ICS_URL}" style="min-height:40px">Chép</button></div>
+    </div></details></div>`; }
 
 /* ---------- Sao lưu / khôi phục tiến độ ---------- */
 function bkExport(){ const o={}; for(let k=0;k<localStorage.length;k++){ const key=localStorage.key(k); if(/^emba-/.test(key)&&key!=='emba-lastbackup') o[key]=localStorage.getItem(key); }
@@ -1987,8 +1982,7 @@ function renderGrades(){ const keys=Object.keys(SUBJ), G=gStats();
   <div class="card gsum"><div><b>${G.done}/${G.n}</b><small>môn đã qua</small></div><div><b>${G.tcDone}/${G.tc}</b><small>tín chỉ đạt</small></div><div><b>${G.avg==null?'—':fmt(G.avg)}</b><small>TB tích lũy</small></div></div>
   <div class="glist">${keys.map(k=>{ const S=SUBJ[k], st=gStatus(k), tk=gTotal(k,grades[k]), op=gOpen===k;
     return `<div class="gcard ${op?'open':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><button type="button" class="ghd" data-gtoggle="${k}" aria-expanded="${op}"><span class="ic">${S.short}</span><span class="gnm"><b>${S.name}</b><span class="spill ${st}">${GST[st]}</span></span><span class="gtot" data-gtot="${k}">${tk==null?'—':fmt(tk)}</span><span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>${op?gForm(k):''}</div>`; }).join('')}</div>
-  <div class="card stack"><label class="spass" style="padding:0">Ngưỡng đạt học phần <input inputmode="decimal" id="gPass" value="${fmt(passMark())}"> điểm</label><p class="small muted">Trạng thái "Tự động": có điểm thì so với ngưỡng đạt (Đã qua / Thi lại); chưa có điểm thì còn buổi học là Đang học, hết lịch là Đã học – chờ điểm. Ngưỡng 5,5 đang đặt tạm — đối chiếu quy chế đào tạo thạc sĩ của ĐH Thương mại. Điểm chỉ lưu trên thiết bị này.</p></div>
-  <a class="card hl" href="#settings" style="flex-direction:row;align-items:center"><span style="flex:1"><b>Sao lưu tiến độ</b><br><span class="small muted">Chuyển sang mục Cài đặt</span></span><svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>`; }
+  <div class="card stack"><label class="spass" style="padding:0">Ngưỡng đạt học phần <input inputmode="decimal" id="gPass" value="${fmt(passMark())}"> điểm</label><p class="small muted">Trạng thái "Tự động": có điểm thì so với ngưỡng đạt (Đã qua / Thi lại); chưa có điểm thì còn buổi học là Đang học, hết lịch là Đã học – chờ điểm. Ngưỡng 5,5 đang đặt tạm — đối chiếu quy chế đào tạo thạc sĩ của ĐH Thương mại. Điểm chỉ lưu trên thiết bị này.</p></div>`; }
 const gv=$('v-grades');
 gv.addEventListener('input',e=>{ const k=e.target.dataset.gk, f=e.target.dataset.gf; if(k&&f){ gDraft[k][f]=e.target.value; const t=gTotal(k,gDraft[k]); gv.querySelector(`[data-gtot="${k}"]`).textContent=t==null?'—':fmt(t); } });
 gv.addEventListener('change',e=>{ if(e.target.id==='gPass'){ const v=num(e.target.value); if(v!=null) grades._pass=v; else delete grades._pass; store.set('emba-grades',grades); renderGrades(); } });
