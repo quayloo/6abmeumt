@@ -297,16 +297,7 @@ details.sol .in{padding:12px 14px;font-size:14.5px}
 .explain b{display:block;margin-bottom:4px}
 .qnav{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:calc(78px + env(safe-area-inset-bottom));background:var(--surface);padding-top:6px}
 /* Accordion (Kiến thức, Bài tập) */
-.chacc{display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:var(--ink);scroll-margin-top:84px}
-.chacc .chn{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px var(--display);background:var(--surface-2);color:var(--muted);border:3px solid var(--line)}
-.chacc.done .chn{background:var(--c);border-color:var(--c);color:#fff}
-.chacc.open{border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)}
-.chacc.open .chn{background:var(--c);border-color:var(--c);color:#fff}
-.chacc .chm{flex:1;min-width:0}
-.chacc h3{margin:4px 0 2px}
-.chacc.soon{opacity:.62;box-shadow:none;background:transparent;border-style:dashed}
 .chev{flex:none;width:22px;height:22px;color:var(--muted);transition:transform .2s;margin-top:6px}
-.chacc.open .chev,details.acc[open]>summary .chev{transform:rotate(180deg)}
 .khead{display:flex;flex-direction:column;gap:6px;padding:2px 2px 4px}
 .khead .eyebrow{color:var(--muted)}
 .khead h2{font-size:21px;line-height:1.3}
@@ -426,18 +417,10 @@ body.app-mode #fsBtn{display:none}
   #v-home > .hero,#v-home > .install{column-span:all}
   #v-home > .install{flex-wrap:nowrap} #v-home > .install > .btn{flex:none}
   /* Bài chuyên đề: nội dung + mục lục dính bên phải */
-  #v-chap.on{display:grid;grid-template-columns:minmax(0,760px) 232px;justify-content:center;column-gap:28px;row-gap:14px;align-items:start}
-  #v-chap > *{grid-column:1}
-  #v-chap > .toc{grid-column:2;grid-row:1 / span 40;position:sticky;top:24px;flex-direction:column;overflow:visible;margin:0;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;gap:4px;max-height:calc(100vh - 48px);overflow-y:auto}
-  #v-chap > .toc::before{content:"Trong chuyên đề";font:800 11px var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:2px 8px 6px}
-  #v-chap > .toc a{white-space:normal;border:0;background:transparent;border-radius:10px;padding:7px 10px;font-size:13px;line-height:1.35}
-  #v-chap > .toc a:hover{background:var(--surface-2)}
-  #v-chap > .toc a.ok{color:var(--c)} #v-chap > .toc a.ok::after{content:" ✓"}
   .topic{scroll-margin-top:24px}
   .fig svg{max-width:560px;margin:0 auto;display:block}
   /* Lộ trình, bài tập: lưới 2 cột */
   #v-know.on,#v-quiz.on,#v-grades.on,#v-road.on,#v-work.on{max-width:860px}
-  .chacc,details.acc.card{scroll-margin-top:20px}
   .qnav2{bottom:12px}
   #v-quiz .dots{flex-wrap:wrap;overflow:visible;margin:0;padding:2px 0}
   /* Popup chọn môn: hộp giữa màn hình */
@@ -447,7 +430,7 @@ body.app-mode #fsBtn{display:none}
   .modal{align-items:center}
   .sopt:hover,.gcard .ghd:hover{background:var(--surface-2)}
 }
-@media (min-width:1024px) and (max-width:1279px){ .side{width:248px} main{margin-left:248px;padding:28px 28px 48px} #v-chap.on{grid-template-columns:minmax(0,1fr) 210px;column-gap:20px} }
+@media (min-width:1024px) and (max-width:1279px){ .side{width:248px} main{margin-left:248px;padding:28px 28px 48px} }
 @media (min-width:1024px) and (hover:hover){ .card.topic{transition:box-shadow .2s} }
 
 @media (min-width:1024px){
@@ -491,7 +474,6 @@ body.app-mode #fsBtn{display:none}
   <section class="view" id="v-home"></section>
   <section class="view" id="v-road"></section>
   <section class="view" id="v-know"></section>
-  <section class="view" id="v-chap"></section>
   <section class="view" id="v-work"></section>
   <section class="view" id="v-quiz"></section>
   <section class="view" id="v-grades"></section>
@@ -1584,8 +1566,6 @@ function renderHome(){
 /* ===================== KNOWLEDGE (roadmap) ===================== */
 const CHEV='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
 const STL={now:'Đang học',pre:'Học trước theo slide',done:'Đã học'};
-let lastOpen=null;
-function focusEl(id){ requestAnimationFrame(()=>{ const el=$(id); if(el) el.scrollIntoView({block:'start'}); }); }
 function infoList(S){ return `<div class="list">${S.info.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div>`; }
 function roadStops(s){ const S=SUBJ[s]; return `<div class="road">${S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="stop soon" data-n="${ch.n}"><span class="pill">Sắp học</span><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p></div>`;
      const [n,t]=chapProgress(s,ch); const cc=curChap(s); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
