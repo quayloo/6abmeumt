@@ -334,6 +334,11 @@ details.acc>.acc-b{padding:14px 16px 16px}
 .qsum .rw{display:grid;grid-template-columns:52px 1fr 56px;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
 .qsum .rw .bar{margin:0}
 .qsum .btns{width:100%;display:flex;flex-direction:column;gap:8px}
+html,body{overscroll-behavior-x:none}
+@keyframes swl{from{opacity:.3;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes swr{from{opacity:.3;transform:translateX(-36px)}to{opacity:1;transform:none}}
+.view.on.swl{animation:swl .22s ease-out both} .view.on.swr{animation:swr .22s ease-out both}
+@media (prefers-reduced-motion: reduce){ .view.on.swl,.view.on.swr{animation:none} }
 .empty{text-align:center;padding:30px 16px;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
 .install{display:flex;gap:14px;align-items:center;flex-wrap:wrap;position:relative;padding-right:46px}
@@ -1795,7 +1800,27 @@ gv.addEventListener('click',e=>{
   const cl=e.target.closest('[data-gclear]'); if(cl){ delete grades[cl.dataset.gclear]; store.set('emba-grades',grades); const y=scrollY; gOpen=null; renderGrades(); renderSide(); scrollTo(0,y); } });
 
 /* ===================== ROUTER ===================== */
-function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+id)); }
+function show(id){ document.querySelectorAll('.view').forEach(v=>{ v.classList.toggle('on',v.id==='v-'+id); v.classList.remove('swl','swr'); }); if(swDir){ const v=$('v-'+id); if(v){ void v.offsetWidth; v.classList.add(swDir); } swDir=null; } }
+/* ---------- Vuốt ngang để chuyển tab ---------- */
+const TABS=['road','know','work','quiz']; let swDir=null;
+(function(){
+  let x0=0,y0=0,t0=0,ok=false;
+  const NOSW='input,textarea,select,button.opt,.scroll,.chips,.dots,.toc,.terms,table,pre,.sheet,#subjSheet,.side';
+  document.addEventListener('touchstart',e=>{ ok=false; if(e.touches.length!==1) return; const t=e.touches[0];
+    if(t.clientX<24||t.clientX>innerWidth-24) return;            // chừa mép màn hình cho thao tác quay lại của hệ điều hành
+    if(e.target.closest&&e.target.closest(NOSW)) return;
+    if($('subjSheet').classList.contains('on')) return;
+    if(!/^#(ktud|qtcl)-/.test(location.hash)) return;
+    x0=t.clientX; y0=t.clientY; t0=Date.now(); ok=true; },{passive:true});
+  document.addEventListener('touchend',e=>{ if(!ok) return; ok=false; const t=e.changedTouches[0];
+    const dx=t.clientX-x0, dy=t.clientY-y0;
+    if(Date.now()-t0>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.8) return;
+    if(String(getSelection&&getSelection())) return;
+    const m=location.hash.match(/^#(ktud|qtcl)-([a-z0-9]+)$/); if(!m) return;
+    const cur2=TABS.includes(m[2])?m[2]:'know'; const k=TABS.indexOf(cur2)+(dx<0?1:-1);
+    if(k<0||k>=TABS.length) return;
+    swDir=dx<0?'swl':'swr'; location.hash=`#${m[1]}-${TABS[k]}`; },{passive:true});
+})();
 function route(){
   const h=(location.hash||'').slice(1); const m=h.match(/^(ktud|qtcl)-([a-z0-9]+)$/);
   const pk=$('picker'), lbl=$('subjLbl');
