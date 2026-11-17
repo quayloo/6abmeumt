@@ -245,6 +245,7 @@ a.hl:active{opacity:.6}
 .steps li::marker{font-weight:800;color:var(--c)}
 .why{margin:8px 0 0;padding-left:18px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
 .intro{font-size:15px;line-height:1.65}
+.sumbtns{display:flex;gap:8px}.sumbtns .btn{flex:1;min-width:0;text-align:center;line-height:1.3;padding:10px 8px;font-size:14px}
 .relx{margin-top:12px;font-size:14px;line-height:1.55}.relx a{font-weight:600;color:var(--c);text-decoration:underline;text-underline-offset:3px}
 .xsub{display:block;font-size:12.5px;font-weight:500;color:var(--muted);margin-top:3px}
 .understood{align-self:flex-start;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 14px;font-weight:700;font-size:13.5px;min-height:40px}
@@ -3386,8 +3387,7 @@ function renderKnow(s){
     ${sm.recap?`<div class="lab">Ghi nhớ cốt lõi</div><ul>${sm.recap.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
     <div class="lab">Điểm dễ ra thi</div><ul>${sm.exam.map(x=>`<li>${x}</li>`).join('')}</ul>
     <div class="lab">Thuật ngữ</div><div class="terms">${sm.terms.map(([v,e])=>`<div class="term">${v}<i>${e}</i></div>`).join('')}</div>
-    ${cqN?`<button class="btn" data-cq="1" style="background:var(--gold);color:#3D2A00">${cpass[chKey(s,ch.id)]?'✓ Đã ôn tổng hợp · Ôn lại':`Ôn tập tổng hợp chương (${Math.min(cqN,CQN)} câu)`}</button>`:''}
-    <a class="btn ${cqN?'ghost':''}" href="#${s}-quiz" data-qf="${'CĐ'+ch.n}" ${cqN?'':'style="background:var(--gold);color:#3D2A00"'}>Ôn tất cả câu hỏi ${'CĐ'+ch.n} →</a></section>`):''}`;
+    <div class="sumbtns">${cqN?`<button class="btn" data-cq="1" style="background:var(--gold);color:#3D2A00">${cpass[chKey(s,ch.id)]?'✓ ':''}Ôn tập tổng hợp</button>`:''}<a class="btn ${cqN?'ghost':''}" href="#${s}-quiz" data-qf="${'CĐ'+ch.n}" ${cqN?'':'style="background:var(--gold);color:#3D2A00"'}>Ôn tất cả câu hỏi</a></div></section>`):''}`;
 }
 
 /* ===================== WORK ===================== */
