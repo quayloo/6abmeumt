@@ -3387,7 +3387,7 @@ function renderKnow(s){
     <div class="lab">Điểm dễ ra thi</div><ul>${sm.exam.map(x=>`<li>${x}</li>`).join('')}</ul>
     <div class="lab">Thuật ngữ</div><div class="terms">${sm.terms.map(([v,e])=>`<div class="term">${v}<i>${e}</i></div>`).join('')}</div>
     ${cqN?`<button class="btn" data-cq="1" style="background:var(--gold);color:#3D2A00">${cpass[chKey(s,ch.id)]?'✓ Đã ôn tổng hợp · Ôn lại':`Ôn tập tổng hợp chương (${Math.min(cqN,CQN)} câu)`}</button>`:''}
-    <a class="btn ${cqN?'ghost':''}" href="#${s}-quiz" ${cqN?'':'style="background:var(--gold);color:#3D2A00"'}>Ôn câu hỏi ${'CĐ'+ch.n} →</a></section>`):''}`;
+    <a class="btn ${cqN?'ghost':''}" href="#${s}-quiz" data-qf="${'CĐ'+ch.n}" ${cqN?'':'style="background:var(--gold);color:#3D2A00"'}>Ôn tất cả câu hỏi ${'CĐ'+ch.n} →</a></section>`):''}`;
 }
 
 /* ===================== WORK ===================== */
@@ -3728,6 +3728,7 @@ document.addEventListener('click',e=>{
   const bt=e.target.closest('.bottom a'); if(bt){ e.preventDefault(); location.hash=`#${cur}-${bt.dataset.tab}`; return; }
   const tqb=e.target.closest('[data-tq]'); if(tqb&&cur){ startTopicQuiz(cur,+tqb.dataset.tq); location.hash=`#${cur}-quiz`; return; }
   const cqb=e.target.closest('[data-cq]'); if(cqb&&cur){ startChapQuiz(cur); location.hash=`#${cur}-quiz`; return; }
+  const qf=e.target.closest('[data-qf]'); if(qf&&cur){ e.preventDefault(); setQFilter(qf.dataset.qf); location.hash=`#${cur}-quiz`; return; }
   const gx=e.target.closest('[data-gex]'); if(gx){ e.preventDefault(); pendEx=+gx.dataset.gex; location.hash=`#${cur}-work`; return; }
   const v=$('v-quiz'); if(!v.contains(e.target)) return;
   const Q=SUBJ[cur].quiz, ids=qIds(Q), i=ids[qCur], top=()=>scrollTo({top:0});
