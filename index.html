@@ -575,7 +575,7 @@ const SCHED=[
  {d:'2026-12-26',s:'qth',t:'Tối',x:'Thi học phần Quản trị học'}
 ];
 const DEADLINES=[
- {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Nộp trực tiếp tại buổi học (S202). Câu 1: giá trị gia tăng ngoại sinh của một doanh nghiệp; Câu 2: quyền lực nhà cung ứng và đe dọa sản phẩm thay thế tác động tới cường độ cạnh tranh của một ngành. Dàn ý ở tab Bài tập.'},
+ {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Nộp trực tiếp tại buổi học (S202). Câu 1: giá trị gia tăng ngoại sinh của một doanh nghiệp; Câu 2: quyền lực nhà cung ứng và đe dọa sản phẩm thay thế tác động tới cường độ cạnh tranh của một ngành. Dàn ý ở mục Bài kiểm tra trong tab Bài tập.'},
  {d:'2026-11-29',s:'ktud',t:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm để kịp chỉnh sửa'},
  {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email chthuhien@gmail.com; Word 10–12 trang + slide'},
  {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'},
@@ -3242,8 +3242,10 @@ SUBJ.qtcl.work={
    ans:'Năng lực cốt lõi là <b>năng lực sản xuất bánh chất lượng đồng đều ở quy mô chuỗi</b> (2). Các yếu tố còn lại là nguồn lực hỗ trợ.',trap:'Gọi "200 cửa hàng" hay "2.000 nhân viên" là năng lực cốt lõi. Phải hỏi: đối thủ có tiền có mua/thuê được không? Nếu có → không đạt "khó bắt chước".'},
   {t:'Chẩn đoán triển khai chiến lược bằng 7S',cd:'CĐ3',tp:0,q:'Chuỗi bán lẻ Y công bố chiến lược "bán đa kênh, khách đặt online nhận tại cửa hàng". Sau 1 năm, đơn online thấp. Nhân viên cửa hàng được thưởng theo doanh số bán trực tiếp tại quầy; khối online đặt ở trụ sở, không có quyền với cửa hàng; ban giám đốc vẫn chỉ họp xem doanh số cửa hàng. Dùng 7S phân tích nguyên nhân và đề xuất.',
    steps:['<b>Chiến lược:</b> đúng hướng, nhưng các S khác không theo.','<b>Hệ thống:</b> thưởng theo doanh số tại quầy → nhân viên không có động lực xử lý đơn online (thậm chí hướng khách mua trực tiếp).','<b>Cấu trúc:</b> khối online tách biệt, không có quyền điều phối cửa hàng → không ai chịu trách nhiệm đơn nhận tại cửa hàng.','<b>Phong cách:</b> lãnh đạo chỉ nhìn số liệu cửa hàng → tín hiệu ngầm: online không quan trọng.','<b>Kỹ năng, nhân viên:</b> chưa đào tạo xử lý đơn online. <b>Giá trị chia sẻ:</b> chưa có thông điệp "một khách hàng, mọi kênh".','Đề xuất: ghi nhận doanh số online nhận tại cửa hàng cho cả cửa hàng; lập đầu mối đa kênh có quyền điều phối; lãnh đạo theo dõi chỉ số đa kênh; đào tạo; kiểm soát theo PDCA (thử 20 cửa hàng → đo → chỉnh → nhân rộng).'],
-   ans:'Chiến lược thất bại do <b>các S mềm và hệ thống thưởng không nhất quán</b> với chiến lược mới, không phải do chiến lược sai.',trap:'Kết luận "chiến lược sai, nên bỏ online". 7S giúp tách lỗi <b>hoạch định</b> và lỗi <b>triển khai</b>.'},
-  {t:'Bài kiểm tra 17/11 — Câu 1: Giá trị gia tăng ngoại sinh (ví dụ VinFast)',cd:'CĐ1',tp:7,q:'<b>Đề:</b> Phân tích có liên hệ thực tế việc thực hiện giá trị gia tăng ngoại sinh của một doanh nghiệp cụ thể mà bạn biết. <i>Viết tay, nộp tại buổi học 28/11.</i> Dàn ý dưới đây dùng VinFast làm ví dụ; có thể thay doanh nghiệp khác nhưng giữ khung năm lĩnh vực.',
+   ans:'Chiến lược thất bại do <b>các S mềm và hệ thống thưởng không nhất quán</b> với chiến lược mới, không phải do chiến lược sai.',trap:'Kết luận "chiến lược sai, nên bỏ online". 7S giúp tách lỗi <b>hoạch định</b> và lỗi <b>triển khai</b>.'}
+ ],
+ tests:[
+  {t:'Câu 1: Giá trị gia tăng ngoại sinh (ví dụ VinFast)',cd:'CĐ1',tp:7,due:'Nộp 28/11',q:'<b>Đề:</b> Phân tích có liên hệ thực tế việc thực hiện giá trị gia tăng ngoại sinh của một doanh nghiệp cụ thể mà bạn biết. <i>Viết tay, nộp tại buổi học 28/11.</i> Dàn ý dưới đây dùng VinFast làm ví dụ; có thể thay doanh nghiệp khác nhưng giữ khung năm lĩnh vực.',
    steps:['<b>Mở bài — khái niệm.</b> Giá trị gia tăng ngoại sinh là giá trị hướng ra ngoài, chủ yếu hướng về khách hàng: những gì khách thu về được trong các lĩnh vực họ mong đợi sau khi bỏ tiền và công sức mua "lời chào hàng". Theo mô hình U – P – C, đây là cách <b>làm tăng U</b> (giá trị khách cảm nhận), khác với giá trị nội sinh chủ yếu giảm C. Có năm lĩnh vực: thời gian, hội nhập, bản sắc, bảo hộ, cộng lực; mỗi lĩnh vực đi từ mức cơ bản lên mức cao.',
    '<b>Giới thiệu doanh nghiệp và lý do chọn.</b> VinFast — hãng ô tô điện Việt Nam, cạnh tranh với các hãng xe xăng lâu đời. Rào cản lớn nhất của người mua xe điện lần đầu là <b>lo về pin, về chỗ sạc và rủi ro hỏng hóc</b>; vì vậy VinFast dựa nhiều vào giá trị ngoại sinh để tăng U.',
    '<b>1. Thời gian.</b> <i>Làm chủ tương lai:</i> VF 7, VF 8, VF 9 bảo hành xe và pin 10 năm hoặc 200.000 km; VF 3, VF 5, VF 6 bảo hành 7 năm — so với mức phổ biến 3–5 năm của xe xăng. <i>Ổn định hiện tại:</i> cứu hộ 24/7, giao nhận xe tận nơi, cho mượn xe hoặc pin khi sửa để khách không bị gián đoạn công việc. → Khách "mua trước" sự an tâm cho cả quãng đời sử dụng xe.',
@@ -3255,7 +3257,7 @@ SUBJ.qtcl.work={
    '<b>Kết bài.</b> VinFast cho thấy giá trị ngoại sinh có thể bù cho bất lợi của một thương hiệu mới: thay vì cạnh tranh chỉ bằng giá, hãng làm khách thấy chiếc xe "đáng giá hơn" qua bảo hành, hệ sinh thái và cơ hội kiếm tiền. Bài học: giá trị ngoại sinh phải đi kèm khả năng kiểm soát chi phí, nếu không lợi thế khó bền vững.'],
    ans:'Khung chấm điểm thường gặp: (1) nêu đúng khái niệm và vị trí trong U – P – C; (2) đi đủ năm lĩnh vực, mỗi lĩnh vực có <b>dẫn chứng cụ thể có số liệu</b>; (3) chỉ ra mức thấp – mức cao của từng lĩnh vực; (4) có nhận xét, đánh giá hai chiều; (5) kết luận, bài học. Nguồn số liệu: Báo Pháp luật Việt Nam (2025–2026), VnReview, SGGP (2024), Green SM.',
    trap:'Kể ví dụ mà không gắn vào lĩnh vực nào; nhầm "hội nhập" (thuộc về nhóm xã hội) với "gộp nhiều dịch vụ"; nhầm bảo hành (thời gian – làm chủ tương lai) với bảo hộ trọn gói; chỉ khen mà không đánh giá chi phí (C tăng).'},
-  {t:'Bài kiểm tra 17/11 — Câu 2: Nhà cung ứng, sản phẩm thay thế và cường độ cạnh tranh (ví dụ ngành chuỗi cà phê)',cd:'CĐ2',tp:1,q:'<b>Đề:</b> Trình bày lý thuyết và liên hệ thực tiễn sự ảnh hưởng từ những biến động của nhóm lực lượng <b>quyền lực thương lượng của nhà cung ứng</b> và <b>đe dọa từ sản phẩm, dịch vụ thay thế</b> tới cường độ cạnh tranh của một ngành kinh doanh mà anh (chị) biết. <i>Viết tay, nộp tại buổi học 28/11.</i> Dàn ý dùng ngành chuỗi cà phê Việt Nam.',
+  {t:'Câu 2: Nhà cung ứng, sản phẩm thay thế và cường độ cạnh tranh (ví dụ ngành chuỗi cà phê)',cd:'CĐ2',tp:1,due:'Nộp 28/11',q:'<b>Đề:</b> Trình bày lý thuyết và liên hệ thực tiễn sự ảnh hưởng từ những biến động của nhóm lực lượng <b>quyền lực thương lượng của nhà cung ứng</b> và <b>đe dọa từ sản phẩm, dịch vụ thay thế</b> tới cường độ cạnh tranh của một ngành kinh doanh mà anh (chị) biết. <i>Viết tay, nộp tại buổi học 28/11.</i> Dàn ý dùng ngành chuỗi cà phê Việt Nam.',
    steps:['<b>Mở bài.</b> Theo Porter, sức mạnh tổng hợp của năm lực lượng quyết định tiềm năng lợi nhuận của ngành. Đề yêu cầu xét hai lực bên ngoài — nhà cung ứng và sản phẩm thay thế — và <b>cơ chế chúng tác động lên lực trung tâm</b>: cạnh tranh giữa các đối thủ hiện tại.',
    '<b>Lý thuyết 1 — Quyền lực thương lượng của nhà cung ứng.</b> Nhà cung ứng mạnh nâng giá đầu vào, giảm chất lượng hoặc điều kiện giao hàng → chi phí ngành tăng. Mạnh khi: ít nhà cung ứng, quy mô lớn (tập trung); đầu vào quan trọng, khó thay thế; chi phí chuyển đổi cao; có khả năng hội nhập về phía trước. Ví dụ kinh điển: De Beers.',
    '<b>Lý thuyết 2 — Đe dọa từ sản phẩm thay thế.</b> Sản phẩm của ngành khác đáp ứng cùng nhu cầu. Mạnh khi: chi phí chuyển đổi của khách thấp; khách sẵn sàng thử; tương quan giá – chất lượng của sản phẩm thay thế tốt. Tác động: đặt <b>"trần giá"</b> cho ngành — tăng giá quá mức thì khách chuyển đi.',
@@ -3269,7 +3271,7 @@ SUBJ.qtcl.work={
    trap:'Phân tích đủ năm lực (lạc đề); chỉ mô tả hai lực mà không nối sang cường độ cạnh tranh; nhầm đối thủ cùng ngành (cà phê vỉa hè, chuỗi khác) là sản phẩm thay thế; dùng số liệu không có nguồn, không có năm.'}
  ],
  discuss:['<b>"Bạn có thể trình bày nội dung chiến lược kinh doanh của Công ty?"</b> — trình bày theo 6 yếu tố cấu thành. <i>Gợi ý: CĐ1, chủ đề "Khái niệm chiến lược, 6 yếu tố cấu thành".</i>','<b>"Công ty đã, đang và sẽ hoạt động trong ngành KD nào?"</b> — chiến lược cấp công ty theo trục thời gian. <i>Gợi ý: CĐ1, chủ đề "Ba cấp chiến lược".</i>','<b>"Chúng ta sẽ đi đâu, về đâu? Muốn trở thành cái gì?"</b> — tầm nhìn. <i>Gợi ý: CĐ1, chủ đề "Tầm nhìn chiến lược".</i>','<b>"Thời cơ và thách thức nào?"</b> và <b>"Môi trường vĩ mô có những tác nhân thay đổi chiến lược nào đáp ứng tiêu chí cường độ – phạm vi – dài hạn?"</b> <i>Gợi ý: CĐ2, chủ đề PESTEL.</i>','<b>"Nếu kinh doanh là một cuộc chơi thì ai là người chơi, vai trò của họ là gì?"</b>; <b>"Quan hệ giữa các người chơi là cạnh tranh hay bổ trợ? Quyền lực và mức độ tương tác?"</b> <i>Gợi ý: CĐ2, chủ đề mạng giá trị.</i>','<b>"Bộ phận/hoạt động nào mang lại giá trị gia tăng? Năng lực kinh doanh (cạnh tranh) nào?"</b> <i>Gợi ý: CĐ2, chuỗi giá trị và VRINE.</i>'],
- todo:['Buổi 14/11: hỏi đề thảo luận, phân nhóm, vai trò (trình bày / phản biện / dẫn dắt)','Hỏi lịch và hình thức bài kiểm tra (thuộc điểm thực hành 30%)','Hỏi cấu trúc thi vấn đáp: số câu, thời gian chuẩn bị, có được mang tài liệu không','Chọn doanh nghiệp/ngành và thu thập số liệu năm gần nhất','Chuẩn bị bảng đánh giá thành viên','Ôn trước các công cụ Chương 2 cho buổi thảo luận 18/11','Viết tay bài kiểm tra 2 câu (dàn ý ở tab Bài tập) — nộp tại buổi học 28/11','Hỏi cô yêu cầu độ dài, khổ giấy và cách tính điểm của bài kiểm tra']
+ todo:['Buổi 14/11: hỏi đề thảo luận, phân nhóm, vai trò (trình bày / phản biện / dẫn dắt)','Hỏi lịch và hình thức bài kiểm tra (thuộc điểm thực hành 30%)','Hỏi cấu trúc thi vấn đáp: số câu, thời gian chuẩn bị, có được mang tài liệu không','Chọn doanh nghiệp/ngành và thu thập số liệu năm gần nhất','Chuẩn bị bảng đánh giá thành viên','Ôn trước các công cụ Chương 2 cho buổi thảo luận 18/11','Viết tay bài kiểm tra 2 câu (dàn ý ở mục Bài kiểm tra) — nộp tại buổi học 28/11','Hỏi cô yêu cầu độ dài, khổ giấy và cách tính điểm của bài kiểm tra']
 };
 
 SUBJ.qtcl.quiz=[
@@ -3571,7 +3573,7 @@ function renderKnow(s){
   ${ch.topics.map((tp,i)=>{ const k=topicKey(s,ch.id,i), u=tpass[k]; const rel=(S0.work&&S0.work.ex||[]).map((x,r)=>r).filter(r=>S0.work.ex[r].cd==='CĐ'+ch.n&&S0.work.ex[r].tp===i);
     return it(u?'ok':'',`<span class="tn" data-tk="${i}">${u?'✓':i+1}</span>`,tp.t+(tp.soon?' <span class="pill">Sắp học</span>':''),`${tp.b}
       ${tp.m?`<div class="more-box" id="m-${i}" hidden><div class="mtag">Hiểu sâu hơn</div>${tp.m}</div>`:''}
-      ${rel.length?`<div class="relx"><b>Bài tập liên quan:</b> ${rel.map(r=>`<a class="hl" href="#${s}-work" data-gex="${r}">${S0.work.ex[r].t}</a>`).join(' · ')}</div>`:''}
+      ${rel.length?`<div class="relx"><b>Bài tập liên quan:</b> ${rel.map(r=>`<a class="hl" href="#${s}-work" data-gex="${r}">${S0.work.ex[r].t}</a>`).join(' · ')}</div>`:''}${(()=>{ const kr=(S0.work&&S0.work.tests||[]).map((x,r)=>[x,r]).filter(([x])=>x.cd==='CĐ'+ch.n&&x.tp===i); return kr.length?`<div class="relx"><b>Bài kiểm tra liên quan:</b> ${kr.map(([x,r])=>`<a class="hl" href="#${s}-work" data-gex="kt-${r}">${x.t}</a>`).join(' · ')}</div>`:''; })()}
       <div class="acts">${tp.m?`<button class="act" data-more="${i}" aria-expanded="false" aria-controls="m-${i}">Xem thêm</button>`:''}<a class="act ask" href="${askLink(s,ch,i)}" target="_blank" rel="noopener">Hỏi</a>${tp.soon?'':`<button class="act got ${u?'on':''}" data-tq="${i}">${u?'✓ Đã hiểu · Ôn lại':'Ôn tập'}</button>`}</div>`,`tp-${i}`); }).join('')}
   ${sm?it('sumacc','<span class="tn">★</span>','Tóm tắt & kết luận chuyên đề',`<section class="summary"><h2>${sm.core}</h2>
     <div class="pillars">${sm.pillars.map(p=>`<div class="pl" style="--pc:${p[3]};background:transparent;border-color:rgba(255,255,255,.15);border-top-color:${p[3]}"><b>${p[0]}</b><h4 style="color:var(--surface)">${p[1]}</h4><p style="color:var(--surface);opacity:.75">${p[2]}</p></div>`).join('')}</div>
@@ -3591,7 +3593,9 @@ function renderWork(s){
   const tdone=(W.todo||[]).filter((t,i)=>todoDone[tk(i)]).length;
   const todo=W.todo&&W.todo.length?accItem(s,'Việc cần làm',`<span class="pill num" data-tdc="${s}">${tdone}/${W.todo.length}</span>`,`<div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${t}</span></label>`).join('')}</div>`):'';
   const chT=x=>{ const c=S.chapters.find(c=>'CĐ'+c.n===x.cd); return x.tp!=null&&c&&c.topics[x.tp]?c.topics[x.tp].t:''; };
-  const ex=W.ex.map((x,i)=>accItem(s,`${i+1}. ${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,`<span class="pill c">${x.cd}</span>`,`<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,`ex-${i}`)).join('');
+  const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,id);
+  const ex=W.ex.map((x,i)=>exItem(x,`${i+1}. `,`<span class="pill c">${x.cd}</span>`,`ex-${i}`)).join('');
+  const kt=(W.tests||[]).length?`<h2 class="sech">Bài kiểm tra</h2>`+W.tests.map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join(''):'';
   const disc=W.discuss&&W.discuss.length?`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`:'';
   let top='', tail='';
   if(s==='ktud'){
@@ -3603,9 +3607,9 @@ function renderWork(s){
       <p class="small muted">Nguồn: <a href="https://nhadautu.vn/xang-e10-phu-song-toan-quoc-nguoi-dung-dang-lo-dieu-gi-d105297.html">Nhà đầu tư</a> · <a href="https://www.sggp.org.vn/tiep-tuc-duy-tri-xang-e5-song-song-xang-e10-post854455.html">SGGP</a> · <a href="https://tapchicongthuong.vn/petrolimex-day-nhanh-chuyen-doi-kinh-doanh-xang-e10-tu-giua-thang-5-2026-517638.htm">TC Công Thương</a> · <a href="https://tienphong.vn/epaper/2026/TP-82/5/">Tiền Phong</a> · <a href="https://baodautu.vn/thanh-toan-thong-minh--loi-ich-dong-hanh-cung-petrolimex-d156794.html">Báo Đầu tư</a> · <a href="https://vcci.com.vn/en/news/petrolimex-mo-rong-tien-ich-tai-cua-hang-xang-dau">VCCI</a></p>
     </div></details>`);
     tail=`<h2 class="sech">Thảo luận</h2>${accItem(s,'Câu hỏi thảo luận','',disc)}${accItem(s,'Đề các nhóm','',`<div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm mình</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div>`)}`;
-    $('v-work').innerHTML=`${hd}<h2 class="sech">Bài nhóm</h2>${top}${todo}<h2 class="sech">Bài tập vận dụng</h2>${ex}${tail}`; return; }
+    $('v-work').innerHTML=`${hd}<h2 class="sech">Bài nhóm</h2>${top}${todo}${kt}<h2 class="sech">Bài tập vận dụng</h2>${ex}${tail}`; return; }
   if(W.head) top=accItem(s,W.head.t,W.head.pill?`<span class="pill">${W.head.pill}</span>`:'',W.head.b);
-  $('v-work').innerHTML=`${hd}${top||todo?`<h2 class="sech">Thảo luận nhóm</h2>`:''}${top}${todo}<h2 class="sech">Bài tập vận dụng</h2><p class="small muted">${W.note||''}</p>${ex}${disc?`<h2 class="sech">Câu hỏi thảo luận</h2>${accItem(s,'Câu hỏi gợi mở','',disc)}`:''}`;
+  $('v-work').innerHTML=`${hd}${top||todo?`<h2 class="sech">Thảo luận nhóm</h2>`:''}${top}${todo}${kt}<h2 class="sech">Bài tập vận dụng</h2><p class="small muted">${W.note||''}</p>${ex}${disc?`<h2 class="sech">Câu hỏi thảo luận</h2>${accItem(s,'Câu hỏi gợi mở','',disc)}`:''}`;
 }
 
 /* ===================== QUIZ ===================== */
@@ -3834,6 +3838,7 @@ function buildIdx(){ const out=[]; const strip=h=>plain(String(h||'').replace(/<
       if(c.sum) out.push({s,ty:'Tóm tắt',where:`CĐ${c.n}`,title:'Tóm tắt: '+c.title,text:strip([c.sum.core,...(c.sum.recap||[]),...c.sum.exam,...c.sum.terms.map(x=>x.join(' – '))].join(' · ')),go:{k:'tp',ch:c.id,i:'sum'}});
     });
     if(S.work) (S.work.ex||[]).forEach((x,i)=>out.push({s,ty:'Bài tập',where:x.cd,title:x.t,text:strip(x.q+' '+x.steps.join(' ')+' '+x.ans+' '+(x.trap||'')),go:{k:'ex',i}}));
+    if(S.work) (S.work.tests||[]).forEach((x,i)=>out.push({s,ty:'Bài tập',where:'Bài kiểm tra',title:x.t,text:strip(x.q+' '+x.steps.join(' ')+' '+x.ans+' '+(x.trap||'')),go:{k:'ex',i:'kt-'+i}}));
     S.quiz.forEach((q,i)=>out.push({s,ty:'Ôn tập',where:q.cd,title:strip(q.q),text:strip((q.o||[]).join(' · ')+' '+(q.e||'')+' '+(q.ans||'')),go:{k:'q',i}}));
   });
   out.forEach(o=>{ o.nt=nzc(o.title); o.nx=nzc(o.text); o.lt=o.title.toLowerCase(); o.lx=o.text.toLowerCase(); }); return out; }
@@ -3866,7 +3871,7 @@ function renderSearch(){ $('v-search').innerHTML=`<div class="sbox"><input id="s
 document.addEventListener('input',e=>{ if(e.target.id==='sInput'){ sQ=e.target.value; clearTimeout(renderSearch._t); renderSearch._t=setTimeout(renderSearchResults,150); } });
 function openPending(pre){ let id=null;
   if(pre==='tp-'&&pendTp!=null){ id=pendTp==='sum'?null:'tp-'+pendTp; if(pendTp==='sum'){ const d=document.querySelector('details.sumacc'); if(d){ d.open=true; requestAnimationFrame(()=>d.scrollIntoView({block:'start'})); } } pendTp=null; }
-  if(pre==='ex-'&&pendEx!=null){ id='ex-'+pendEx; pendEx=null; }
+  if(pre==='ex-'&&pendEx!=null){ id=typeof pendEx==='string'?pendEx:'ex-'+pendEx; pendEx=null; }
   if(id){ const d=$(id); if(d){ d.open=true; requestAnimationFrame(()=>d.scrollIntoView({block:'start'})); } } }
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-sfclr]')){ sS=sT='all'; sessionStorage.removeItem('emba-sflt'); renderSearchResults(); return; }
@@ -3920,7 +3925,7 @@ document.addEventListener('click',e=>{
   const tqb=e.target.closest('[data-tq]'); if(tqb&&cur){ startTopicQuiz(cur,+tqb.dataset.tq); location.hash=`#${cur}-quiz`; return; }
   const cqb=e.target.closest('[data-cq]'); if(cqb&&cur){ startChapQuiz(cur); location.hash=`#${cur}-quiz`; return; }
   const qf=e.target.closest('[data-qf]'); if(qf&&cur){ e.preventDefault(); setQFilter(qf.dataset.qf); location.hash=`#${cur}-quiz`; return; }
-  const gx=e.target.closest('[data-gex]'); if(gx){ e.preventDefault(); pendEx=+gx.dataset.gex; location.hash=`#${cur}-work`; return; }
+  const gx=e.target.closest('[data-gex]'); if(gx){ e.preventDefault(); pendEx=/^kt-/.test(gx.dataset.gex)?gx.dataset.gex:+gx.dataset.gex; location.hash=`#${cur}-work`; return; }
   const v=$('v-quiz'); if(!v.contains(e.target)) return;
   const Q=SUBJ[cur].quiz, ids=qIds(Q), i=ids[qCur], top=()=>scrollTo({top:0});
   if(e.target.closest('[data-menu]')){ qMenu=!qMenu; renderQuiz(cur); return; }
