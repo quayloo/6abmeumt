@@ -499,6 +499,8 @@ body.app-mode #fsBtn{display:none}
   #v-home > .install{padding-right:56px}
 }
 @media (min-width:1024px) and (max-width:1279px){ body.side-mini main{margin-left:76px} }
+#rd-sch,#rd-dl,#rd-rm,details.acc{scroll-margin-top:76px}
+.duel{color:var(--bad);margin:0}
 </style>
 </head>
 <body>
@@ -574,11 +576,11 @@ const SCHED=[
  {d:'2026-12-26',s:'qth',t:'Tối',x:'Thi học phần Quản trị học'}
 ];
 const DEADLINES=[
- {d:'2026-11-23',s:'kth',t:'Nộp Bài kiểm tra số 1',x:'Trước 18h00 thứ Hai 23/11. Đề: Câu I đúng/sai (PPF; sản phẩm cận biên giảm dần), Câu II giá sàn, Bài 1 đầu vào tối ưu, Bài 2 hãng độc quyền. Lời giải ở mục Bài kiểm tra trong tab Bài tập. Ghi âm buổi 20/11 (nghe không rõ) cho thấy bài phải viết tay, không đánh máy — cần xác nhận cách nộp.'},
- {d:'2026-11-28',s:'qtcl',t:'Nộp bài thảo luận nhóm',x:'Nộp tại buổi thảo luận (S202). Nhóm trình bày: Word + PowerPoint; nhóm phản biện, nhóm dẫn dắt: Word. Có bảng đánh giá thành viên A/B/C/F, ký xác nhận.'},
- {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Nộp trực tiếp tại buổi học (S202). Câu 1: giá trị gia tăng ngoại sinh của một doanh nghiệp; Câu 2: quyền lực nhà cung ứng và đe dọa sản phẩm thay thế tác động tới cường độ cạnh tranh của một ngành. Dàn ý ở mục Bài kiểm tra trong tab Bài tập.'},
- {d:'2026-11-29',s:'ktud',t:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm để kịp chỉnh sửa'},
- {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email chthuhien@gmail.com; Word 10–12 trang + slide'},
+ {d:'2026-11-23',s:'kth',t:'Nộp Bài kiểm tra số 1',x:'Trước 18h00',go:'kt-0'},
+ {d:'2026-11-28',s:'qtcl',t:'Nộp bài thảo luận nhóm',x:'Tại buổi thảo luận (S202)',go:'gr-0'},
+ {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Tại buổi học (S202)',go:'kt-0'},
+ {d:'2026-11-29',s:'ktud',t:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm',go:'gr-0'},
+ {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email',go:'gr-0'},
  {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'},
  {d:'2026-12-12',s:'kth',t:'Thi Kinh tế học (tối)',x:'Thi học phần 1 lớp bổ sung kiến thức'},
  {d:'2026-12-26',s:'qth',t:'Thi Quản trị học (tối)',x:'Thi học phần 2 lớp bổ sung kiến thức'}
@@ -590,14 +592,9 @@ const REMIND=[
  {s:'ktud',t:'Tự nghiên cứu theo slide CĐ3: hiệu ứng thay thế, hiệu ứng thu nhập; tình huống thiết kế gói đào tạo trực tuyến (3 phương án).'},
  {s:'ktud',t:'Chuẩn bị cho buổi 21/11: phân mảnh ngân sách có ý nghĩa gì đối với quyết định của nhà quản trị?'},
  {s:'ktud',t:'Slide chương 3 đã gửi trên nhóm lớp; slide chương 4 gửi sau.'},
- {s:'ktud',t:'Bài nhóm: Times New Roman 12, giãn dòng 1,2; có trang bìa, mục lục, nội dung, tài liệu tham khảo.'},
  {s:'ktud',t:'"Kinh tế học chỉ đưa ra một phần thông tin, giúp đặt đúng câu hỏi" — tự luận nên nêu rõ giả định và điều kiện áp dụng.'},
  {s:'qtcl',imp:1,t:'Thi hết học phần QTCL là thi VẤN ĐÁP (60%) — ôn theo dạng trình bày: khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
- {s:'qtcl',t:'Thảo luận: nhóm trình bày nộp Word + PPT; nhóm phản biện, nhóm dẫn dắt nộp Word. Bài nào cũng có bảng đánh giá từng thành viên.'},
  {s:'qtcl',imp:1,t:'Chuyên cần 10%: vắng trên 40% số tiết thì 0 điểm và không đủ điều kiện dự thi.'},
- {s:'qtcl',imp:1,t:'Bài thảo luận và bài kiểm tra phải nộp đủ — thiếu thì không xác nhận được điều kiện dự thi và điểm thành phần.'},
- {s:'qtcl',t:'Bảng đánh giá thành viên trong báo cáo thảo luận: tên, công việc được phân công, mức độ thực hiện, điểm A / B / C / F (không thể tất cả đều A; F = 0), có chữ ký xác nhận.'},
- {s:'qtcl',t:'Thuyết trình thảo luận 15–20 phút theo khung phân tích giảng viên đã gửi, gọn; mỗi nhóm khác đặt ít nhất 1 câu hỏi phản biện.'},
  {s:'qtcl',t:'Chương 3 không giảng riêng: tự đọc slide, giáo trình; chiều 28/11 chuyên gia báo cáo thực tế về các giai đoạn phát triển của doanh nghiệp và năng lực lãnh đạo tương ứng — đi học đầy đủ.'},
  {s:'qtcl',t:'Trong tuần 18–22/11: gửi chị Như (lớp) câu hỏi muốn chuyên gia giải đáp về tổ chức, doanh nghiệp của mình.'},
  {s:'qtcl',t:'Giảng viên sẽ gửi file tình huống mẫu BCG (giải từng bước) và TOWS động — đọc kỹ, đọc trước slide quy trình BCG; thắc mắc hỏi ở buổi sau.'},
@@ -618,7 +615,7 @@ const REMIND=[
 const NOTI=[
  {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
  {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'},
- {d:'2026-11-22',h:'09:00',lv:3,s:'qtcl',title:'Viết bài kiểm tra QTCL',x:'Viết tay 2 câu (9:00–11:00), dàn ý ở mục Bài kiểm tra trong tab Bài tập. Nộp tại buổi học 28/11.'}
+ {d:'2026-11-22',h:'09:00',lv:3,s:'qtcl',title:'Viết bài kiểm tra QTCL',x:'Viết tay 2 câu, 9:00–11:00',go:'kt-0'}
 ];
 const SUBJ={
  ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
@@ -1595,6 +1592,16 @@ ${svgMU}
 SUBJ.ktud.bridge=[['Chi phí cơ hội','Giá trị đất, tài sản sẵn có đưa vào dự án; suất chiết khấu là chi phí cơ hội của vốn'],['Chi phí chìm','Chi phí khảo sát, lập dự án, thiết kế đã chi — không đưa vào quyết định đi tiếp hay dừng'],['Tư duy cận biên','Dòng tiền tăng thêm: so kịch bản có và không có dự án'],['Lợi nhuận kinh tế > 0','Tương đương NPV > 0 ở suất chiết khấu bằng chi phí vốn'],['Đánh đổi','Phân bổ vốn giữa các dự án trong kế hoạch đầu tư năm'],['Độ co giãn','Giả định sản lượng trong dự báo doanh thu; phân tích độ nhạy theo giá'],['Cú sốc cung/cầu','Kịch bản trong phân tích rủi ro: xe điện, giá dầu, giá vật liệu'],['Khuyến khích','KPI, giao khoán, thưởng tiến độ cho nhà thầu và ban quản lý dự án'],['MU giảm dần','Hiệu quả giảm khi mở thêm cửa hàng trong cùng khu vực; quy mô tối ưu không phải lớn nhất']];
 
 SUBJ.ktud.work={
+ groups:[
+ {t:'Bài nhóm 3 (nhóm mình)',due:'Nộp sáng 5/12',b:`<p><b>Hạn nộp: sáng thứ Bảy 5/12</b> — bản mềm (Word + slide) gửi email chthuhien@gmail.com. Hạn nội bộ của nhóm: <b>bản thảo 29/11</b> để kịp chỉnh sửa.</p>
+    <p><b>Chủ đề:</b> Các nguyên lý kinh tế học về hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm của doanh nghiệp.</p>
+    <p><b>Yêu cầu:</b> Word 10–12 trang A4, Times New Roman 12, giãn dòng 1,2; có trang bìa, mục lục, nội dung, tài liệu tham khảo; kèm slide thuyết trình. Thuyết trình cả ngày 5/12.</p>
+    <details class="sol"><summary>Xem dàn ý đề xuất</summary><div class="in stack">
+      <p><i>Hành vi người tiêu dùng và chiến lược giá – sản phẩm: Nghiên cứu trường hợp Petrolimex trong giai đoạn chuyển đổi xăng sinh học E10.</i></p>
+      <ol class="clean"><li><b>Mở đầu (~0,5 tr):</b> E10 thay xăng khoáng, xe điện tăng, cơ chế giá thị trường hóa.</li><li><b>I. Nguyên lý (~3,5 tr):</b> TU, MU giảm dần; đường bàng quan, MRS, ngân sách; tác động thay thế – thu nhập; WTP; kinh tế học hành vi.</li><li><b>II. Ứng dụng (~3 tr):</b> nguyên lý → chiến lược giá → chiến lược sản phẩm, dùng khung 3 hướng vận dụng (CĐ3).</li><li><b>III. Petrolimex (~4 tr):</b> E10 (TT 50/2025, bán toàn hệ thống từ 20/5/2026, đề xuất chênh lệch 1.000–1.500đ/lít, sản lượng thí điểm +40%); Petrolimex ID (50 điểm/10.000đ không tiền mặt so với 50 điểm/20.000đ tiền mặt; thẻ BIDV-Visa 1,5%); cửa hàng tiện lợi Ohmee Express.</li><li><b>Kết luận</b> và tài liệu tham khảo.</li></ol>
+      <p class="small muted">Nguồn: <a href="https://nhadautu.vn/xang-e10-phu-song-toan-quoc-nguoi-dung-dang-lo-dieu-gi-d105297.html">Nhà đầu tư</a> · <a href="https://www.sggp.org.vn/tiep-tuc-duy-tri-xang-e5-song-song-xang-e10-post854455.html">SGGP</a> · <a href="https://tapchicongthuong.vn/petrolimex-day-nhanh-chuyen-doi-kinh-doanh-xang-e10-tu-giua-thang-5-2026-517638.htm">TC Công Thương</a> · <a href="https://tienphong.vn/epaper/2026/TP-82/5/">Tiền Phong</a> · <a href="https://baodautu.vn/thanh-toan-thong-minh--loi-ich-dong-hanh-cung-petrolimex-d156794.html">Báo Đầu tư</a> · <a href="https://vcci.com.vn/en/news/petrolimex-mo-rong-tien-ich-tai-cua-hang-xang-dau">VCCI</a></p>
+    </div></details>
+    <details class="sol"><summary>Đề của các nhóm trong lớp</summary><div class="in"><div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm mình</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div></div></details>`}],
  ex:[
   {t:'Nhà sách',cd:'CĐ1',tp:2,q:'Một người định mở nhà sách tại tầng 1–2 nhà gia đình ở trung tâm. Đầu tư ban đầu 800 triệu (sửa mặt bằng, kệ, máy tính…). Nếu không mở, hai tầng cho thuê được 25 triệu/tháng. Người này đang làm quản lý marketing lương 30 triệu/tháng, sẽ nghỉ việc. Vốn nhập sách 400 triệu, nếu gửi ngân hàng lãi 7%/năm. Doanh thu dự kiến 180 triệu/tháng; chi phí vận hành trực tiếp 120 triệu/tháng. Xác định chi phí kế toán, chi phí cơ hội, lợi nhuận kế toán, lợi nhuận kinh tế; có nên mở?',
    steps:['<b>Chi phí kế toán (hiện)</b>: chi phí vận hành 120tr/tháng (nhập sách bổ sung, điện nước, nhân viên, marketing). Khoản đầu tư 800tr cũng là chi phí kế toán, ghi nhận dần qua khấu hao: 800tr / 60 tháng ≈ 13,33tr/tháng.','<b>Chi phí cơ hội (ẩn)</b>: (1) tiền thuê nhà bị bỏ 25tr; (2) lương bị bỏ 30tr; (3) lãi tiền gửi bị bỏ của 400tr: 400 × 7% / 12 ≈ 2,33tr; (4) nếu chặt chẽ hơn: lãi của 800tr đầu tư ban đầu: 800 × 7% / 12 ≈ 4,67tr.','<b>Lợi nhuận kế toán</b> = 180 − 120 − 13,33 ≈ 46,67tr/tháng (hoặc 60tr nếu chưa tính khấu hao).','<b>Tổng chi phí cơ hội</b> = 25 + 30 + 2,33 + 4,67 = 62tr/tháng (hoặc 57,33tr nếu chỉ tính 3 khoản đề bài liệt kê).','<b>Lợi nhuận kinh tế</b> = 46,67 − 62 ≈ <b>−15,3tr/tháng</b> (cách đầy đủ). Theo cách đơn giản (chưa tính khấu hao và lãi của 800tr): 60 − 57,33 ≈ +2,67tr/tháng, gần như hòa vốn kinh tế.'],
@@ -4180,6 +4187,8 @@ SUBJ.kth.chapters=[
  sum:{"core": "Tiền là tài sản được chấp nhận chung để thanh toán. Ngân hàng trung ương kiểm soát cung tiền qua tiền cơ sở và số nhân tiền; lãi suất được xác định bởi cung và cầu tiền. Chính sách tiền tệ mở rộng hạ lãi suất để kích thích chi tiêu chống suy thoái; thắt chặt tăng lãi suất để chống lạm phát.", "pillars": [["M1", "Tiền giao dịch", "M0 + tiền gửi không kỳ hạn", "var(--kth)"], ["m<sub>M</sub>", "Số nhân tiền", "(s + 1)/(s + r<sub>a</sub>)", "var(--gold)"], ["r", "Lãi suất", "Cung tiền = cầu tiền", "var(--ktud)"], ["NHTƯ", "Chính sách", "Dự trữ, thị trường mở, chiết khấu", "var(--qtcl)"]], "recap": ["<b>Bốn chức năng của tiền:</b> thanh toán, đơn vị hạch toán, cất giữ giá trị, tiền tệ quốc tế.", "<b>M0 ⊂ M1 ⊂ M2 ⊂ M3</b>; cung tiền MS = M0 + D = M1.", "<b>MS = m<sub>M</sub> × H</b>; H tăng → MS tăng; r<sub>a</sub> hoặc s tăng → MS giảm.", "<b>Cầu tiền L<sub>P</sub> = kY − hr</b>: lãi suất là chi phí cơ hội của giữ tiền.", "<b>Lãi suất cân bằng</b> khi MS/P = L<sub>P</sub>; tăng cung tiền → r giảm; Y tăng → r tăng.", "<b>Công cụ:</b> dự trữ bắt buộc, thị trường mở, lãi suất chiết khấu.", "<b>Truyền dẫn:</b> MS → r → C, I, NX → AD → Y, P."], "exam": ["Khái niệm, hình thái, chức năng của tiền; các khối tiền", "Quá trình tạo tiền; tính số nhân tiền tệ và cung tiền; các yếu tố tác động đến cung tiền", "Cầu tiền: khái niệm, hàm số, yếu tố tác động; vẽ đồ thị", "Cân bằng thị trường tiền tệ; tác động của thay đổi cung tiền, thu nhập đến lãi suất", "Ba công cụ của ngân hàng trung ương và cách tác động đến cung tiền", "Cơ chế chính sách tiền tệ mở rộng, thắt chặt (kèm ví dụ Ngân hàng Nhà nước 2022–2023)", "So sánh, phối hợp chính sách tài khóa và tiền tệ"], "terms": [["Tiền pháp định", "Fiat money"], ["Phương tiện thanh toán", "Medium of exchange"], ["Đơn vị hạch toán", "Unit of account"], ["Cất giữ giá trị", "Store of value"], ["Tiền cơ sở", "Monetary base"], ["Tỷ lệ dự trữ bắt buộc", "Required reserve ratio"], ["Số nhân tiền tệ", "Money multiplier"], ["Cầu tiền", "Money demand"], ["Nghiệp vụ thị trường mở", "Open market operations"], ["Lãi suất chiết khấu", "Discount rate"], ["Chính sách tiền tệ", "Monetary policy"], ["Ngân hàng trung ương", "Central bank"]]}}
 ];
 SUBJ.kth.work={
+ groups:[
+ {t:'Thảo luận nhóm Chương 6–7 (chính sách tài khóa, tiền tệ)',due:'Chưa chia nhóm',done:1,b:`<p><b>Hạn nộp:</b> chưa có — chờ danh sách chia nhóm và đề.</p><p>Các buổi tới thảo luận nhóm về chính sách tài khóa và chính sách tiền tệ. Việc cần làm trước: đọc Chương 6–7 trong tab Kiến thức; theo dõi danh sách chia nhóm giảng viên gửi.</p><p class="small muted">Gợi ý của học phần: dùng công cụ trí tuệ nhân tạo thu thập số liệu (thu chi ngân sách, lãi suất, cung tiền, lạm phát) rồi đối chiếu nhiều nguồn để hoàn thiện bài thảo luận.</p>`}],
  ex:[
   {"t": "Chi phí cơ hội trên đường PPF", "cd": "CĐ1", "tp": 2, "q": "Một nền kinh tế có các phương án sản xuất (lương thực X; quần áo Y): A (0; 28), B (10; 25), C (16; 21), D (21; 14), E (24; 0). (a) Tính chi phí cơ hội của 1 đơn vị lương thực giữa các phương án liên tiếp. (b) Nhận xét và giải thích hình dạng đường PPF. (c) Điểm (16; 25) và (10; 14) có ý nghĩa gì?", "steps": ["A → B: thêm 10 X, mất 3 Y → 3/10 = 0,3 Y cho 1 X.", "B → C: thêm 6 X, mất 4 Y → 4/6 ≈ 0,67.", "C → D: thêm 5 X, mất 7 Y → 7/5 = 1,4.", "D → E: thêm 3 X, mất 14 Y → 14/3 ≈ 4,67.", "Chi phí cơ hội tăng dần → quy luật chi phí cơ hội ngày càng tăng → đường PPF cong lõm về gốc tọa độ. Nguyên nhân: nguồn lực chuyển sang sau kém phù hợp với sản xuất lương thực hơn.", "(16; 25): ở mức 16 X tối đa chỉ có 21 Y → nằm ngoài PPF, không thể đạt tới. (10; 14): nằm trong PPF (tại 10 X có thể có 25 Y) → đạt được nhưng không hiệu quả."], "ans": "Chi phí cơ hội lần lượt 0,3 → 0,67 → 1,4 → 4,67 đơn vị quần áo cho mỗi đơn vị lương thực, tăng dần nên PPF cong lõm. (16; 25) không đạt được; (10; 14) không hiệu quả.", "trap": "Quên chia cho số đơn vị X tăng thêm; hoặc tính ngược thành chi phí cơ hội của quần áo tính bằng lương thực."},
   {"t": "Cân bằng, giá trần, giá sàn", "cd": "CĐ2", "tp": 4, "q": "Thị trường một hàng hóa: Q<sub>D</sub> = 100 − 2P, Q<sub>S</sub> = 20 + 2P. (a) Tìm giá và lượng cân bằng. (b) Chính phủ đặt giá trần 15: thị trường thế nào? (c) Chính phủ đặt giá sàn 25 và mua hết phần dư thừa: chi phí bao nhiêu?", "steps": ["(a) 100 − 2P = 20 + 2P → P<sub>0</sub> = 20; Q<sub>0</sub> = 60.", "(b) P = 15 &lt; 20 nên giá trần có tác dụng. Q<sub>D</sub> = 70; Q<sub>S</sub> = 50 → thiếu hụt 20; lượng thực tế giao dịch 50.", "(c) P = 25 &gt; 20 nên giá sàn có tác dụng. Q<sub>S</sub> = 70; Q<sub>D</sub> = 50 → dư thừa 20. Chi phí mua phần dư: 25 × 20 = 500."], "ans": "Cân bằng (20; 60). Giá trần 15 gây thiếu hụt 20. Giá sàn 25 gây dư thừa 20, Chính phủ chi 500.", "trap": "Lấy lượng cầu 70 làm lượng giao dịch khi có giá trần; kiểm tra giá trần, giá sàn có ràng buộc hay không trước khi tính."},
@@ -4567,11 +4576,11 @@ document.addEventListener('click',async e=>{
 function renderHome(){
   const up=SCHED.filter(x=>U(x.d)>=TODAY && x.d!==EXAM && !/^Thi /.test(x.x)), next=up[0], after=up[1];
   const soon=DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both') && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs)
-    .concat(NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),x:(x.h?x.h+' · ':'')+x.x,noti:1})))
+    .concat(NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),h:x.h,noti:1})))
     .sort((a,b)=>U(a.d)-U(b.d));
   const imp=REMIND.filter(r=>r.imp);
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
-  const lk=s=>SUBJ[s]?`href="#${s}-road"`:'';           // mục chung cả hai môn ('both') không gắn link
+  const lk=(s,r='sch')=>SUBJ[s]?`href="#${s}-road" data-rd="${r}"`:'';           // mục chung cả hai môn ('both') không gắn link
   const tag=(s,a='a')=>SUBJ[s]?'a':'div';
   const go='';
   const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
@@ -4582,7 +4591,7 @@ function renderHome(){
   ${next?`<div class="card hnext" style="border-left:5px solid ${col(next.s)}"><${tag(next.s)} class="hl" ${lk(next.s)}><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
     <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p class="row" style="gap:6px;flex-wrap:nowrap"><span style="flex:1">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</span>${SUBJ[next.s]?go:''}</p></${tag(next.s)}>
     ${after?`<${tag(after.s)} class="hl hafter" ${lk(after.s)}><span style="flex:1">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${sTag(after.s)}${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</span>${SUBJ[after.s]?go:''}</${tag(after.s)}>`:''}</div>`:''}
-  ${soon.length?`<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${SUBJ[x.s]?`href="#${x.s}-${/^Thi /.test(x.t)||x.noti?'road':'work'}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short+' · ':''}${x.x}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span>${SUBJ[x.s]?go:''}</${tag(x.s)}>`}).join('')}</div></div>`:''}
+  ${soon.length?`<div class="card stack"><h3>Deadline</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${lk(x.s,'dl')}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short:'Cả hai môn'}${x.h?' · '+x.h:''}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span></${tag(x.s)}>`}).join('')}</div></div>`:''}
   ${homeNotes()}
   ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
@@ -4598,13 +4607,16 @@ function roadStops(s){ const S=SUBJ[s]; if(!S.chapters.length) return `<div clas
 /* ===================== LỘ TRÌNH ===================== */
 function renderRoad(s){
   const S=SUBJ[s], mine=x=>x.s===s||(x.s==='both'&&BOTH.includes(s));
-  const sch=SCHED.filter(mine), dl=DEADLINES.filter(mine), rm=REMIND.filter(mine);
+  const sch=SCHED.filter(mine), rm=REMIND.filter(mine);
+  const dl=DEADLINES.filter(mine).concat(NOTI.filter(mine).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),x:x.h||'',go:x.go}))).sort((a,b)=>U(a.d)-U(b.d));
   const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
+  const drow=x=>{ const D=dd(x.d), n=Math.round((U(x.d)-TODAY)/dayMs), T=x.go?'a':'div';
+    return `<${T} class="li${x.go?' hl':''}" ${x.go?`href="#${s}-work" data-gex="${x.go}"`:''} ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b>${x.x?`<span class="small muted">${x.x}</span>`:''}</div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</${T}>`; };
   $('v-road').innerHTML = `
   ${roadStops(s)}
-  ${sch.length?`<div class="card stack"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
-  ${dl.length?`<div class="card stack"><h3>Hạn nộp</h3><div class="list">${dl.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<div class="li" ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b><span class="small muted">${x.x}</span></div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</div>`}).join('')}</div></div>`:''}
-  ${rm.length?`<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
+  ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
+  ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3><div class="list">${dl.map(drow).join('')}</div>${dl.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem đề, dàn ý, yêu cầu trong tab Bài tập.</p>':''}</div>`:''}
+  ${rm.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>`;
 }
 
@@ -4636,30 +4648,19 @@ function renderKnow(s){
 function accItem(s,title,pill,body,id){ return `<details class="card acc" name="acc-${s}" ${id?`id="${id}"`:''}><summary><span class="acc-t">${title}</span>${pill||''}${CHEV}</summary><div class="acc-b stack">${body}</div></details>`; }
 function renderWork(s){
   const S=SUBJ[s], W=S.work;
-  const hd='';
-  if(!W){ $('v-work').innerHTML=hd+`<div class="empty"><h3>Chưa có đề</h3><p>Đề bài tập, thảo luận sẽ được thêm khi có.</p></div>`; return; }
+  if(!W){ $('v-work').innerHTML=`<div class="empty"><h3>Chưa có đề</h3><p>Đề bài tập, thảo luận sẽ được thêm khi có.</p></div>`; return; }
   const tk=i=>s==='ktud'?String(i):s+'.'+i;
   const tdone=(W.todo||[]).filter((t,i)=>todoDone[tk(i)]).length;
   const todo=W.todo&&W.todo.length?accItem(s,'Việc cần làm',`<span class="pill num" data-tdc="${s}">${tdone}/${W.todo.length}</span>`,`<div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${t}</span></label>`).join('')}</div>`):'';
   const chT=x=>{ const c=S.chapters.find(c=>'CĐ'+c.n===x.cd); return x.tp!=null&&c&&c.topics[x.tp]?c.topics[x.tp].t:''; };
-  const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,id);
+  const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`${x.due?`<p class="duel"><b>Hạn nộp:</b> ${x.due.replace(/^Nộp /,'')}</p>`:''}<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,id);
+  const kt=(W.tests||[]).map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join('');
+  const grs=W.groups||(W.head?[{t:W.head.t,due:W.head.pill||'',done:1,b:W.head.b}]:[]);
+  const gr=grs.map((g,i)=>accItem(s,g.t,g.due?`<span class="pill ${g.done?'':'ko'}">${g.due}</span>`:'',g.b,`gr-${i}`)).join('');
   const ex=W.ex.map((x,i)=>exItem(x,`${i+1}. `,`<span class="pill c">${x.cd}</span>`,`ex-${i}`)).join('');
-  const kt=(W.tests||[]).length?`<h2 class="sech">Bài kiểm tra</h2>`+W.tests.map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join(''):'';
-  const disc=W.discuss&&W.discuss.length?`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`:'';
-  let top='', tail='';
-  if(s==='ktud'){
-    top=accItem(s,'Bài nhóm 3','<span class="pill ko">Nộp sáng 5/12</span>',`<p><b>Chủ đề:</b> Các nguyên lý kinh tế học về hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm của doanh nghiệp.</p>
-    <p class="small muted">Word 10–12 trang A4, Times New Roman 12, giãn dòng 1,2; bìa, mục lục, nội dung, tài liệu tham khảo. Gửi chthuhien@gmail.com, thuyết trình cả ngày 5/12.</p>
-    <details class="sol"><summary>Xem dàn ý đề xuất</summary><div class="in stack">
-      <p><i>Hành vi người tiêu dùng và chiến lược giá – sản phẩm: Nghiên cứu trường hợp Petrolimex trong giai đoạn chuyển đổi xăng sinh học E10.</i></p>
-      <ol class="clean"><li><b>Mở đầu (~0,5 tr):</b> E10 thay xăng khoáng, xe điện tăng, cơ chế giá thị trường hóa.</li><li><b>I. Nguyên lý (~3,5 tr):</b> TU, MU giảm dần; đường bàng quan, MRS, ngân sách; tác động thay thế – thu nhập; WTP; kinh tế học hành vi.</li><li><b>II. Ứng dụng (~3 tr):</b> nguyên lý → chiến lược giá → chiến lược sản phẩm, dùng khung 3 hướng vận dụng (CĐ3).</li><li><b>III. Petrolimex (~4 tr):</b> E10 (TT 50/2025, bán toàn hệ thống từ 20/5/2026, đề xuất chênh lệch 1.000–1.500đ/lít, sản lượng thí điểm +40%); Petrolimex ID (50 điểm/10.000đ không tiền mặt so với 50 điểm/20.000đ tiền mặt; thẻ BIDV-Visa 1,5%); cửa hàng tiện lợi Ohmee Express.</li><li><b>Kết luận</b> và tài liệu tham khảo.</li></ol>
-      <p class="small muted">Nguồn: <a href="https://nhadautu.vn/xang-e10-phu-song-toan-quoc-nguoi-dung-dang-lo-dieu-gi-d105297.html">Nhà đầu tư</a> · <a href="https://www.sggp.org.vn/tiep-tuc-duy-tri-xang-e5-song-song-xang-e10-post854455.html">SGGP</a> · <a href="https://tapchicongthuong.vn/petrolimex-day-nhanh-chuyen-doi-kinh-doanh-xang-e10-tu-giua-thang-5-2026-517638.htm">TC Công Thương</a> · <a href="https://tienphong.vn/epaper/2026/TP-82/5/">Tiền Phong</a> · <a href="https://baodautu.vn/thanh-toan-thong-minh--loi-ich-dong-hanh-cung-petrolimex-d156794.html">Báo Đầu tư</a> · <a href="https://vcci.com.vn/en/news/petrolimex-mo-rong-tien-ich-tai-cua-hang-xang-dau">VCCI</a></p>
-    </div></details>`);
-    tail=`<h2 class="sech">Thảo luận</h2>${accItem(s,'Câu hỏi thảo luận','',disc)}${accItem(s,'Đề các nhóm','',`<div class="list"><div class="li"><div class="t"><b>Nhóm 1</b><span class="small muted">Can thiệp của chính phủ: cơ hội hay thách thức?</span></div></div><div class="li"><div class="t"><b>Nhóm 2</b><span class="small muted">Độc quyền nhóm: động lực hay rào cản cạnh tranh?</span></div></div><div class="li"><div class="t"><b style="color:var(--c)">Nhóm 3 · nhóm mình</b><span class="small muted">Hành vi tiêu dùng: ứng dụng vào chiến lược giá và sản phẩm</span></div></div><div class="li"><div class="t"><b>Nhóm 4</b><span class="small muted">Tối ưu hóa lựa chọn đầu vào</span></div></div></div>`)}`;
-    $('v-work').innerHTML=`${hd}<h2 class="sech">Bài nhóm</h2>${top}${todo}${kt}<h2 class="sech">Bài tập vận dụng</h2>${ex}${tail}`; return; }
-  if(W.head) top=accItem(s,W.head.t,W.head.pill?`<span class="pill">${W.head.pill}</span>`:'',W.head.b);
-  if(W.groups) top=W.groups.map((g,i)=>accItem(s,g.t,`<span class="pill ${g.done?'':'ko'}">${g.due}</span>`,g.b,`gr-${i}`)).join('');
-  $('v-work').innerHTML=`${hd}${top||todo?`<h2 class="sech">${W.groups?'Bài tập nhóm':'Thảo luận nhóm'}</h2>`:''}${top}${todo}${kt}<h2 class="sech">Bài tập vận dụng</h2><p class="small muted">${W.note||''}</p>${ex}${disc?`<h2 class="sech">Câu hỏi thảo luận</h2>${accItem(s,'Câu hỏi gợi mở','',disc)}`:''}`;
+  const disc=W.discuss&&W.discuss.length?accItem(s,'Câu hỏi thảo luận',`<span class="pill num">${W.discuss.length}</span>`,`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`,'dq'):'';
+  const sec=(h,body,extra='')=>body?`<h2 class="sech">${h}</h2>${extra}${body}`:'';
+  $('v-work').innerHTML=sec('Bài kiểm tra',kt)+sec('Bài tập nhóm',gr)+sec('Bài tập vận dụng',ex,W.note?`<p class="small muted">${W.note}</p>`:'')+sec('Câu hỏi thảo luận',disc)+sec('Việc cần làm',todo);
 }
 
 /* ===================== QUIZ ===================== */
@@ -4766,8 +4767,8 @@ function outlineHTML(s){
 
 function homeNotes(){
   const imp=REMIND.filter(r=>r.imp); if(!imp.length) return '';
-  const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road"`:'';
-  return `<div class="card stack"><h3>Lưu ý</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
+  const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road" data-rd="rm"`:'';
+  return `<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
@@ -4877,7 +4878,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------- Tìm kiếm toàn Sổ tay ---------- */
-let sQ='', sS='all', sT='all'; try{ [sS,sT]=JSON.parse(sessionStorage.getItem('emba-sflt'))||['all','all']; }catch(e){} let sIdx=null, pendTp=null, pendEx=null, pendQ=null;
+let sQ='', sS='all', sT='all'; try{ [sS,sT]=JSON.parse(sessionStorage.getItem('emba-sflt'))||['all','all']; }catch(e){} let sIdx=null, pendTp=null, pendEx=null, pendQ=null, pendRd=null;
 const nz=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đĐ]/g,'d').toLowerCase();
 const nzc=t=>t.split('').map(c=>nz(c)[0]||' ').join('');
 const escH=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -4888,6 +4889,7 @@ function buildIdx(){ const out=[]; const strip=h=>plain(String(h||'').replace(/<
       if(c.sum) out.push({s,ty:'Tóm tắt',where:`CĐ${c.n}`,title:'Tóm tắt: '+c.title,text:strip([c.sum.core,...(c.sum.recap||[]),...c.sum.exam,...c.sum.terms.map(x=>x.join(' – '))].join(' · ')),go:{k:'tp',ch:c.id,i:'sum'}});
     });
     if(S.work) (S.work.ex||[]).forEach((x,i)=>out.push({s,ty:'Bài tập',where:x.cd,title:x.t,text:strip(x.q+' '+x.steps.join(' ')+' '+x.ans+' '+(x.trap||'')),go:{k:'ex',i}}));
+    if(S.work) (S.work.groups||[]).forEach((g,i)=>out.push({s,ty:'Bài tập',where:'Bài tập nhóm',title:g.t,text:strip(g.b),go:{k:'ex',i:'gr-'+i}}));
     if(S.work) (S.work.tests||[]).forEach((x,i)=>out.push({s,ty:'Bài tập',where:'Bài kiểm tra',title:x.t,text:strip(x.q+' '+x.steps.join(' ')+' '+x.ans+' '+(x.trap||'')),go:{k:'ex',i:'kt-'+i}}));
     S.quiz.forEach((q,i)=>out.push({s,ty:'Ôn tập',where:q.cd,title:strip(q.q),text:strip((q.o||[]).join(' · ')+' '+(q.e||'')+' '+(q.ans||'')),go:{k:'q',i}}));
   });
@@ -4976,7 +4978,8 @@ document.addEventListener('click',e=>{
   const cqb=e.target.closest('[data-cq]'); if(cqb&&cur){ startChapQuiz(cur); location.hash=`#${cur}-quiz`; return; }
   const qf=e.target.closest('[data-qf]'); if(qf&&cur){ e.preventDefault(); setQFilter(qf.dataset.qf); location.hash=`#${cur}-quiz`; return; }
   const xt=e.target.closest('[data-xtp]'); if(xt){ e.preventDefault(); const [xs,xc,xi]=xt.dataset.xtp.split(','); store.set('emba-chap-'+xs,xc); pendTp=+xi; location.hash=`#${xs}-know`; return; }
-  const gx=e.target.closest('[data-gex]'); if(gx){ e.preventDefault(); pendEx=/^kt-/.test(gx.dataset.gex)?gx.dataset.gex:+gx.dataset.gex; location.hash=`#${cur}-work`; return; }
+  const rdl=e.target.closest('[data-rd]'); if(rdl) pendRd=rdl.dataset.rd;
+  const gx=e.target.closest('[data-gex]'); if(gx){ e.preventDefault(); pendEx=/^(kt|gr)-/.test(gx.dataset.gex)?gx.dataset.gex:+gx.dataset.gex; location.hash=`#${cur}-work`; return; }
   const v=$('v-quiz'); if(!v.contains(e.target)) return;
   const Q=SUBJ[cur].quiz, ids=qIds(Q), i=ids[qCur], top=()=>scrollTo({top:0});
   if(e.target.closest('[data-menu]')){ qMenu=!qMenu; renderQuiz(cur); return; }
@@ -5153,7 +5156,7 @@ document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INP
     if(L!=null){ const b=$('v-quiz').querySelector(`[data-o="${L}"]:not([disabled])`); if(b){ b.click(); e.preventDefault(); } }
     else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const b=$('v-quiz').querySelector(`[data-nav="${e.key==='ArrowRight'?1:-1}"]`); if(b){ b.click(); e.preventDefault(); } } } });
 let lastHash=null;
-window.addEventListener('hashchange',()=>{ route(); renderSide(); if(location.hash!==lastHash) window.scrollTo(0,0); lastHash=location.hash; });
+window.addEventListener('hashchange',()=>{ route(); renderSide(); if(location.hash!==lastHash) window.scrollTo(0,0); lastHash=location.hash; if(pendRd){ const el=$('rd-'+pendRd); pendRd=null; if(el) requestAnimationFrame(()=>el.scrollIntoView({block:'start'})); } });
 /* ---------- Giữ màn hình sáng (Screen Wake Lock) ---------- */
 (function(){ if(!('wakeLock' in navigator)) return; let wl=null, idle=null; const IDLE=20*60*1000; window.WAKE_OK=true;
   async function on(){ try{ if(!store.get('emba-wake',true)) return; if(!wl&&document.visibilityState==='visible'){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null;}); } }catch(e){} }
