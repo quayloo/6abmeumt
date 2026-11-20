@@ -514,6 +514,7 @@ div.chap.soon{opacity:.55;margin-bottom:12px}
 .khead2{padding:2px 6px 10px}
 @media (max-width:600px){main{padding-left:calc(10px + env(safe-area-inset-left));padding-right:calc(10px + env(safe-area-inset-right))} details.acc>summary{padding:12px 12px} details.acc>.acc-b{padding:12px 12px 14px} details.sol .in{padding:10px 10px} details.sol summary{padding:10px 10px} .more-box{padding:10px 10px} .card{padding:14px 12px} details.acc.card{padding:0}}
 .errc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}.errc .ec{border-top:4px solid var(--ec);background:var(--surface-2);border-radius:12px;padding:8px 10px;font-size:13.5px}.errc .eh{font-weight:800;color:var(--ec);margin-bottom:4px}.errc .eh i{font-weight:500;color:var(--muted);font-size:12px}.errc ul{margin:0;padding-left:16px}.errc li{margin:2px 0}
+.pastf .list,.pastf .todo{opacity:.45;filter:grayscale(1)}
 .pastf>summary{cursor:pointer;color:var(--muted);font-size:14px;padding:6px 0}
 .duel{color:var(--bad);margin:0}
 </style>
@@ -4636,11 +4637,11 @@ function renderRoad(s){
   if(W&&W.todo&&W.todo.length){ const tk=i=>s==='ktud'?String(i):s+'.'+i, old=W.todoOld||[];
     const it=i=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${W.todo[i]}</span></label>`;
     const idx=W.todo.map((t,i)=>i), open=idx.filter(i=>!todoDone[tk(i)]&&!old.includes(i)), done=idx.filter(i=>todoDone[tk(i)]||old.includes(i));
-    todo=`<div class="card stack" id="rd-td"><div class="row between"><h3>Việc cần làm</h3><span class="pill num">${open.length} việc</span></div>${open.length?`<div class="todo">${open.map(it).join('')}</div>`:'<p class="small muted">Không còn việc nào.</p>'}${done.length?`<details class="pastf"><summary>Đã xong / không còn cần (${done.length})</summary><div class="todo">${done.map(it).join('')}</div></details>`:''}</div>`; }
+    todo=`<div class="card stack" id="rd-td"><div class="row between"><h3>To do</h3><span class="pill num">${open.length} việc</span></div>${open.length?`<div class="todo">${open.map(it).join('')}</div>`:'<p class="small muted">Không còn việc nào.</p>'}${done.length?`<details class="pastf"><summary>Đã xong / không còn cần (${done.length})</summary><div class="todo">${done.map(it).join('')}</div></details>`:''}</div>`; }
   const dUp=dl.filter(x=>!past(x)), dPast=dl.filter(past), sUp=sch.filter(x=>!past(x)), sPast=sch.filter(past);
   $('v-road').innerHTML = `
-  ${todo}
   ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3>${dUp.length?`<div class="list">${dUp.map(drow).join('')}</div>`:'<p class="small muted">Không còn hạn nộp sắp tới.</p>'}${fold(dPast,'Đã qua',drow)}${dUp.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem chi tiết trong tab Bài tập.</p>':''}</div>`:''}
+  ${todo}
   ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3>${fold(sPast,'Đã học',row)}${sUp.length?`<div class="list">${sUp.map(row).join('')}</div>`:'<p class="small muted">Đã hết lịch học.</p>'}</div>`:''}
   ${rm.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>
