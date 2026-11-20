@@ -507,7 +507,12 @@ details.chap>summary h3{margin:6px 30px 2px 0}
 details.chap>summary .bar{margin-top:8px}
 details.chap>summary .chev{position:absolute;right:14px;top:46px;transition:transform .2s}
 details.chap[open]>summary .chev{transform:rotate(180deg)}
-details.chap[open]>summary{border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)}
+details.chap[open]>summary{background:var(--cs);border:2px solid var(--c);box-shadow:0 6px 18px rgba(0,0,0,.18);border-left-width:8px}
+details.chap[open]>summary h3{color:var(--c)}
+details.chap[open]>summary .bar{background:var(--surface)}
+details.chap[open]>summary .bar i{background:var(--c)}
+details.chap[open]>summary .pill{background:var(--c);color:var(--surface)}
+details.chap[open]>summary .chev{color:var(--c)}
 details.chap .chb{padding:10px 0 4px;display:flex;flex-direction:column;gap:10px}
 details.chap .chb>.card{margin:0}
 div.chap.soon{opacity:.55;margin-bottom:12px}
