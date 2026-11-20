@@ -499,7 +499,20 @@ body.app-mode #fsBtn{display:none}
   #v-home > .install{padding-right:56px}
 }
 @media (min-width:1024px) and (max-width:1279px){ body.side-mini main{margin-left:76px} }
-#rd-sch,#rd-dl,#rd-rm,details.acc{scroll-margin-top:76px}
+#rd-sch,#rd-dl,#rd-rm,#rd-td,details.acc,details.chap{scroll-margin-top:76px}
+details.chap{padding:0;margin-bottom:12px;overflow:hidden}
+details.chap>summary{list-style:none;cursor:pointer;padding:14px 16px 12px;position:relative}
+details.chap>summary::-webkit-details-marker{display:none}
+details.chap>summary h3{margin:6px 30px 2px 0}
+details.chap>summary .bar{margin-top:8px}
+details.chap>summary .chev{position:absolute;right:14px;top:46px;transition:transform .2s}
+details.chap[open]>summary .chev{transform:rotate(180deg)}
+details.chap[open]>summary{border-bottom:1px solid var(--line);background:var(--surface)}
+details.chap .chb{padding:12px 8px 4px;background:var(--bg)}
+details.chap .chb>.card{margin-bottom:10px}
+div.chap.soon{opacity:.55;margin-bottom:12px}
+.khead2{padding:2px 6px 10px}
+.pastf>summary{cursor:pointer;color:var(--muted);font-size:14px;padding:6px 0}
 .duel{color:var(--bad);margin:0}
 </style>
 </head>
@@ -533,7 +546,7 @@ body.app-mode #fsBtn{display:none}
 </div></div>
 <div class="subjsheet" id="subjSheet" role="dialog" aria-modal="true" aria-labelledby="subjT"><div class="box" tabindex="-1"><div class="shead"><div class="grab"></div><div class="shrow"><div><h3 id="subjT">Chọn môn học</h3><div class="ssum" id="subjSum"></div></div><button type="button" class="mgbtn" id="gradeBtn" aria-label="Quản lý điểm và trạng thái môn học"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Điểm số</span></button></div></div><div class="stack" id="subjList"></div></div></div>
 <nav class="bottom" aria-label="Mục của môn học"><div class="in">
-  <a href="#" data-tab="road"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Lộ trình</a>
+  <a href="#" data-tab="road"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.01"/></svg>Thông tin</a>
   <a href="#" data-tab="know"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Kiến thức</a>
   <a href="#" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l1 2h3v15H5V6h3z"/><path d="M9 12l2 2 4-4"/></svg>Bài tập</a>
   <a href="#" data-tab="quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg>Ôn tập</a>
@@ -586,32 +599,33 @@ const DEADLINES=[
  {d:'2026-12-26',s:'qth',t:'Thi Quản trị học (tối)',x:'Thi học phần 2 lớp bổ sung kiến thức'}
 ];
 const REMIND=[
- {s:'ktud',t:'Mỗi buổi có phần hỏi – đáp: lớp trả lời trước rồi mới chốt, không ai xung phong thì gọi tên; mục tiêu 7–10 người phát biểu mỗi buổi (tính vào chuyên cần 10%).'},
- {s:'ktud',imp:1,t:'Bài kiểm tra giữa kỳ (trắc nghiệm + tự luận) dự kiến khi hết Chuyên đề 3 — cần hỏi lại ngày cụ thể (21/11 hoặc 25/11).'},
- {s:'ktud',t:'Thứ 7 21/11: sáng 8h–11h có buổi nói chuyện chuyên gia — đến đúng giờ, đầy đủ để buổi nói chuyện không bị gián đoạn; chiều học tiếp lý thuyết.'},
- {s:'ktud',t:'Tự nghiên cứu theo slide CĐ3: hiệu ứng thay thế, hiệu ứng thu nhập; tình huống thiết kế gói đào tạo trực tuyến (3 phương án).'},
- {s:'ktud',t:'Chuẩn bị cho buổi 21/11: phân mảnh ngân sách có ý nghĩa gì đối với quyết định của nhà quản trị?'},
- {s:'ktud',t:'Slide chương 3 đã gửi trên nhóm lớp; slide chương 4 gửi sau.'},
- {s:'ktud',t:'"Kinh tế học chỉ đưa ra một phần thông tin, giúp đặt đúng câu hỏi" — tự luận nên nêu rõ giả định và điều kiện áp dụng.'},
- {s:'qtcl',imp:1,t:'Thi hết học phần QTCL là thi VẤN ĐÁP (60%) — ôn theo dạng trình bày: khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
- {s:'qtcl',imp:1,t:'Chuyên cần 10%: vắng trên 40% số tiết thì 0 điểm và không đủ điều kiện dự thi.'},
- {s:'qtcl',t:'Chương 3 không giảng riêng: tự đọc slide, giáo trình; chiều 28/11 chuyên gia báo cáo thực tế về các giai đoạn phát triển của doanh nghiệp và năng lực lãnh đạo tương ứng — đi học đầy đủ.'},
- {s:'qtcl',t:'Trong tuần 18–22/11: gửi chị Như (lớp) câu hỏi muốn chuyên gia giải đáp về tổ chức, doanh nghiệp của mình.'},
- {s:'qtcl',t:'Giảng viên sẽ gửi file tình huống mẫu BCG (giải từng bước) và TOWS động — đọc kỹ, đọc trước slide quy trình BCG; thắc mắc hỏi ở buổi sau.'},
+ {s:'ktud',t:'Mỗi buổi có hỏi – đáp, không ai xung phong thì gọi tên; phát biểu tính vào chuyên cần 10%.'},
+ {s:'ktud',imp:1,until:'2026-11-25',t:'Kiểm tra giữa kỳ (trắc nghiệm + tự luận) sau Chuyên đề 3 — hỏi lại ngày (21/11 hay 25/11).'},
+ {s:'ktud',until:'2026-11-21',t:'Thứ Bảy 21/11: sáng 8h–11h nói chuyện chuyên gia (đến đúng giờ), chiều học lý thuyết.'},
+ {s:'ktud',until:'2026-11-21',t:'Tự đọc CĐ3: hiệu ứng thay thế – thu nhập; tình huống gói đào tạo trực tuyến.'},
+ {s:'ktud',until:'2026-11-21',t:'Chuẩn bị phát biểu 21/11: phân mảnh ngân sách có ý nghĩa gì với nhà quản trị?'},
+ {s:'ktud',t:'Chờ slide chương 4 (gửi trên nhóm lớp).'},
+ {s:'ktud',t:'Làm tự luận: nêu rõ giả định và điều kiện áp dụng.'},
+ {s:'qtcl',imp:1,t:'Thi VẤN ĐÁP (60%): khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
+ {s:'qtcl',t:'Vắng trên 40% số tiết: 0 điểm chuyên cần, không đủ điều kiện dự thi.'},
+ {s:'qtcl',until:'2026-11-28',t:'Chương 3 tự đọc; chiều 28/11 chuyên gia báo cáo thực tế (đi đầy đủ).'},
+ {s:'qtcl',until:'2026-11-22',t:'Trước 22/11: gửi chị Như câu hỏi cho chuyên gia.'},
+ {s:'qtcl',t:'Chờ file tình huống mẫu BCG, TOWS động; đọc trước slide quy trình BCG.'},
  {s:'both',t:'Lịch thi trên thời khóa biểu là lịch dự kiến.'},
- {s:'kth',imp:1,t:'Thi Kinh tế học tối 12/12 cùng ngày thi dự kiến của KTƯD và QTCL — hỏi lại phòng đào tạo giờ thi cụ thể để không bị trùng.'},
- {s:'kth',t:'Tự nghiên cứu (5 tiết mỗi buổi, không lên lớp): 21/11, 25/11, 28/11 — trùng các ngày học KTƯD/QTCL.'},
- {s:'kth',imp:1,t:'Tối Chủ nhật 22/11 nghỉ học (giảng viên báo). Buổi tiếp theo: tối thứ Sáu 20/11, rồi thứ Hai 23/11.'},
- {s:'kth',imp:1,t:'Thi online tại nhà, mở tài liệu, khoảng 24 giờ (chờ xác nhận). Ôn theo cách viết cô đọng 5–10 dòng mỗi câu, dựa trên slide và giáo trình — không chép nguyên câu trả lời của AI.'},
- {s:'kth',imp:1,t:'Đọc trước Chương 6–7 (chính sách tài khóa, tiền tệ): các buổi tới thảo luận nhóm về hai chính sách này; danh sách chia nhóm sẽ được gửi.'},
- {s:'kth',t:'Trọng tâm Chương 5–7 (vĩ mô); Chương 1–4 tự nghiên cứu, mang thắc mắc lên lớp trao đổi.'},
- {s:'kth',t:'Cần mua 2 giáo trình bản cứng (không có bản mềm): Kinh tế vi mô 1 và Kinh tế vĩ mô 1 — giảng viên sẽ gửi ảnh bìa trên nhóm Zalo.'},
- {s:'kth',t:'Vào lớp đầy đủ thì giảng viên không điểm danh; buổi học ngắn (1–1,5 tiếng) nhưng cần vào đúng 18h00.'},
+ {s:'kth',imp:1,t:'Thi tối 12/12, trùng ngày thi KTƯD, QTCL — hỏi giờ thi cụ thể.'},
+ {s:'kth',until:'2026-11-28',t:'Tự nghiên cứu (không lên lớp): 21/11, 25/11, 28/11.'},
+ {s:'kth',imp:1,until:'2026-11-22',t:'Tối Chủ nhật 22/11 nghỉ; buổi sau: thứ Hai 23/11.'},
+ {s:'kth',imp:1,t:'Thi online, mở tài liệu, ~24 giờ (chờ xác nhận): mỗi câu viết 5–10 dòng, không chép AI.'},
+ {s:'kth',t:'Đọc trước Chương 6–7 (tài khóa, tiền tệ) cho buổi thảo luận nhóm.'},
+ {s:'kth',t:'Trọng tâm Chương 5–7; Chương 1–4 tự nghiên cứu.'},
+ {s:'kth',t:'Mua 2 giáo trình bản cứng: Kinh tế vi mô 1, Kinh tế vĩ mô 1.'},
+ {s:'kth',t:'Vào lớp đúng 18h00 (buổi 1–1,5 tiếng).'},
  {s:'qth',t:'Tự nghiên cứu (5 tiết mỗi buổi, không lên lớp): 5/12, 8/12, 9/12.'},
- {s:'qth',t:'Chưa có đề cương, giảng viên, phòng học, giờ học và hình thức thi — cần hỏi lớp trưởng/phòng đào tạo.'}
+ {s:'qth',t:'Chưa có đề cương, giảng viên, phòng, giờ, hình thức thi — hỏi lớp trưởng.'}
 ];
 // Nhắc nhở có ngày giờ (ngoài lịch học, hạn nộp) — hiện ở khối "Nhắc nhở" Trang chủ: {d:'YYYY-MM-DD', h:'HH:MM', lv:1|2|3, s:môn, title?, x:nội dung}
 // lv 1 = Khẩn, 2 = Quan trọng, 3 = Thông tin. Nhắc trên điện thoại do Claude tạo thẳng trong Lịch của máy (ứng dụng Claude) — giữ khớp với các mốc dưới đây.
+const rmOn=r=>!r.until||U(r.until)>=TODAY;
 const NOTI=[
  {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
  {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'},
@@ -3352,7 +3366,8 @@ SUBJ.qtcl.work={
    trap:'Phân tích đủ năm lực (lạc đề); chỉ mô tả hai lực mà không nối sang cường độ cạnh tranh; nhầm đối thủ cùng ngành (cà phê vỉa hè, chuỗi khác) là sản phẩm thay thế; dùng số liệu không có nguồn, không có năm.'}
  ],
  discuss:['<b>"Bạn có thể trình bày nội dung chiến lược kinh doanh của Công ty?"</b> — trình bày theo 6 yếu tố cấu thành. <i>Gợi ý: CĐ1, chủ đề "Khái niệm chiến lược, 6 yếu tố cấu thành".</i>','<b>"Công ty đã, đang và sẽ hoạt động trong ngành KD nào?"</b> — chiến lược cấp công ty theo trục thời gian. <i>Gợi ý: CĐ1, chủ đề "Ba cấp chiến lược".</i>','<b>"Chúng ta sẽ đi đâu, về đâu? Muốn trở thành cái gì?"</b> — tầm nhìn. <i>Gợi ý: CĐ1, chủ đề "Tầm nhìn chiến lược".</i>','<b>"Thời cơ và thách thức nào?"</b> và <b>"Môi trường vĩ mô có những tác nhân thay đổi chiến lược nào đáp ứng tiêu chí cường độ – phạm vi – dài hạn?"</b> <i>Gợi ý: CĐ2, chủ đề PESTEL.</i>','<b>"Nếu kinh doanh là một cuộc chơi thì ai là người chơi, vai trò của họ là gì?"</b>; <b>"Quan hệ giữa các người chơi là cạnh tranh hay bổ trợ? Quyền lực và mức độ tương tác?"</b> <i>Gợi ý: CĐ2, chủ đề mạng giá trị.</i>','<b>"Bộ phận/hoạt động nào mang lại giá trị gia tăng? Năng lực kinh doanh (cạnh tranh) nào?"</b> <i>Gợi ý: CĐ2, chuỗi giá trị và VRINE.</i>','<b>Rà lại một đường giá trị dựng sẵn:</b> cần chỉnh điểm nào, các doanh nghiệp có thật cùng hình dạng đường không; đề xuất Loại bỏ nào khó làm nhất và xử lý thế nào; bổ sung yếu tố nào. <i>Gợi ý: CĐ2, chủ đề "Đường giá trị cạnh tranh và đổi mới giá trị" (Câu hỏi vận dụng) và bài tập tình huống xăng dầu.</i>'],
- todo:['Buổi 14/11: hỏi đề thảo luận, phân nhóm, vai trò (trình bày / phản biện / dẫn dắt)','Hỏi lịch và hình thức bài kiểm tra (thuộc điểm thực hành 30%)','Hỏi cấu trúc thi vấn đáp: số câu, thời gian chuẩn bị, có được mang tài liệu không','Chọn doanh nghiệp/ngành và thu thập số liệu năm gần nhất','Chuẩn bị bảng đánh giá thành viên','Ôn trước các công cụ Chương 2 cho buổi thảo luận 18/11','Viết tay bài kiểm tra 2 câu (dàn ý ở mục Bài kiểm tra) — nộp tại buổi học 28/11','Hỏi cô yêu cầu độ dài, khổ giấy và cách tính điểm của bài kiểm tra','Xem lại bài tình huống đường giá trị – ERRC (18/11) để dùng cho phần đề xuất của bài thảo luận nhóm','Đọc slide quy trình và các bước xây dựng ma trận BCG; đọc file tình huống BCG, TOWS động giảng viên gửi','Gửi chị Như câu hỏi muốn chuyên gia giải đáp (trong tuần)','Hoàn thiện bảng đánh giá thành viên theo thang A/B/C/F, có chữ ký','Xác nhận ngày buổi thảo luận thứ hai (thứ Ba 1/12 hay thứ Tư 2/12)']
+ todoOld:[1,5],
+ todo:['Hỏi đề thảo luận, nhóm, vai trò (trình bày / phản biện / dẫn dắt)','Hỏi lịch và hình thức bài kiểm tra (thuộc điểm thực hành 30%)','Hỏi cấu trúc thi vấn đáp: số câu, thời gian chuẩn bị, có được mang tài liệu không','Chọn doanh nghiệp/ngành và thu thập số liệu năm gần nhất','Chuẩn bị bảng đánh giá thành viên','Ôn trước các công cụ Chương 2 cho buổi thảo luận 18/11','Viết tay bài kiểm tra 2 câu (dàn ý ở mục Bài kiểm tra) — nộp tại buổi học 28/11','Hỏi cô yêu cầu độ dài, khổ giấy và cách tính điểm của bài kiểm tra','Xem lại bài tình huống đường giá trị – ERRC (18/11) để dùng cho phần đề xuất của bài thảo luận nhóm','Đọc slide quy trình và các bước xây dựng ma trận BCG; đọc file tình huống BCG, TOWS động giảng viên gửi','Gửi chị Như câu hỏi muốn chuyên gia giải đáp (trong tuần)','Hoàn thiện bảng đánh giá thành viên theo thang A/B/C/F, có chữ ký','Xác nhận ngày buổi thảo luận thứ hai (thứ Ba 1/12 hay thứ Tư 2/12)']
 };
 
 SUBJ.qtcl.quiz=[
@@ -4214,6 +4229,7 @@ SUBJ.kth.work={
   {"t": "Kiểm tra số 1 · Bài 2: Hãng độc quyền — lợi nhuận và doanh thu tối đa", "cd": "CĐ4", "tp": 2, "due": "Nộp trước 18h00 · 23/11", "q": "QD = 80 − 2P; TC = 12Q + 100. 1) Sản lượng tối đa hóa lợi nhuận và lợi nhuận tối đa. 2) Sản lượng tối đa hóa doanh thu; nhận xét lợi nhuận hai tình huống và giải thích vì sao doanh thu tối đa không phải lợi nhuận tối đa.", "steps": ["P = 40 − 0,5Q; TR = 40Q − 0,5Q²; MR = 40 − Q; MC = 12.", "1) MR = MC → 40 − Q = 12 → Q = 28; P = 26. TR = 728; TC = 436; πmax = 292 USD. (Lerner = 14/26 ≈ 0,54; E ≈ −1,86 — miền cầu co dãn.)", "2) MR = 0 → Q = 40; P = 20; TRmax = 800; TC = 580; π = 220 USD.", "Nhận xét: tối đa hóa doanh thu bán nhiều hơn, giá thấp hơn, doanh thu cao hơn 72 USD nhưng lợi nhuận thấp hơn 72 USD.", "Giải thích: π = TR − TC, lợi nhuận tối đa khi MR = MC. Từ Q = 28 trở đi MR < MC = 12: mỗi sản phẩm thêm làm doanh thu tăng ít hơn chi phí → lợi nhuận giảm; tổng phần mất = Σ(MC − MR) = 72. Tối đa hóa doanh thu bỏ qua chi phí, chỉ trùng tối đa hóa lợi nhuận khi MC = 0."], "ans": "Q = 28, P = 26, πmax = 292 USD; doanh thu tối đa tại Q = 40, P = 20, TR = 800 USD nhưng π = 220 USD.", "trap": "Đặt P = MC như cạnh tranh hoàn hảo (Q = 56); đọc giá trên MR thay vì đường cầu."}
  ],
  discuss:["<b>Câu hỏi mang lên lớp trao đổi (Chương 1):</b> Vì sao đường PPF của một nền kinh tế thực tế cong lõm chứ không phải đường thẳng? Đường PPF của Việt Nam dịch chuyển thế nào sau Đổi mới?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 2):</b> Giá xăng dầu ở Việt Nam được điều hành theo cơ chế nào — có phải là giá trần không? Khi thuế bảo vệ môi trường với xăng tăng, người tiêu dùng hay doanh nghiệp chịu nhiều hơn, vì sao?", "<b>Ứng dụng AI (Chương 2, gợi ý của học phần):</b> dùng công cụ AI thu thập số liệu và phân tích cung, cầu, giá cả của một mặt hàng cụ thể trong một khoảng thời gian; so sánh kết quả từ các công cụ AI khác nhau để hoàn thiện bài thảo luận.", "<b>Câu hỏi mang lên lớp trao đổi (Chương 5):</b> Vì sao GDP Việt Nam 2025 tăng 8,02% mà lạm phát chỉ 3,31%? Tăng trưởng đến từ phía cầu hay phía cung?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 6):</b> Gói hỗ trợ theo Nghị quyết 43/2022 có những chính sách giải ngân chậm — điều đó ảnh hưởng thế nào đến hiệu ứng số nhân? Khi nào thâm hụt ngân sách là chấp nhận được?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 7):</b> Năm 2023 Ngân hàng Nhà nước giảm lãi suất bốn lần nhưng tín dụng tăng chậm — vì sao? Lãi suất tái cấp vốn khác lãi suất chiết khấu thế nào?", "<b>Ứng dụng AI (Chương 5–7, gợi ý của học phần):</b> dùng AI và công cụ hỗ trợ thu thập số liệu GDP, chỉ số giá, thất nghiệp của Việt Nam và so sánh với các nước; tìm thông tin về chính sách tài khóa, cán cân ngân sách; tra cứu lãi suất, cung tiền, lạm phát để phân tích quan hệ giữa chính sách tiền tệ và mục tiêu ổn định vĩ mô.", "<b>Câu hỏi mang lên lớp trao đổi (Chương 3):</b> Trong thực tế doanh nghiệp có tính được MR, MC để áp dụng MR = MC không? Vì sao tối đa hóa doanh thu khác tối đa hóa lợi nhuận?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 4):</b> Thị trường bán lẻ xăng dầu, hàng không, viễn thông ở Việt Nam thuộc cấu trúc thị trường nào? Vì sao Nhà nước điều tiết giá điện?", "<b>Câu hỏi mang lên lớp trao đổi (buổi 20/11):</b> Chạy theo chỉ tiêu GDP có mặt trái gì? Lấy ví dụ một tỉnh có nhiều doanh nghiệp đầu tư nước ngoài (như Bắc Ninh) và phân biệt GDP với GNP. Lạm phát có hoàn toàn xấu không?"],
+ todoOld:[1],
  todo:["Mua hoặc photo 2 giáo trình: Kinh tế vi mô 1 (Phan Thế Công chủ biên) và Kinh tế vĩ mô 1 (Trần Việt Thảo, Lê Mai Trang đồng chủ biên) — xem ảnh bìa giảng viên gửi trên nhóm Zalo", "Tự đọc slide và giáo trình Chương 1–2; ghi thắc mắc để trao đổi buổi tối thứ Sáu 20/11", "Tự đọc Chương 3–4 (lý thuyết hành vi doanh nghiệp, cấu trúc thị trường)", "Hỏi giảng viên: hình thức và thời gian thi chính xác (thi online tại nhà, khoảng 24 giờ?); cách tính điểm; có buổi bù cho tối 22/11 không", "Đọc thêm (khuyến khích): Nguyên lý kinh tế học tập 1–2 của N. Gregory Mankiw", "Đọc trước Chương 6–7 (chính sách tài khóa, tiền tệ) để thảo luận nhóm ở buổi sau; theo dõi danh sách chia nhóm", "Xác nhận cách nộp Bài kiểm tra số 1: viết tay hay nộp file; nộp trước 18h00 thứ Hai 23/11"]
 };
 SUBJ.kth.quiz=[
@@ -4606,30 +4622,37 @@ function roadStops(s){ const S=SUBJ[s]; if(!S.chapters.length) return `<div clas
 
 /* ===================== LỘ TRÌNH ===================== */
 function renderRoad(s){
-  const S=SUBJ[s], mine=x=>x.s===s||(x.s==='both'&&BOTH.includes(s));
-  const sch=SCHED.filter(mine), rm=REMIND.filter(mine);
+  const S=SUBJ[s], W=S.work, mine=x=>x.s===s||(x.s==='both'&&BOTH.includes(s));
+  const sch=SCHED.filter(mine), rm=REMIND.filter(r=>mine(r)&&rmOn(r));
   const dl=DEADLINES.filter(mine).concat(NOTI.filter(mine).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),x:x.h||'',go:x.go}))).sort((a,b)=>U(a.d)-U(b.d));
-  const row=x=>{ const D=dd(x.d), past=U(x.d)<TODAY; return `<div class="li" ${past?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}${past?' · đã qua':''}</span></div></div>`; };
+  const past=x=>U(x.d)<TODAY;
+  const fold=(arr,lab,fn)=>arr.length?`<details class="pastf"><summary>${lab} (${arr.length})</summary><div class="list">${arr.map(fn).join('')}</div></details>`:'';
+  const row=x=>{ const D=dd(x.d); return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}</span></div></div>`; };
   const drow=x=>{ const D=dd(x.d), n=Math.round((U(x.d)-TODAY)/dayMs), T=x.go?'a':'div';
-    return `<${T} class="li${x.go?' hl':''}" ${x.go?`href="#${s}-work" data-gex="${x.go}"`:''} ${n<0?'style="opacity:.5"':''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b>${x.x?`<span class="small muted">${x.x}</span>`:''}</div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</${T}>`; };
+    return `<${T} class="li${x.go?' hl':''}" ${x.go?`href="#${s}-work" data-gex="${x.go}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b>${x.x?`<span class="small muted">${x.x}</span>`:''}</div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</${T}>`; };
+  let todo='';
+  if(W&&W.todo&&W.todo.length){ const tk=i=>s==='ktud'?String(i):s+'.'+i, old=W.todoOld||[];
+    const it=i=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${W.todo[i]}</span></label>`;
+    const idx=W.todo.map((t,i)=>i), open=idx.filter(i=>!todoDone[tk(i)]&&!old.includes(i)), done=idx.filter(i=>todoDone[tk(i)]||old.includes(i));
+    todo=`<div class="card stack" id="rd-td"><div class="row between"><h3>Việc cần làm</h3><span class="pill num">${open.length} việc</span></div>${open.length?`<div class="todo">${open.map(it).join('')}</div>`:'<p class="small muted">Không còn việc nào.</p>'}${done.length?`<details class="pastf"><summary>Đã xong / không còn cần (${done.length})</summary><div class="todo">${done.map(it).join('')}</div></details>`:''}</div>`; }
+  const dUp=dl.filter(x=>!past(x)), dPast=dl.filter(past), sUp=sch.filter(x=>!past(x)), sPast=sch.filter(past);
   $('v-road').innerHTML = `
-  ${roadStops(s)}
-  ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3><div class="list">${sch.map(row).join('')}</div></div>`:''}
-  ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3><div class="list">${dl.map(drow).join('')}</div>${dl.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem đề, dàn ý, yêu cầu trong tab Bài tập.</p>':''}</div>`:''}
+  ${todo}
+  ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3>${dUp.length?`<div class="list">${dUp.map(drow).join('')}</div>`:'<p class="small muted">Không còn hạn nộp sắp tới.</p>'}${fold(dPast,'Đã qua',drow)}${dUp.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem chi tiết trong tab Bài tập.</p>':''}</div>`:''}
+  ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3>${fold(sPast,'Đã học',row)}${sUp.length?`<div class="list">${sUp.map(row).join('')}</div>`:'<p class="small muted">Đã hết lịch học.</p>'}</div>`:''}
   ${rm.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
-  <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>`;
+  <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>
+  ${!S.chapters.length&&!sch.length?`<div class="empty"><h3>Chưa có đề cương</h3><p>Thông tin môn sẽ được thêm khi có đề cương.</p></div>`:''}`;
 }
 
 /* ===================== KIẾN THỨC (thu gọn từng chuyên đề) ===================== */
 function curChap(s){ const av=SUBJ[s].chapters.filter(c=>c.status!=='soon'&&c.topics.length); if(!av.length) return null; const id=store.get('emba-chap-'+s,null); return av.find(c=>c.id===id)||av.find(c=>c.status==='now')||av[0]; }
-function renderKnow(s){
-  const ch=curChap(s);
-  if(!ch){ $('v-know').innerHTML=`<div class="empty"><h3>Chưa có chuyên đề</h3><p>Nội dung sẽ được thêm sau buổi học đầu tiên.</p></div>`; return; }
+function chapBody(s,ch){
   const [n,t]=chapProgress(s,ch), sm=ch.sum, nm='tp-'+s, S0=SUBJ[s];
   const cqN=(S0.quiz||[]).filter(q=>q.th&&q.cd==='CĐ'+ch.n).length;
   const it=(cls,badge,title,body,id)=>`<details class="card acc tacc ${cls}" name="${nm}" ${id?`id="${id}"`:''}><summary>${badge}<span class="acc-t">${title}</span>${CHEV}</summary><div class="acc-b">${body}</div></details>`;
-  $('v-know').innerHTML = `
-  <div class="khead"><div class="eyebrow">Chuyên đề ${ch.n} · ${STL[ch.status]||''}${ch.src?' · '+ch.src:''}</div><h2>${ch.title}</h2><div class="row between small muted"><span>Chạm từng chủ đề để mở</span><span class="num" id="kprog">${n}/${t} đã hiểu</span></div><div class="bar"><i id="kbar" style="width:${t?n/t*100:0}%"></i></div></div>
+  return `
+  ${ch.src?`<div class="khead2 small muted">Nguồn: ${ch.src}</div>`:''}
   ${ch.intro?it('','<span class="tn">i</span>','Chuyên đề này nói về gì',`<div>${ch.intro}</div>`,'tp-intro'):''}
   ${ch.topics.map((tp,i)=>{ const k=topicKey(s,ch.id,i), u=tpass[k]; const rel=(S0.work&&S0.work.ex||[]).map((x,r)=>r).filter(r=>S0.work.ex[r].cd==='CĐ'+ch.n&&S0.work.ex[r].tp===i);
     return it(u?'ok':'',`<span class="tn" data-tk="${i}">${u?'✓':i+1}</span>`,tp.t+(tp.soon?' <span class="pill">Sắp học</span>':''),`${tp.b}
@@ -4643,24 +4666,38 @@ function renderKnow(s){
     <div class="lab">Thuật ngữ</div><div class="terms">${sm.terms.map(([v,e])=>`<div class="term">${v}<i>${e}</i></div>`).join('')}</div>
     <div class="sumbtns">${cqN?`<button class="btn" data-cq="1" style="background:var(--gold);color:#3D2A00">${cpass[chKey(s,ch.id)]?'✓ ':''}Ôn tập tổng hợp</button>`:''}<a class="btn ${cqN?'ghost':''}" href="#${s}-quiz" data-qf="${'CĐ'+ch.n}" ${cqN?'':'style="background:var(--gold);color:#3D2A00"'}>Ôn tất cả câu hỏi</a></div></section>`):''}`;
 }
+function chapHead(s,ch){ const [n,t]=chapProgress(s,ch);
+  return `<summary><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">Chuyên đề ${ch.n} · ${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} đã hiểu</span></div><h3>${ch.title}</h3>${ch.sub?`<p class="small muted">${ch.sub}</p>`:''}<div class="bar"><i style="width:${t?n/t*100:0}%"></i></div>${CHEV}</summary>`; }
+function renderKnow(s){
+  const S=SUBJ[s];
+  if(!S.chapters.length){ $('v-know').innerHTML=`<div class="empty"><h3>Chưa có chuyên đề</h3><p>Nội dung sẽ được thêm khi có đề cương, slide hoặc ghi âm buổi học.</p></div>`; return; }
+  const cc=curChap(s), want=pendTp!=null&&cc?cc.id:store.get('emba-kopen-'+s,null);
+  $('v-know').innerHTML=S.chapters.map(ch=>{ if(ch.status==='soon'||!ch.topics.length) return `<div class="card chap soon"><span class="pill">Chuyên đề ${ch.n} · Sắp có</span><h3>${ch.title}</h3>${ch.sub?`<p class="small muted">${ch.sub}</p>`:''}</div>`;
+    const on=want===ch.id; return `<details class="card chap" data-ch="${ch.id}" ${on?'open':''}>${chapHead(s,ch)}<div class="chb">${on?chapBody(s,ch):''}</div></details>`; }).join('');
+}
+// mở một chuyên đề: nạp nội dung, đóng chuyên đề khác (chỉ một chuyên đề mở)
+document.addEventListener('toggle',e=>{ const d=e.target; if(!d.classList||!d.classList.contains('chap')||!cur) return; const S=SUBJ[cur], ch=S.chapters.find(c=>c.id===d.dataset.ch); if(!ch) return;
+  if(d.open){ store.set('emba-chap-'+cur,ch.id); store.set('emba-kopen-'+cur,ch.id);
+    document.querySelectorAll('#v-know details.chap[open]').forEach(o=>{ if(o!==d){ o.open=false; o.querySelector('.chb').innerHTML=''; } });
+    const b=d.querySelector('.chb'); if(!b.innerHTML) b.innerHTML=chapBody(cur,ch);
+    requestAnimationFrame(()=>d.scrollIntoView({block:'start'})); }
+  else { d.querySelector('.chb').innerHTML=''; if(store.get('emba-kopen-'+cur,null)===ch.id) store.set('emba-kopen-'+cur,null); }
+},true);
 
 /* ===================== WORK ===================== */
 function accItem(s,title,pill,body,id){ return `<details class="card acc" name="acc-${s}" ${id?`id="${id}"`:''}><summary><span class="acc-t">${title}</span>${pill||''}${CHEV}</summary><div class="acc-b stack">${body}</div></details>`; }
 function renderWork(s){
   const S=SUBJ[s], W=S.work;
   if(!W){ $('v-work').innerHTML=`<div class="empty"><h3>Chưa có đề</h3><p>Đề bài tập, thảo luận sẽ được thêm khi có.</p></div>`; return; }
-  const tk=i=>s==='ktud'?String(i):s+'.'+i;
-  const tdone=(W.todo||[]).filter((t,i)=>todoDone[tk(i)]).length;
-  const todo=W.todo&&W.todo.length?accItem(s,'Việc cần làm',`<span class="pill num" data-tdc="${s}">${tdone}/${W.todo.length}</span>`,`<div class="todo">${W.todo.map((t,i)=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${t}</span></label>`).join('')}</div>`):'';
   const chT=x=>{ const c=S.chapters.find(c=>'CĐ'+c.n===x.cd); return x.tp!=null&&c&&c.topics[x.tp]?c.topics[x.tp].t:''; };
-  const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`${x.due?`<p class="duel"><b>Hạn nộp:</b> ${x.due.replace(/^Nộp /,'')}</p>`:''}<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,id);
+  const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`<p>${x.q}</p><details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack"><ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol><div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`,id);
   const kt=(W.tests||[]).map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join('');
   const grs=W.groups||(W.head?[{t:W.head.t,due:W.head.pill||'',done:1,b:W.head.b}]:[]);
   const gr=grs.map((g,i)=>accItem(s,g.t,g.due?`<span class="pill ${g.done?'':'ko'}">${g.due}</span>`:'',g.b,`gr-${i}`)).join('');
   const ex=W.ex.map((x,i)=>exItem(x,`${i+1}. `,`<span class="pill c">${x.cd}</span>`,`ex-${i}`)).join('');
   const disc=W.discuss&&W.discuss.length?accItem(s,'Câu hỏi thảo luận',`<span class="pill num">${W.discuss.length}</span>`,`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`,'dq'):'';
   const sec=(h,body,extra='')=>body?`<h2 class="sech">${h}</h2>${extra}${body}`:'';
-  $('v-work').innerHTML=sec('Bài kiểm tra',kt)+sec('Bài tập nhóm',gr)+sec('Bài tập vận dụng',ex,W.note?`<p class="small muted">${W.note}</p>`:'')+sec('Câu hỏi thảo luận',disc)+sec('Việc cần làm',todo);
+  $('v-work').innerHTML=sec('Bài kiểm tra',kt)+sec('Bài tập nhóm',gr)+sec('Bài tập vận dụng',ex,W.note?`<p class="small muted">${W.note}</p>`:'')+(disc?`<div style="margin-top:18px">${disc}</div>`:'');
 }
 
 /* ===================== QUIZ ===================== */
@@ -4766,7 +4803,7 @@ function outlineHTML(s){
 }
 
 function homeNotes(){
-  const imp=REMIND.filter(r=>r.imp); if(!imp.length) return '';
+  const imp=REMIND.filter(r=>r.imp&&rmOn(r)).slice(0,5); if(!imp.length) return '';
   const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road" data-rd="rm"`:'';
   return `<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
@@ -4929,7 +4966,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-sfclr]')){ sS=sT='all'; sessionStorage.removeItem('emba-sflt'); renderSearchResults(); return; }
   const sf=e.target.closest('[data-sfs],[data-sft]'); if(sf){ if(sf.dataset.sfs) sS=sS===sf.dataset.sfs?'all':sf.dataset.sfs; else sT=sT===sf.dataset.sft?'all':sf.dataset.sft; sessionStorage.setItem('emba-sflt',JSON.stringify([sS,sT])); renderSearchResults(); return; }
   const sg=e.target.closest('[data-sgo]'); if(sg){ e.preventDefault(); const R=$('sres')._R; const {o}=R[+sg.dataset.sgo]; const g=o.go;
-    if(g.k==='tp'){ store.set('emba-chap-'+o.s,g.ch); pendTp=g.i; location.hash=`#${o.s}-know`; }
+    if(g.k==='tp'){ store.set('emba-chap-'+o.s,g.ch); store.set('emba-kopen-'+o.s,g.ch); pendTp=g.i; location.hash=`#${o.s}-know`; }
     else if(g.k==='ex'){ pendEx=g.i; location.hash=`#${o.s}-work`; }
     else { pendQ=g.i; location.hash=`#${o.s}-quiz`; } return; }
   const cp=e.target.closest('[data-copy]'); if(cp){ const t=cp.dataset.copy; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{ cp.textContent='Đã chép'; },()=>{ cp.textContent='Hãy chép tay'; }); return; }
@@ -5005,7 +5042,7 @@ document.addEventListener('click',e=>{
     else qCur=(qCur+d+ids.length)%ids.length;
     renderQuiz(cur); top(); return; }
 });
-document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); const box=t.closest('.acc'); const c=box&&box.querySelector('[data-tdc]'); if(c){ const all=box.querySelectorAll('[data-td]'); c.textContent=[...all].filter(x=>x.checked).length+'/'+all.length; } } });
+document.addEventListener('change',e=>{ const t=e.target.closest('[data-td]'); if(t){ todoDone[t.dataset.td]=t.checked; store.set('emba-todo',todoDone); if(t.closest('#v-road')&&cur){ const y=scrollY; renderRoad(cur); scrollTo(0,y); return; } const box=t.closest('.acc'); const c=box&&box.querySelector('[data-tdc]'); if(c){ const all=box.querySelectorAll('[data-td]'); c.textContent=[...all].filter(x=>x.checked).length+'/'+all.length; } } });
 document.addEventListener('toggle',e=>{ const d=e.target; if(!d.classList||!d.classList.contains('acc')||!d.open) return; const nm=d.getAttribute('name'); document.querySelectorAll('details.acc[open]').forEach(x=>{ if(x!==d&&x.getAttribute('name')===nm) x.open=false; }); requestAnimationFrame(()=>{ const r=d.getBoundingClientRect(); if(r.top<56||r.top>innerHeight*.45) d.scrollIntoView({block:'start'}); }); },true);
 let grades=store.get('emba-grades',{}); let gDraft={}, gOpen=null;
 const GST={dang:'Đang học',sap:'Sắp học',cho:'Đã học – chờ điểm',qua:'Đã qua',thilai:'Thi lại',hoclai:'Học lại'};
@@ -5117,7 +5154,7 @@ function route(){
   else if(p==='know'){ renderKnow(s); show('know'); scrollTo(0,0); openPending('tp-'); }
   else if(p==='work'){ renderWork(s); show('work'); tab='work'; openPending('ex-'); }
   else if(p==='quiz'){ vdStop(); if(pendQ!=null){ setQFilter('all'); qCur=qIds(SUBJ[s].quiz).indexOf(pendQ); if(qCur<0) qCur=0; qView='q'; pendQ=null; } else { qView=null; qMenu=false; } renderQuiz(s); show('quiz'); tab='quiz'; }
-  else { if(SUBJ[s].chapters.some(c=>c.id===p)) store.set('emba-chap-'+s,p); location.replace(`#${s}-know`); return; }
+  else { if(SUBJ[s].chapters.some(c=>c.id===p)){ store.set('emba-chap-'+s,p); store.set('emba-kopen-'+s,p); } location.replace(`#${s}-know`); return; }
   document.querySelector(`.bottom a[data-tab="${tab}"]`).classList.add('on');
 }
 /* ---------- Thanh bên (máy tính) ---------- */
@@ -5130,12 +5167,12 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   const tab=!m?null:(pg==='work'?'work':pg==='quiz'?'quiz':pg==='road'?'road':'know');
   const subj=Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], st=gStatus(k), [n,t]=subjProgress(k), on=cs===k;
     return `<div class="sj ${on?'on':''}" style="--oc:var(${S.c});--ocs:var(${S.cs})"><a href="#${k}-road"><span class="ic">${S.short}</span><span class="nm"><b>${S.name}</b><small><span class="spill ${st}" style="font-size:10.5px;padding:1px 7px">${GST[st]}</span>${t?`${n}/${t}`:''}</small>${t?`<span class="bar"><i style="width:${n/t*100}%"></i></span>`:''}</span></a>
-    ${on?`<div class="tabs">${[['road','Lộ trình'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a href="#${k}-${id}" class="${tab===id?'on':''}">${ic(id)}${l}</a>`).join('')}</div>`:''}</div>`; }).join('');
+    ${on?`<div class="tabs">${[['road','Thông tin'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a href="#${k}-${id}" class="${tab===id?'on':''}">${ic(id)}${l}</a>`).join('')}</div>`:''}</div>`; }).join('');
   document.body.classList.toggle('side-mini',sideMini);
   const tgl=`<button type="button" class="stgl" id="sideTgl" aria-label="${sideMini?'Mở menu':'Thu gọn menu'}" title="${sideMini?'Mở menu':'Thu gọn menu'}" aria-expanded="${!sideMini}">${ic(sideMini?'menu':'close')}</button>`;
   if(sideMini){
     el.innerHTML=`${tgl}<a class="ri ${h===''||h==='home'?'on':''}" href="#home" title="Trang chủ" aria-label="Trang chủ">${ic('home')}</a><a class="ri ${h==='search'?'on':''}" href="#search" title="Tìm kiếm" aria-label="Tìm kiếm">${ic('search')}</a><a class="ri ${h==='grades'?'on':''}" href="#grades" title="Điểm & trạng thái" aria-label="Điểm & trạng thái">${ic('grade')}</a><a class="ri ${h==='settings'?'on':''}" href="#settings" title="Cài đặt" aria-label="Cài đặt">${ic('gear')}</a><span class="rsep"></span>
-    ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-road" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['road','Lộ trình'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
+    ${Object.keys(SUBJ).map(k=>{ const S=SUBJ[k], on=cs===k; return `<a class="rs ${on?'on':''}" href="#${k}-road" title="${S.name}" aria-label="${S.name}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${S.short}</a>${on?[['road','Thông tin'],['know','Kiến thức'],['work','Bài tập'],['quiz','Ôn tập']].map(([id,l])=>`<a class="ri sub ${tab===id?'on':''}" href="#${k}-${id}" title="${l}" aria-label="${l}" style="--oc:var(${S.c});--ocs:var(${S.cs})">${ic(id)}</a>`).join(''):''}`; }).join('')}
     <span class="rcount" title="Số ngày đến kỳ thi"><b>${leftDays}</b>ngày</span>`;
     return; }
   el.innerHTML=`<div class="shd"><a class="brand" href="#home"><img src="icons/icon-192.png?v=2" alt="" onerror="this.style.display='none'"><span><b>Sổ tay EMBA</b><small>Khóa 6XD · ĐHTM</small></span></a>${tgl}</div>
@@ -5145,7 +5182,7 @@ function renderSide(){ const el=$('side'); if(!el||!matchMedia('(min-width:1024p
   <a class="si ${h==='grades'?'on':''}" href="#grades">${ic('grade')}Điểm & trạng thái</a>
   <a class="si ${h==='settings'?'on':''}" href="#settings">${ic('gear')}Cài đặt</a>
   <div class="sl">Môn học</div>${subj}
-  <div class="foot"><span>Phím tắt: <b>/</b> tìm kiếm · <b>M</b> ẩn/hiện menu · <b>1</b> Lộ trình · <b>2</b> Kiến thức · <b>3</b> Bài tập · <b>4</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
+  <div class="foot"><span>Phím tắt: <b>/</b> tìm kiếm · <b>M</b> ẩn/hiện menu · <b>1</b> Thông tin · <b>2</b> Kiến thức · <b>3</b> Bài tập · <b>4</b> Ôn tập · <b>H</b> Trang chủ<br>Ôn tập: <b>A–D</b> chọn đáp án · <b>← →</b> chuyển câu</span></div>`; }
 $('side').addEventListener('click',e=>{ if(e.target.closest('#sideTgl')){ sideMini=!sideMini; store.set('emba-side-mini',sideMini); renderSide(); const t=$('sideTgl'); if(t) t.focus({preventScroll:true}); } });
 matchMedia('(min-width:1024px)').addEventListener('change',()=>{ renderSide(); });
 document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)||$('subjSheet').classList.contains('on')) return;
