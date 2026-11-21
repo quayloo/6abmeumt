@@ -596,11 +596,11 @@ const SCHED=[
  {d:'2026-12-12',s:'kth',t:'Tối',x:'Thi học phần Kinh tế học'},
  {d:'2026-12-26',s:'qth',t:'Tối',x:'Thi học phần Quản trị học'}
 ];
+// DEADLINES chỉ gồm hạn thật (nộp bài, thi). Mốc chuẩn bị (bản thảo, tự viết bài, tự học) để ở NOTI → hiện trong khối Nhắc nhở.
 const DEADLINES=[
  {d:'2026-11-23',s:'kth',t:'Nộp Bài kiểm tra số 1',x:'Trước 18h00',go:'kt-0'},
  {d:'2026-11-28',s:'qtcl',t:'Nộp bài thảo luận nhóm',x:'Tại buổi thảo luận (S202)',go:'gr-0'},
  {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Tại buổi học (S202)',go:'kt-0'},
- {d:'2026-11-29',s:'ktud',t:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm',go:'gr-0'},
  {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email',go:'gr-0'},
  {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'},
  {d:'2026-12-12',s:'kth',t:'Thi Kinh tế học (tối)',x:'Thi học phần 1 lớp bổ sung kiến thức'},
@@ -637,7 +637,8 @@ const rmOn=r=>!r.until||U(r.until)>=TODAY;
 const NOTI=[
  {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
  {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'},
- {d:'2026-11-22',h:'09:00',lv:3,s:'qtcl',title:'Viết bài kiểm tra QTCL',x:'Viết tay 2 câu, 9:00–11:00',go:'kt-0'}
+ {d:'2026-11-22',h:'09:00',lv:3,s:'qtcl',title:'Viết bài kiểm tra QTCL',x:'Viết tay 2 câu, 9:00–11:00',go:'kt-0'},
+ {d:'2026-11-29',h:'',lv:2,s:'ktud',title:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm (để kịp chỉnh trước hạn nộp 5/12)',go:'gr-0'}
 ];
 const SUBJ={
  ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
@@ -4817,7 +4818,6 @@ document.addEventListener('click',async e=>{
 function renderHome(){
   const up=SCHED.filter(x=>U(x.d)>=TODAY && x.d!==EXAM && !/^Thi /.test(x.x)), next=up[0], after=up[1];
   const soon=DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both') && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs)
-    .concat(NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),h:x.h,noti:1})))
     .sort((a,b)=>U(a.d)-U(b.d));
   const imp=REMIND.filter(r=>r.imp);
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
@@ -4849,7 +4849,7 @@ function roadStops(s){ const S=SUBJ[s]; if(!S.chapters.length) return `<div clas
 function renderRoad(s){
   const S=SUBJ[s], W=S.work, mine=x=>x.s===s||(x.s==='both'&&BOTH.includes(s));
   const sch=SCHED.filter(mine), rm=REMIND.filter(r=>mine(r)&&rmOn(r));
-  const dl=DEADLINES.filter(mine).concat(NOTI.filter(mine).map(x=>({d:x.d,s:x.s,t:x.title||sName(x.s),x:x.h||'',go:x.go}))).sort((a,b)=>U(a.d)-U(b.d));
+  const dl=DEADLINES.filter(mine), nt=NOTI.filter(x=>mine(x)&&U(x.d)>=TODAY).sort((a,b)=>U(a.d)-U(b.d));
   const past=x=>U(x.d)<TODAY;
   const fold=(arr,lab,fn)=>arr.length?`<details class="pastf"><summary>${lab} (${arr.length})</summary><div class="list">${arr.map(fn).join('')}</div></details>`:'';
   const row=x=>{ const D=dd(x.d); return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}</span></div></div>`; };
@@ -4865,7 +4865,7 @@ function renderRoad(s){
   ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3>${dUp.length?`<div class="list">${dUp.map(drow).join('')}</div>`:'<p class="small muted">Không còn hạn nộp sắp tới.</p>'}${fold(dPast,'Đã qua',drow)}${dUp.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem chi tiết trong tab Bài tập.</p>':''}</div>`:''}
   ${todo}
   ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3>${fold(sPast,'Đã học',row)}${sUp.length?`<div class="list">${sUp.map(row).join('')}</div>`:'<p class="small muted">Đã hết lịch học.</p>'}</div>`:''}
-  ${rm.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
+  ${rm.length||nt.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${nt.map(x=>({d:x.d,t:x.title||sName(x.s),x:[x.h,x.x].filter(Boolean).join(' · '),go:x.go})).map(drow).join('')}${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>
   ${!S.chapters.length&&!sch.length?`<div class="empty"><h3>Chưa có đề cương</h3><p>Thông tin môn sẽ được thêm khi có đề cương.</p></div>`:''}`;
 }
@@ -5029,9 +5029,13 @@ function outlineHTML(s){
 }
 
 function homeNotes(){
-  const imp=REMIND.filter(r=>r.imp&&rmOn(r)).slice(0,5); if(!imp.length) return '';
+  const imp=REMIND.filter(r=>r.imp&&rmOn(r)).slice(0,5);
+  const nt=NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).sort((a,b)=>U(a.d)-U(b.d));
+  if(!imp.length&&!nt.length) return '';
   const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road" data-rd="rm"`:'';
-  return `<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
+  const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
+  const nrow=x=>{ const D=dd(x.d); return `<${tag(x.s)} class="li hl" ${lk(x.s)}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.title||sName(x.s)}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short:'Cả hai môn'}${x.h?' · '+x.h:''}</span></div><span class="pill g num">${dleft(x.d)}</span></${tag(x.s)}>`; };
+  return `<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${nt.map(nrow).join('')}${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
