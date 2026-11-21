@@ -5092,6 +5092,8 @@ function outlineHTML(s){
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
 const SYNC_FILE='so-tay-emba.json', SYNC_DESC='Sổ tay EMBA 6XD – tiến độ học (tự động)';
+// Giữ màn hình sáng: emba-wake = số phút không chạm thì thôi giữ (0 = theo mặc định của máy); giá trị cũ true → 20, false → 0
+const wakeMin=()=>{ const v=store.get('emba-wake',0); return v===true?20:v===false?0:(+v||0); };
 const SYNC_SKIP=['emba-subj','emba-lastbackup','emba-install-hide','emba-installed','emba-side-mini','emba-fs','emba-wake','emba-theme'];
 const syncable=k=>/^emba-/.test(k)&&!SYNC_SKIP.includes(k);
 const TOKEN_URL=()=>{ const ua=navigator.userAgent, dev=/iPhone/.test(ua)?'iPhone':/iPad/.test(ua)?'iPad':/Android/.test(ua)?'Android':/Mac/.test(ua)?'Mac':/Windows/.test(ua)?'Windows':'máy khác';
@@ -5171,14 +5173,14 @@ function backupHTML(){ const lb=store.get('emba-lastbackup',null);
 
 /* ---------- Cài đặt (#settings) ---------- */
 function renderSettings(){
-  const th=store.get('emba-theme','auto'), wake=store.get('emba-wake',true);
+  const th=store.get('emba-theme','auto'), wake=wakeMin();
   const seg=(key,val,opts)=>`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0;padding:0">${opts.map(([v,l])=>`<button class="chip ${val===v?'on':''}" data-set="${key}" data-val='${JSON.stringify(v)}'>${l}</button>`).join('')}</div>`;
   $('v-settings').innerHTML=`
   ${syncHTML()}
   ${backupHTML()}
   <div class="card stack"><h3>Ôn tập</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Thời gian luyện vấn đáp</span>${seg('emba-vd-min',vdMin,[[3,'3 phút'],[4,'4 phút'],[5,'5 phút']])}</div></div>
   <div class="card stack"><h3>Giao diện</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Màu nền</span>${seg('emba-theme',th,[['auto','Theo máy'],['light','Sáng'],['dark','Tối']])}</div>
-    ${window.WAKE_OK?`<div class="row between" style="flex-wrap:wrap;gap:8px"><span>Giữ màn hình sáng khi học<br><span class="small muted">Tự tắt sau 20 phút không chạm</span></span>${seg('emba-wake',wake,[[true,'Bật'],[false,'Tắt']])}</div>`:''}
+    ${window.WAKE_OK?`<div class="stack" style="gap:8px"><span>Giữ màn hình sáng khi học<br><span class="small muted">${wake?`Màn hình luôn sáng; tự trở lại mặc định của máy sau ${wake} phút không chạm`:'Màn hình tắt theo cài đặt của điện thoại'}</span></span>${seg('emba-wake',wake,[[0,'Theo máy'],[5,'5 phút'],[10,'10 phút'],[20,'20 phút'],[30,'30 phút']])}</div>`:''}
 </div>
   <div class="card stack"><h3>Ứng dụng</h3>
     <div class="row between" style="gap:8px"><span>Cài Sổ tay lên màn hình chính</span><button class="btn ghost" data-showinstall="1" style="min-height:40px">Hướng dẫn</button></div>
@@ -5189,7 +5191,7 @@ document.addEventListener('click',e=>{
   const st=e.target.closest('[data-set]'); if(st){ const k=st.dataset.set, v=JSON.parse(st.dataset.val); store.set(k,v);
     if(k==='emba-vd-min') vdMin=v;
     if(k==='emba-theme'){ if(v==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=v; syncBarColor(); }
-    if(k==='emba-wake'&&!v&&window.wakeOff) window.wakeOff();
+    if(k==='emba-wake'&&window.wakeOff){ window.wakeOff(); if(v&&window.wakePoke) window.wakePoke(); }
     renderSettings(); return; }
   if(e.target.closest('[data-reload]')){ location.reload(); return; }
   if(e.target.closest('[data-showinstall]')){ store.set('emba-install-hide',false); location.hash='#home'; return; }
@@ -5458,10 +5460,10 @@ document.addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/INP
 let lastHash=null;
 window.addEventListener('hashchange',()=>{ route(); renderSide(); if(location.hash!==lastHash) window.scrollTo(0,0); lastHash=location.hash; if(pendRd){ const el=$('rd-'+pendRd); pendRd=null; if(el) requestAnimationFrame(()=>el.scrollIntoView({block:'start'})); } });
 /* ---------- Giữ màn hình sáng (Screen Wake Lock) ---------- */
-(function(){ if(!('wakeLock' in navigator)) return; let wl=null, idle=null; const IDLE=20*60*1000; window.WAKE_OK=true;
-  async function on(){ try{ if(!store.get('emba-wake',true)) return; if(!wl&&document.visibilityState==='visible'){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null;}); } }catch(e){} }
+(function(){ if(!('wakeLock' in navigator)) return; let wl=null, idle=null; window.WAKE_OK=true;
+  async function on(){ try{ if(!wakeMin()) return; if(!wl&&document.visibilityState==='visible'){ wl=await navigator.wakeLock.request('screen'); wl.addEventListener('release',()=>{wl=null;}); } }catch(e){} }
   function off(){ try{ if(wl){ wl.release(); wl=null; } }catch(e){} } window.wakeOff=off;
-  function poke(){ on(); clearTimeout(idle); idle=setTimeout(off,IDLE); }
+  function poke(){ clearTimeout(idle); if(!wakeMin()){ off(); return; } on(); idle=setTimeout(off,wakeMin()*60*1000); } window.wakePoke=poke;
   ['pointerdown','touchstart','keydown','scroll'].forEach(ev=>document.addEventListener(ev,poke,{passive:true}));
   document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') poke(); });
   poke(); })();
