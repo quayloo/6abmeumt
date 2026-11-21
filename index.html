@@ -602,13 +602,14 @@ const DEADLINES=[
  {d:'2026-11-28',s:'qtcl',t:'Nộp bài thảo luận nhóm',x:'Tại buổi thảo luận (S202)',go:'gr-0'},
  {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Tại buổi học (S202)',go:'kt-0'},
  {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email',go:'gr-0'},
+ {d:'2026-12-05',s:'ktud',t:'Kiểm tra trắc nghiệm',x:'Giờ, phạm vi: chờ thông báo · thuộc điểm thực hành'},
  {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'},
  {d:'2026-12-12',s:'kth',t:'Thi Kinh tế học (tối)',x:'Thi học phần 1 lớp bổ sung kiến thức'},
  {d:'2026-12-26',s:'qth',t:'Thi Quản trị học (tối)',x:'Thi học phần 2 lớp bổ sung kiến thức'}
 ];
 const REMIND=[
  {s:'ktud',t:'Mỗi buổi có hỏi – đáp, không ai xung phong thì gọi tên; phát biểu tính vào chuyên cần 10%.'},
- {s:'ktud',imp:1,until:'2026-11-25',t:'Kiểm tra giữa kỳ (trắc nghiệm + tự luận) sau Chuyên đề 3 — hỏi lại ngày (21/11 hay 25/11).'},
+ {s:'ktud',imp:1,until:'2026-12-05',t:'Bài kiểm tra 5/12 là trắc nghiệm (thuộc điểm thực hành 30%) — ôn bằng tab Ôn tập, ưu tiên câu sai và câu tổng hợp từng chương.'},
  {s:'ktud',until:'2026-11-21',t:'Thứ Bảy 21/11: sáng 8h–11h nói chuyện chuyên gia (đến đúng giờ), chiều học lý thuyết.'},
  {s:'ktud',until:'2026-11-21',t:'Tự đọc CĐ3: hiệu ứng thay thế – thu nhập; tình huống gói đào tạo trực tuyến.'},
  {s:'ktud',until:'2026-11-21',t:'Chuẩn bị phát biểu 21/11: phân mảnh ngân sách có ý nghĩa gì với nhà quản trị?'},
@@ -642,7 +643,7 @@ const NOTI=[
 ];
 const SUBJ={
  ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
-  info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
+  info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (bài kiểm tra trắc nghiệm 5/12 + thảo luận nhóm) · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
   chapters:[], work:null, quiz:[]},
  qtcl:{name:'Quản trị chiến lược',short:'QTCL',c:'--qtcl',cs:'--qtcl-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
   info:[['Giảng viên','PGS.TS Lưu Thị Thùy Dương · Bộ môn Quản trị chiến lược'],['Mã học phần','CLDH0618 · 3 tín chỉ'],['Cấu trúc','Chương 1: 10 tiết · Chương 2: 12 tiết · Chương 3: 3 tiết · Thảo luận 15 tiết · Báo cáo thực tế 5 tiết (tổng 45)'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (kiểm tra + thảo luận) · Thi 60%'],['Hình thức thi','Vấn đáp · 12/12/2026 (dự kiến)'],['Chuyên cần','Vắng 0–10%: tối đa 10đ · 10–20%: 8đ · 20–30%: 6đ · 30–40%: 4đ · trên 40%: 0đ, không đủ điều kiện dự thi'],['Mục tiêu','Luận cứ khoa học (lý luận, thực tiễn, định hướng, giải pháp) quản trị và phát triển CLKD cho DN Việt Nam; nguyên lý hiện đại về QTCL và phương pháp, kỹ năng vận dụng'],['Tài liệu','[1] Slide bài giảng QTCL (sau đại học), ĐHTM · [2] Nguyễn Hoàng Việt (2023), Giáo trình QTCL (CTĐT sau đại học), NXB Thống kê · [3] Nguyễn Hoàng Long & Nguyễn Hoàng Việt (2015), Giáo trình QTCL · [4] Kim & Mauborgne, Chiến lược Đại dương xanh · [5] Brandenburger & Nalebuff, Lý thuyết trò chơi trong kinh doanh · [6] M. Porter (2008), Chiến lược cạnh tranh']],
