@@ -596,58 +596,31 @@ const SCHED=[
  {d:'2026-12-12',s:'kth',t:'Tối',x:'Thi học phần Kinh tế học'},
  {d:'2026-12-26',s:'qth',t:'Tối',x:'Thi học phần Quản trị học'}
 ];
-// DEADLINES chỉ gồm hạn thật (nộp bài, thi). Mốc chuẩn bị (bản thảo, tự viết bài, tự học) để ở NOTI → hiện trong khối Nhắc nhở.
+// DEADLINES chỉ gồm hạn thật (nộp bài, thi). Mốc chuẩn bị và việc cần làm của từng bài để trong work.track (go = id mục theo dõi).
 const DEADLINES=[
- {d:'2026-11-23',s:'kth',t:'Nộp Bài kiểm tra số 1',x:'Trước 18h00',go:'kt-0'},
+ {d:'2026-11-23',s:'kth',t:'Nộp Bài kiểm tra số 1',x:'Trước 18h00',go:'kt-trk'},
  {d:'2026-11-29',s:'kth',t:'Nộp bài thảo luận nhóm 2',x:'GDP và GNP của Việt Nam · được đánh máy · cách nộp: chờ xác nhận',go:'gr-0'},
  {d:'2026-11-28',s:'qtcl',t:'Nộp bài thảo luận nhóm',x:'Tại buổi thảo luận (S202)',go:'gr-0'},
- {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Tại buổi học (S202)',go:'kt-0'},
+ {d:'2026-11-28',s:'qtcl',t:'Nộp bài kiểm tra viết tay',x:'Tại buổi học (S202)',go:'kt-trk'},
  {d:'2026-12-05',s:'ktud',t:'Nộp bài nhóm 3 (sáng)',x:'Bản mềm qua email',go:'gr-0'},
- {d:'2026-12-05',s:'ktud',t:'Kiểm tra trắc nghiệm',x:'Giờ, phạm vi: chờ thông báo · thuộc điểm thực hành'},
+ {d:'2026-12-05',s:'ktud',t:'Kiểm tra trắc nghiệm',x:'Giờ, phạm vi: chờ thông báo · thuộc điểm thực hành',go:'kt-trk'},
  {d:'2026-12-12',s:'both',t:'Thi hai môn',x:'Lịch dự kiến, theo dõi thông báo chính thức'},
  {d:'2026-12-12',s:'kth',t:'Thi Kinh tế học (tối)',x:'Thi học phần 1 lớp bổ sung kiến thức'},
  {d:'2026-12-26',s:'qth',t:'Thi Quản trị học (tối)',x:'Thi học phần 2 lớp bổ sung kiến thức'}
 ];
-const REMIND=[
- {s:'ktud',t:'Mỗi buổi có hỏi – đáp, không ai xung phong thì gọi tên; phát biểu tính vào chuyên cần 10%.'},
- {s:'ktud',imp:1,until:'2026-12-05',t:'Bài kiểm tra 5/12 là trắc nghiệm (thuộc điểm thực hành 30%) — ôn bằng tab Ôn tập, ưu tiên câu sai và câu tổng hợp từng chương.'},
- {s:'ktud',until:'2026-11-21',t:'Thứ Bảy 21/11: sáng 8h–11h nói chuyện chuyên gia (đến đúng giờ), chiều học lý thuyết.'},
- {s:'ktud',until:'2026-11-21',t:'Tự đọc CĐ3: hiệu ứng thay thế – thu nhập; tình huống gói đào tạo trực tuyến.'},
- {s:'ktud',until:'2026-11-21',t:'Chuẩn bị phát biểu 21/11: phân mảnh ngân sách có ý nghĩa gì với nhà quản trị?'},
- {s:'ktud',t:'Chờ slide chương 4 (gửi trên nhóm lớp).'},
+// Lưu ý cách làm bài thi — chỉ hiện trong Đề cương ôn thi (Lưu ý quan trọng). Không còn khối Nhắc nhở (Sơn chốt 21/11/2026):
+// việc gắn với bài kiểm tra / bài nhóm nằm trong work.track của môn; lịch nằm ở SCHED; thông tin môn nằm ở info.
+const EXAMTIP=[
  {s:'ktud',t:'Làm tự luận: nêu rõ giả định và điều kiện áp dụng.'},
- {s:'qtcl',imp:1,t:'Thi VẤN ĐÁP (60%): khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
- {s:'qtcl',t:'Vắng trên 40% số tiết: 0 điểm chuyên cần, không đủ điều kiện dự thi.'},
- {s:'qtcl',until:'2026-11-28',t:'Chương 3 tự đọc; chiều 28/11 chuyên gia báo cáo thực tế (đi đầy đủ).'},
- {s:'qtcl',until:'2026-11-22',t:'Trước 22/11: gửi chị Như câu hỏi cho chuyên gia.'},
- {s:'qtcl',t:'Chờ file tình huống mẫu BCG, TOWS động; đọc trước slide quy trình BCG.'},
- {s:'both',t:'Lịch thi trên thời khóa biểu là lịch dự kiến.'},
- {s:'kth',imp:1,t:'Thi tối 12/12, trùng ngày thi KTƯD, QTCL — hỏi giờ thi cụ thể.'},
- {s:'kth',until:'2026-11-28',t:'Tự nghiên cứu (không lên lớp): 21/11, 25/11, 28/11.'},
- {s:'kth',imp:1,until:'2026-11-22',t:'Tối Chủ nhật 22/11 nghỉ; buổi sau: thứ Hai 23/11.'},
- {s:'kth',imp:1,t:'Thi online, mở tài liệu, ~24 giờ (chờ xác nhận): mỗi câu viết 5–10 dòng, không chép AI.'},
- {s:'kth',imp:1,until:'2026-11-29',t:'Thảo luận: nhóm mình là Nhóm 2 (GDP và GNP của Việt Nam), nộp 29/11, được đánh máy. Nhóm 3–5 về tài khóa, tiền tệ, ngân sách — đọc trước Chương 6–7 để theo dõi.'},
- {s:'kth',t:'Trọng tâm Chương 5–7; Chương 1–4 tự nghiên cứu.'},
- {s:'kth',t:'Mua 2 giáo trình bản cứng: Kinh tế vi mô 1, Kinh tế vĩ mô 1.'},
- {s:'kth',t:'Vào lớp đúng 18h00 (buổi 1–1,5 tiếng).'},
- {s:'qth',t:'Tự nghiên cứu (5 tiết mỗi buổi, không lên lớp): 5/12, 8/12, 9/12.'},
- {s:'qth',t:'Chưa có đề cương, giảng viên, phòng, giờ, hình thức thi — hỏi lớp trưởng.'}
-];
-// Nhắc nhở có ngày giờ (ngoài lịch học, hạn nộp) — hiện ở khối "Nhắc nhở" Trang chủ: {d:'YYYY-MM-DD', h:'HH:MM', lv:1|2|3, s:môn, title?, x:nội dung}
-// lv 1 = Khẩn, 2 = Quan trọng, 3 = Thông tin. Nhắc trên điện thoại do Claude tạo thẳng trong Lịch của máy (ứng dụng Claude) — giữ khớp với các mốc dưới đây.
-const rmOn=r=>!r.until||U(r.until)>=TODAY;
-const NOTI=[
- {d:'2026-11-16',h:'20:00',lv:3,s:'ktud',title:'Tự học KTƯD',x:'Đọc slide CĐ3 trang 29–38: hiệu ứng thay thế, hiệu ứng thu nhập, Giffen (đã có trong Sổ tay, chủ đề 8).'},
- {d:'2026-11-19',h:'20:00',lv:3,s:'ktud',title:'Chuẩn bị phát biểu KTƯD',x:'Ý kiến: phân mảnh ngân sách có ý nghĩa gì với quyết định của nhà quản trị? Xem tình huống spa trong tab Bài tập.'},
- {d:'2026-11-22',h:'09:00',lv:3,s:'qtcl',title:'Viết bài kiểm tra QTCL',x:'Viết tay 2 câu, 9:00–11:00',go:'kt-0'},
- {d:'2026-11-29',h:'',lv:2,s:'ktud',title:'Bản thảo bài nhóm 3',x:'Hạn nội bộ của nhóm (để kịp chỉnh trước hạn nộp 5/12)',go:'gr-0'}
+ {s:'qtcl',t:'Thi VẤN ĐÁP (60%): trả lời theo trình tự khái niệm → mô hình, công cụ → ví dụ doanh nghiệp.'},
+ {s:'kth',t:'Thi online, mở tài liệu, khoảng 24 giờ (chờ xác nhận): mỗi câu viết cô đọng 5–10 dòng, không chép nguyên văn AI.'}
 ];
 const SUBJ={
  ktud:{name:'Kinh tế ứng dụng',short:'KTƯD',c:'--ktud',cs:'--ktud-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
-  info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (bài kiểm tra trắc nghiệm 5/12 + thảo luận nhóm) · Thi 60%'],['Hình thức thi','Trắc nghiệm kết hợp tự luận · 12/12/2026']],
+  info:[['Giảng viên','TS Nguyễn Thị Thu Hiền'],['Mã học phần','KTUD0218 · 3 tín chỉ'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (bài kiểm tra trắc nghiệm 5/12 + thảo luận nhóm) · Thi 60% · Mỗi buổi có hỏi – đáp (không ai xung phong thì gọi tên), phát biểu tính vào chuyên cần'],['Hình thức thi','Trắc nghiệm kết hợp tự luận (tự luận: nêu rõ giả định và điều kiện áp dụng) · 12/12/2026']],
   chapters:[], work:null, quiz:[]},
  qtcl:{name:'Quản trị chiến lược',short:'QTCL',c:'--qtcl',cs:'--qtcl-soft',cr:3,w:{cc:.1,th:.3,thi:.6},
-  info:[['Giảng viên','PGS.TS Lưu Thị Thùy Dương · Bộ môn Quản trị chiến lược'],['Mã học phần','CLDH0618 · 3 tín chỉ'],['Cấu trúc','Chương 1: 10 tiết · Chương 2: 12 tiết · Chương 3: 3 tiết · Thảo luận 15 tiết · Báo cáo thực tế 5 tiết (tổng 45)'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (kiểm tra + thảo luận) · Thi 60%'],['Hình thức thi','Vấn đáp · 12/12/2026 (dự kiến)'],['Chuyên cần','Vắng 0–10%: tối đa 10đ · 10–20%: 8đ · 20–30%: 6đ · 30–40%: 4đ · trên 40%: 0đ, không đủ điều kiện dự thi'],['Mục tiêu','Luận cứ khoa học (lý luận, thực tiễn, định hướng, giải pháp) quản trị và phát triển CLKD cho DN Việt Nam; nguyên lý hiện đại về QTCL và phương pháp, kỹ năng vận dụng'],['Tài liệu','[1] Slide bài giảng QTCL (sau đại học), ĐHTM · [2] Nguyễn Hoàng Việt (2023), Giáo trình QTCL (CTĐT sau đại học), NXB Thống kê · [3] Nguyễn Hoàng Long & Nguyễn Hoàng Việt (2015), Giáo trình QTCL · [4] Kim & Mauborgne, Chiến lược Đại dương xanh · [5] Brandenburger & Nalebuff, Lý thuyết trò chơi trong kinh doanh · [6] M. Porter (2008), Chiến lược cạnh tranh']],
+  info:[['Giảng viên','PGS.TS Lưu Thị Thùy Dương · Bộ môn Quản trị chiến lược'],['Mã học phần','CLDH0618 · 3 tín chỉ'],['Cấu trúc','Chương 1: 10 tiết · Chương 2: 12 tiết · Chương 3: 3 tiết · Thảo luận 15 tiết · Báo cáo thực tế 5 tiết (tổng 45)'],['Đánh giá','Chuyên cần 10% · Thực hành 30% (kiểm tra + thảo luận) · Thi 60%'],['Hình thức thi','Vấn đáp · 12/12/2026 (dự kiến) · trả lời theo trình tự khái niệm → mô hình, công cụ → ví dụ doanh nghiệp'],['Chuyên cần','Vắng 0–10%: tối đa 10đ · 10–20%: 8đ · 20–30%: 6đ · 30–40%: 4đ · trên 40%: 0đ, không đủ điều kiện dự thi'],['Mục tiêu','Luận cứ khoa học (lý luận, thực tiễn, định hướng, giải pháp) quản trị và phát triển CLKD cho DN Việt Nam; nguyên lý hiện đại về QTCL và phương pháp, kỹ năng vận dụng'],['Tài liệu','[1] Slide bài giảng QTCL (sau đại học), ĐHTM · [2] Nguyễn Hoàng Việt (2023), Giáo trình QTCL (CTĐT sau đại học), NXB Thống kê · [3] Nguyễn Hoàng Long & Nguyễn Hoàng Việt (2015), Giáo trình QTCL · [4] Kim & Mauborgne, Chiến lược Đại dương xanh · [5] Brandenburger & Nalebuff, Lý thuyết trò chơi trong kinh doanh · [6] M. Porter (2008), Chiến lược cạnh tranh']],
   chapters:[], work:null, quiz:[]},
  kth:{name:'Kinh tế học',short:'KTH',c:'--kth',cs:'--kth-soft',cr:3,w:null,
   info:[['Mã học phần','MIEC0821 · 3 tín chỉ · Bộ môn Kinh tế học, Đại học Thương mại'],['Lớp','Bổ sung kiến thức tuyển sinh EMBA 2026 · học phần cơ sở ngành (học phần 1) · 32 học viên'],['Cấu trúc','Slide: 36.18.96 (36 giờ lý thuyết, 18 giờ thảo luận, 96 giờ tự học); thời khóa biểu ghi "36, 9" — cần hỏi lại'],['Hình thức học','Online, kết hợp giải đáp thắc mắc trên lớp. Mỗi buổi khoảng 1–1,5 tiếng: giảng viên hướng dẫn nội dung chính, học viên tự nghiên cứu ở nhà, buổi sau trao đổi thắc mắc'],['Giờ học','Buổi tối, từ 18h00 — vào lớp đúng giờ'],['Lịch học','19, 20, 23, 27, 29/11/2026 · tối Chủ nhật 22/11 nghỉ (giảng viên báo) · tự nghiên cứu 21, 25, 28/11'],['Hình thức thi','Thi online, làm bài tại nhà, được dùng tài liệu và công cụ hỗ trợ (kể cả AI); thời gian làm bài khoảng 24 giờ (giảng viên nói "nếu nhớ không nhầm" — cần xác nhận). Bài viết: mỗi câu trả lời cô đọng khoảng 5–10 dòng, cả bài khoảng 3 mặt giấy. Buổi cuối giảng viên hướng dẫn cấu trúc đề và cách làm bài'],['Thi','Dự kiến tối thứ Bảy 12/12/2026 (theo lịch học phần 1)'],['Trọng tâm','Chương 5, 6, 7 (kinh tế vĩ mô) — giảng và thảo luận nhiều hơn, nền tảng cho môn Kinh tế vĩ mô của chương trình EMBA. Chương 1–4 (vi mô) tự nghiên cứu'],['Giáo trình bắt buộc','Kinh tế vi mô 1 (Phó Giáo sư, Tiến sĩ Phan Thế Công chủ biên) · Kinh tế vĩ mô 1 (Tiến sĩ Trần Việt Thảo, Lê Mai Trang đồng chủ biên) — Đại học Thương mại xuất bản, không có bản mềm; mua ở thư viện trường hoặc photo'],['Đọc thêm','Nguyên lý kinh tế học tập 1–2 (N. Gregory Mankiw) — giảng viên khuyên đọc vì gần chương trình, dễ hiểu'],['Tài liệu','Slide bài giảng (360 trang) gửi trên nhóm Zalo lớp'],['Giảng viên','Chưa có tên'],['Liên hệ môn đã học','Chương 1–2 trùng nhiều với Kinh tế ứng dụng chuyên đề 1–2 (có đường dẫn trong từng chủ đề); chương hành vi người tiêu dùng không có trong học phần này — đã học kỹ ở Kinh tế ứng dụng chuyên đề 3']],
@@ -1857,7 +1830,12 @@ SUBJ.ktud.work={
    trap:'Cho rằng người mua hưởng trọn 5 nghìn đồng vì "thuế nằm trong giá". Quên dịch đường cung khi có thuế (P − t). Tính số thu theo lượng 90 (lượng sau khi bỏ thuế) thay vì 82.'}
  ],
  discuss:['<b>Giá trần xăng dầu:</b> hiện tượng ngắn hạn, dài hạn; khó khăn của doanh nghiệp khi giá thế giới cao hơn trần; rủi ro nguồn cung cho doanh nghiệp dùng xăng dầu làm đầu vào; kịch bản rủi ro của CEO vận tải. <i>Gợi ý trả lời xem ở chủ đề "Giá trần và giá sàn", phần mở rộng.</i>','<b>Thuế nhiên liệu +1.000đ/lít:</b> giá mua, giá thực nhận, lượng bán; cần biết gì để xác định ai chịu thuế; 2 biện pháp ứng phó trong phạm vi quyền hạn. <i>Gợi ý ở chủ đề "Thuế và trợ cấp".</i>','<b>Trợ giá đại trà hay hỗ trợ trực tiếp:</b> ai hưởng lợi, lượng tiêu dùng và ngân sách thay đổi ra sao.','<b>Nhu cầu xăng dầu 5 năm tới:</b> tác động của xe điện, thu nhập, nhu cầu đi lại; ngắn hạn hay dài hạn; chỉ báo theo dõi theo khu vực.','<b>Liên hệ doanh nghiệp (CĐ1):</b> nguồn lực "miễn phí" có chi phí cơ hội; dự án tiếp tục chỉ vì đã đầu tư nhiều; KPI đạt nhưng không hiệu quả.','<b>Khách đánh giá cao sản phẩm nhưng vẫn không mua</b> (CĐ3): nguyên nhân có thể là gì ngoài chất lượng? Nhà quản trị xử lý thế nào? Vì sao không nên mặc định giảm giá? <i>Gợi ý ở chủ đề "Ràng buộc ngân sách và đường ngân sách", mục 6.</i>','<b>Phân mảnh ngân sách có ý nghĩa gì đối với quyết định của nhà quản trị?</b> (CĐ3, thảo luận buổi 21/11) Xét lần lượt ba biểu hiện: chia theo mục đích, theo nguồn tiền, theo thời gian; minh họa bằng tình huống spa. <i>Gợi ý ở chủ đề "Kinh tế học hành vi: phân mảnh ngân sách", mục 6–8, và bài tập "Định vị dịch vụ spa".</i>','<b>Thiết kế gói đào tạo trực tuyến</b> (CĐ3, tự nghiên cứu theo slide): mỗi phương án tác động đến hành vi người mua qua cơ chế nào; phương án nào cải thiện cả tỷ lệ đăng ký và mức độ sử dụng; cần thước đo nào. <i>Lời giải ở bài tập "Gói đào tạo trực tuyến" phía trên.</i>','<b>Sản phẩm của doanh nghiệp đang bị so sánh với những gì?</b> (CĐ3) Vận dụng điều kiện MU/P bằng nhau cho một sản phẩm tự chọn: khách so lợi ích trên mỗi đồng với những khoản chi nào, làm sao tăng lợi ích trên mỗi đồng. <i>Gợi ý ở chủ đề "Lựa chọn tiêu dùng tối ưu", mục 6.</i>','<b>Thuế xăng dầu năm 2026</b> (CĐ6, buổi chuyên gia 21/11): giảm bốn sắc thuế cùng lúc có làm mất tín hiệu khuyến khích xăng E10 và tiết kiệm năng lượng không? Nên khôi phục thuế sau 31/12/2026 và 31/03/2027 theo lộ trình nào? <i>Gợi ý ở chủ đề "Thực tiễn điều chỉnh thuế xăng dầu năm 2026" và tự luận CĐ6.</i>','<b>Giảm thuế đại trà hay hỗ trợ có mục tiêu</b> (CĐ6): khi giá diesel tăng hơn 50%, nhóm nào chịu tác động mạnh nhất, công cụ nào nhắm đúng nhóm đó? <i>Gợi ý ở chủ đề "Giảm thuế thì ai được lợi?".</i>'],
- todo:['Họp nhóm chốt dàn ý và chia việc','Chỉnh Phần I theo nội dung CĐ3','Thu thập số liệu Petrolimex (BCTN 2025, E10, Petrolimex ID)','Hỏi giảng viên hướng làm bài buổi 25/11','Ghép bản thảo 10–12 trang (29/11)','Kiểm tra tình trạng nghị định xăng dầu mới','Định dạng Word, làm slide, tập thuyết trình','Gửi email nộp bài sáng 5/12','Tự nghiên cứu slide CĐ3: hiệu ứng thay thế, hiệu ứng thu nhập, tình huống gói đào tạo trực tuyến','Chuẩn bị ý kiến: phân mảnh ngân sách có ý nghĩa gì với nhà quản trị (21/11)','Đọc trước CĐ6 (thuế xăng dầu) trước buổi chuyên gia sáng 21/11']
+ track:[
+  {at:'gr-0',rows:[['Hạn nộp','Sáng thứ Bảy 5/12 — bản mềm (Word + slide) gửi email giảng viên'],['Mốc nội bộ','Bản thảo 10–12 trang: Chủ nhật 29/11'],['Cần hỏi','Hướng làm bài — hỏi giảng viên buổi 25/11']],tasks:[0,1,2,3,4,5,6,7]},
+  {at:'kt',t:'Kiểm tra trắc nghiệm 5/12',due:'Thi 5/12',rows:[['Ngày','Thứ Bảy 5/12 — giờ làm bài chờ thông báo'],['Hình thức','Trắc nghiệm, thuộc điểm thực hành 30%'],['Phạm vi','Chờ thông báo'],['Cách ôn','Tab Ôn tập: ưu tiên Câu sai và Ôn tập tổng hợp của từng chương']],tasks:[11]}
+ ],
+ todoOld:[8,9,10],
+ todo:['Họp nhóm chốt dàn ý và chia việc','Chỉnh Phần I theo nội dung CĐ3','Thu thập số liệu Petrolimex (BCTN 2025, E10, Petrolimex ID)','Hỏi giảng viên hướng làm bài buổi 25/11','Ghép bản thảo 10–12 trang (29/11)','Kiểm tra tình trạng nghị định xăng dầu mới','Định dạng Word, làm slide, tập thuyết trình','Gửi email nộp bài sáng 5/12','Tự nghiên cứu slide CĐ3: hiệu ứng thay thế, hiệu ứng thu nhập, tình huống gói đào tạo trực tuyến','Chuẩn bị ý kiến: phân mảnh ngân sách có ý nghĩa gì với nhà quản trị (21/11)','Đọc trước CĐ6 (thuế xăng dầu) trước buổi chuyên gia sáng 21/11','Hỏi giờ làm bài và phạm vi kiến thức của bài kiểm tra trắc nghiệm 5/12']
 };
 
 SUBJ.ktud.quiz=[
@@ -3594,7 +3572,11 @@ SUBJ.qtcl.work={
    trap:'Phân tích đủ năm lực (lạc đề); chỉ mô tả hai lực mà không nối sang cường độ cạnh tranh; nhầm đối thủ cùng ngành (cà phê vỉa hè, chuỗi khác) là sản phẩm thay thế; dùng số liệu không có nguồn, không có năm.'}
  ],
  discuss:['<b>"Bạn có thể trình bày nội dung chiến lược kinh doanh của Công ty?"</b> — trình bày theo 6 yếu tố cấu thành. <i>Gợi ý: CĐ1, chủ đề "Khái niệm chiến lược, 6 yếu tố cấu thành".</i>','<b>"Công ty đã, đang và sẽ hoạt động trong ngành KD nào?"</b> — chiến lược cấp công ty theo trục thời gian. <i>Gợi ý: CĐ1, chủ đề "Ba cấp chiến lược".</i>','<b>"Chúng ta sẽ đi đâu, về đâu? Muốn trở thành cái gì?"</b> — tầm nhìn. <i>Gợi ý: CĐ1, chủ đề "Tầm nhìn chiến lược".</i>','<b>"Thời cơ và thách thức nào?"</b> và <b>"Môi trường vĩ mô có những tác nhân thay đổi chiến lược nào đáp ứng tiêu chí cường độ – phạm vi – dài hạn?"</b> <i>Gợi ý: CĐ2, chủ đề PESTEL.</i>','<b>"Nếu kinh doanh là một cuộc chơi thì ai là người chơi, vai trò của họ là gì?"</b>; <b>"Quan hệ giữa các người chơi là cạnh tranh hay bổ trợ? Quyền lực và mức độ tương tác?"</b> <i>Gợi ý: CĐ2, chủ đề mạng giá trị.</i>','<b>"Bộ phận/hoạt động nào mang lại giá trị gia tăng? Năng lực kinh doanh (cạnh tranh) nào?"</b> <i>Gợi ý: CĐ2, chuỗi giá trị và VRINE.</i>','<b>Rà lại một đường giá trị dựng sẵn:</b> cần chỉnh điểm nào, các doanh nghiệp có thật cùng hình dạng đường không; đề xuất Loại bỏ nào khó làm nhất và xử lý thế nào; bổ sung yếu tố nào. <i>Gợi ý: CĐ2, chủ đề "Đường giá trị cạnh tranh và đổi mới giá trị" (Câu hỏi vận dụng) và bài tập tình huống xăng dầu.</i>'],
- todoOld:[1,5],
+ track:[
+  {at:'kt',t:'Bài kiểm tra cá nhân (2 câu)',due:'Nộp 28/11',rows:[['Hạn nộp','Thứ Bảy 28/11 — nộp tại buổi học (S202)'],['Hình thức','Viết tay; dàn ý từng câu ở hai mục bên dưới'],['Lịch tự viết','Chủ nhật 22/11, 9:00–11:00'],['Cần hỏi','Độ dài, khổ giấy, cách tính điểm']],tasks:[6,7]},
+  {at:'gr-0',rows:[['Hạn nộp','Thứ Bảy 28/11 — nộp tại buổi thảo luận (S202), tất cả các nhóm'],['Sản phẩm','Nhóm trình bày: Word + PowerPoint; nhóm phản biện, dẫn dắt: Word; kèm bảng đánh giá thành viên có chữ ký']],tasks:[3,8,11,12]}
+ ],
+ todoOld:[0,1,4,5],
  todo:['Hỏi đề thảo luận, nhóm, vai trò (trình bày / phản biện / dẫn dắt)','Hỏi lịch và hình thức bài kiểm tra (thuộc điểm thực hành 30%)','Hỏi cấu trúc thi vấn đáp: số câu, thời gian chuẩn bị, có được mang tài liệu không','Chọn doanh nghiệp/ngành và thu thập số liệu năm gần nhất','Chuẩn bị bảng đánh giá thành viên','Ôn trước các công cụ Chương 2 cho buổi thảo luận 18/11','Viết tay bài kiểm tra 2 câu (dàn ý ở mục Bài kiểm tra) — nộp tại buổi học 28/11','Hỏi cô yêu cầu độ dài, khổ giấy và cách tính điểm của bài kiểm tra','Xem lại bài tình huống đường giá trị – ERRC (18/11) để dùng cho phần đề xuất của bài thảo luận nhóm','Đọc slide quy trình và các bước xây dựng ma trận BCG; đọc file tình huống BCG, TOWS động giảng viên gửi','Gửi chị Như câu hỏi muốn chuyên gia giải đáp (trong tuần)','Hoàn thiện bảng đánh giá thành viên theo thang A/B/C/F, có chữ ký','Xác nhận ngày buổi thảo luận thứ hai (thứ Ba 1/12 hay thứ Tư 2/12)']
 };
 
@@ -4513,7 +4495,11 @@ SUBJ.kth.work={
   {"t": "Kiểm tra số 1 · Bài 2: Hãng độc quyền — lợi nhuận và doanh thu tối đa", "cd": "CĐ4", "tp": 2, "due": "Nộp trước 18h00 · 23/11", "q": "QD = 80 − 2P; TC = 12Q + 100. 1) Sản lượng tối đa hóa lợi nhuận và lợi nhuận tối đa. 2) Sản lượng tối đa hóa doanh thu; nhận xét lợi nhuận hai tình huống và giải thích vì sao doanh thu tối đa không phải lợi nhuận tối đa.", "steps": ["P = 40 − 0,5Q; TR = 40Q − 0,5Q²; MR = 40 − Q; MC = 12.", "1) MR = MC → 40 − Q = 12 → Q = 28; P = 26. TR = 728; TC = 436; πmax = 292 USD. (Lerner = 14/26 ≈ 0,54; E ≈ −1,86 — miền cầu co dãn.)", "2) MR = 0 → Q = 40; P = 20; TRmax = 800; TC = 580; π = 220 USD.", "Nhận xét: tối đa hóa doanh thu bán nhiều hơn, giá thấp hơn, doanh thu cao hơn 72 USD nhưng lợi nhuận thấp hơn 72 USD.", "Giải thích: π = TR − TC, lợi nhuận tối đa khi MR = MC. Từ Q = 28 trở đi MR < MC = 12: mỗi sản phẩm thêm làm doanh thu tăng ít hơn chi phí → lợi nhuận giảm; tổng phần mất = Σ(MC − MR) = 72. Tối đa hóa doanh thu bỏ qua chi phí, chỉ trùng tối đa hóa lợi nhuận khi MC = 0."], "ans": "Q = 28, P = 26, πmax = 292 USD; doanh thu tối đa tại Q = 40, P = 20, TR = 800 USD nhưng π = 220 USD.", "trap": "Đặt P = MC như cạnh tranh hoàn hảo (Q = 56); đọc giá trên MR thay vì đường cầu."}
  ],
  discuss:["<b>Câu hỏi mang lên lớp trao đổi (Chương 1):</b> Vì sao đường PPF của một nền kinh tế thực tế cong lõm chứ không phải đường thẳng? Đường PPF của Việt Nam dịch chuyển thế nào sau Đổi mới?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 2):</b> Giá xăng dầu ở Việt Nam được điều hành theo cơ chế nào — có phải là giá trần không? Khi thuế bảo vệ môi trường với xăng tăng, người tiêu dùng hay doanh nghiệp chịu nhiều hơn, vì sao?", "<b>Ứng dụng AI (Chương 2, gợi ý của học phần):</b> dùng công cụ AI thu thập số liệu và phân tích cung, cầu, giá cả của một mặt hàng cụ thể trong một khoảng thời gian; so sánh kết quả từ các công cụ AI khác nhau để hoàn thiện bài thảo luận.", "<b>Câu hỏi mang lên lớp trao đổi (Chương 5):</b> Vì sao GDP Việt Nam 2025 tăng 8,02% mà lạm phát chỉ 3,31%? Tăng trưởng đến từ phía cầu hay phía cung?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 6):</b> Gói hỗ trợ theo Nghị quyết 43/2022 có những chính sách giải ngân chậm — điều đó ảnh hưởng thế nào đến hiệu ứng số nhân? Khi nào thâm hụt ngân sách là chấp nhận được?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 7):</b> Năm 2023 Ngân hàng Nhà nước giảm lãi suất bốn lần nhưng tín dụng tăng chậm — vì sao? Lãi suất tái cấp vốn khác lãi suất chiết khấu thế nào?", "<b>Ứng dụng AI (Chương 5–7, gợi ý của học phần):</b> dùng AI và công cụ hỗ trợ thu thập số liệu GDP, chỉ số giá, thất nghiệp của Việt Nam và so sánh với các nước; tìm thông tin về chính sách tài khóa, cán cân ngân sách; tra cứu lãi suất, cung tiền, lạm phát để phân tích quan hệ giữa chính sách tiền tệ và mục tiêu ổn định vĩ mô.", "<b>Câu hỏi mang lên lớp trao đổi (Chương 3):</b> Trong thực tế doanh nghiệp có tính được MR, MC để áp dụng MR = MC không? Vì sao tối đa hóa doanh thu khác tối đa hóa lợi nhuận?", "<b>Câu hỏi mang lên lớp trao đổi (Chương 4):</b> Thị trường bán lẻ xăng dầu, hàng không, viễn thông ở Việt Nam thuộc cấu trúc thị trường nào? Vì sao Nhà nước điều tiết giá điện?", "<b>Câu hỏi mang lên lớp trao đổi (buổi 20/11):</b> Chạy theo chỉ tiêu GDP có mặt trái gì? Lấy ví dụ một tỉnh có nhiều doanh nghiệp đầu tư nước ngoài (như Bắc Ninh) và phân biệt GDP với GNP. Lạm phát có hoàn toàn xấu không?", "<b>Câu hỏi thảo luận (Chương 5, đề nhóm 2):</b> Với nền kinh tế mà khu vực đầu tư nước ngoài tạo khoảng một phần năm GDP, nên đánh giá thành tích kinh tế bằng GDP hay GNI? Chênh lệch GDP – GNI thu hẹp có phải luôn là tín hiệu tốt?"],
- todoOld:[1],
+ track:[
+  {at:'kt',t:'Bài kiểm tra số 1',due:'Nộp 23/11',rows:[['Hạn nộp','Trước 18h00 thứ Hai 23/11'],['Cần hỏi','Cách nộp: viết tay hay nộp file']],tasks:[6]},
+  {at:'gr-0',rows:[['Hạn nộp','Chủ nhật 29/11 — bản đánh máy'],['Cần hỏi','Nộp bản in hay file, độ dài, có trình bày và phản biện trên lớp không'],['Theo dõi nhóm khác','Nhóm 3–5 về tài khóa, tiền tệ, ngân sách — đọc trước Chương 6–7 để theo dõi']],tasks:[7,8]}
+ ],
+ todoOld:[1,2,4,5],
  todo:["Mua hoặc photo 2 giáo trình: Kinh tế vi mô 1 (Phan Thế Công chủ biên) và Kinh tế vĩ mô 1 (Trần Việt Thảo, Lê Mai Trang đồng chủ biên) — xem ảnh bìa giảng viên gửi trên nhóm Zalo", "Tự đọc slide và giáo trình Chương 1–2; ghi thắc mắc để trao đổi buổi tối thứ Sáu 20/11", "Tự đọc Chương 3–4 (lý thuyết hành vi doanh nghiệp, cấu trúc thị trường)", "Hỏi giảng viên: hình thức và thời gian thi chính xác (thi online tại nhà, khoảng 24 giờ?); cách tính điểm; có buổi bù cho tối 22/11 không", "Đọc thêm (khuyến khích): Nguyên lý kinh tế học tập 1–2 của N. Gregory Mankiw", "Đọc trước Chương 6–7 (chính sách tài khóa, tiền tệ) để thảo luận nhóm ở buổi sau; theo dõi danh sách chia nhóm", "Xác nhận cách nộp Bài kiểm tra số 1: viết tay hay nộp file; nộp trước 18h00 thứ Hai 23/11", "Nhóm 2: thống nhất dàn ý (tab Bài tập), phân công từng phần và người tổng hợp; hoàn thành bản đánh máy trước Chủ nhật 29/11", "Hỏi lớp: bài thảo luận 29/11 nộp bản in hay file, độ dài bao nhiêu trang, có trình bày và phản biện trên lớp không"]
 };
 SUBJ.kth.quiz=[
@@ -4883,7 +4869,6 @@ function renderHome(){
   const up=SCHED.filter(x=>U(x.d)>=TODAY && x.d!==EXAM && !/^Thi /.test(x.x)), next=up[0], after=up[1];
   const soon=DEADLINES.filter(x=>!(x.d===EXAM&&x.s==='both') && U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs)
     .sort((a,b)=>U(a.d)-U(b.d));
-  const imp=REMIND.filter(r=>r.imp);
   const col=s=>s==='both'?'var(--gold)':`var(${SUBJ[s].c})`;
   const lk=(s,r='sch')=>SUBJ[s]?`href="#${s}-road" data-rd="${r}"`:'';           // mục chung cả hai môn ('both') không gắn link
   const tag=(s,a='a')=>SUBJ[s]?'a':'div';
@@ -4896,8 +4881,7 @@ function renderHome(){
   ${next?`<div class="card hnext" style="border-left:5px solid ${col(next.s)}"><${tag(next.s)} class="hl" ${lk(next.s)}><div class="row between"><span class="eyebrow" style="color:var(--muted)">Buổi học tiếp theo</span><span class="pill ${U(next.d)-TODAY<=dayMs?'ko':'g'} num">${dleft(next.d)}</span></div>
     <h2>${dd(next.d).w} ${dd(next.d).d} · ${next.t}</h2><p class="row" style="gap:6px;flex-wrap:nowrap"><span style="flex:1">${sTag(next.s)}<b>${sName(next.s)}</b> — ${next.x}</span>${SUBJ[next.s]?go:''}</p></${tag(next.s)}>
     ${after?`<${tag(after.s)} class="hl hafter" ${lk(after.s)}><span style="flex:1">Sau đó: ${dd(after.d).w} ${dd(after.d).d} · ${sTag(after.s)}${SUBJ[after.s]?SUBJ[after.s].short:'Cả hai môn'} · ${after.x}</span>${SUBJ[after.s]?go:''}</${tag(after.s)}>`:''}</div>`:''}
-  ${soon.length?`<div class="card stack"><h3>Deadline</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${lk(x.s,'dl')}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short:'Cả hai môn'}${x.h?' · '+x.h:''}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span></${tag(x.s)}>`}).join('')}</div></div>`:''}
-  ${homeNotes()}
+  ${soon.length?`<div class="card stack"><h3>Deadline</h3><div class="list">${soon.map(x=>{const D=dd(x.d);const n=Math.round((U(x.d)-TODAY)/dayMs);return `<${tag(x.s)} class="li hl" ${lk(x.s,'dl')}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.t}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short:'Cả hai môn'}${x.h?' · '+x.h:''}${(()=>{ const n=x.go?trkLeft(x.s,trkOf(x.s,x.go)):0; return n?` · <span style="font-weight:700;color:var(${SUBJ[x.s].c})">còn ${n} việc</span>`:''; })()}</span></div><span class="pill ${n<=3?'ko':'g'} num">${dleft(x.d)}</span></${tag(x.s)}>`}).join('')}</div></div>`:''}
   ${!next&&!soon.length?`<div class="empty"><h3>Không có lịch sắp tới</h3><p>Chọn môn ở thanh trên để học tiếp.</p></div>`:''}`;
 }
 
@@ -4909,27 +4893,36 @@ function roadStops(s){ const S=SUBJ[s]; if(!S.chapters.length) return `<div clas
      const [n,t]=chapProgress(s,ch); const cc=curChap(s); const st = n===t&&t>0?'done':ch.status==='now'?'now':'';
      return `<a class="stop ${st}" ${cc&&cc.id===ch.id?'style="border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)"':''} data-n="${ch.n}" href="#${s}-${ch.id}"><div class="row between"><span class="pill ${ch.status==='now'?'g':'c'}">${STL[ch.status]||'Đã học'}</span><span class="small muted num">${n}/${t} chủ đề đã hiểu</span></div><h3>${ch.title}</h3><p class="small muted">${ch.sub}</p><div class="bar"><i style="width:${t?n/t*100:0}%"></i></div></a>`;}).join('')}</div>`; }
 
+/* ===================== THEO DÕI BÀI (work.track) ===================== */
+// Mỗi bài kiểm tra / bài nhóm có khối theo dõi: hạn nộp, mốc, điều cần hỏi + danh sách việc (chỉ số trong work.todo, lưu emba-todo).
+// at:'kt' → mục riêng đầu phần Bài kiểm tra (id kt-trk); at:'gr-i' → đầu nội dung bài nhóm thứ i.
+const tdKey=(s,i)=>s==='ktud'?String(i):s+'.'+i;
+const trkId=tr=>tr.at==='kt'?'kt-trk':tr.at;
+const trkOf=(s,id)=>{ const W=SUBJ[s]&&SUBJ[s].work; return W&&W.track?W.track.find(tr=>trkId(tr)===id):null; };
+const trkLeft=(s,tr)=>tr?tr.tasks.filter(i=>!todoDone[tdKey(s,i)]).length:0;
+function trkBody(s,tr){ const W=SUBJ[s].work, n=tr.tasks.length, d=n-trkLeft(s,tr);
+  return `<div class="trk stack"><div class="list">${tr.rows.map(([k,v])=>`<div class="li"><div class="t"><span class="small muted">${k}</span><b>${v}</b></div></div>`).join('')}</div>${n?`<div class="row between"><b>Việc cần làm</b><span class="pill num" data-tdc>${d}/${n}</span></div><div class="todo">${tr.tasks.map(i=>`<label><input type="checkbox" data-td="${tdKey(s,i)}" ${todoDone[tdKey(s,i)]?'checked':''}><span>${W.todo[i]}</span></label>`).join('')}</div>`:''}</div>`; }
+
 /* ===================== LỘ TRÌNH ===================== */
 function renderRoad(s){
   const S=SUBJ[s], W=S.work, mine=x=>x.s===s||(x.s==='both'&&BOTH.includes(s));
-  const sch=SCHED.filter(mine), rm=REMIND.filter(r=>mine(r)&&rmOn(r));
-  const dl=DEADLINES.filter(mine), nt=NOTI.filter(x=>mine(x)&&U(x.d)>=TODAY).sort((a,b)=>U(a.d)-U(b.d));
+  const sch=SCHED.filter(mine), dl=DEADLINES.filter(mine);
   const past=x=>U(x.d)<TODAY;
   const fold=(arr,lab,fn)=>arr.length?`<details class="pastf"><summary>${lab} (${arr.length})</summary><div class="list">${arr.map(fn).join('')}</div></details>`:'';
   const row=x=>{ const D=dd(x.d); return `<div class="li"><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.x}</b><span class="small muted">${x.t}</span></div></div>`; };
   const drow=x=>{ const D=dd(x.d), n=Math.round((U(x.d)-TODAY)/dayMs), T=x.go?'a':'div';
-    return `<${T} class="li${x.go?' hl':''}" ${x.go?`href="#${s}-work" data-gex="${x.go}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b>${x.x?`<span class="small muted">${x.x}</span>`:''}</div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</${T}>`; };
+    const tr=x.go&&x.s===s?trkOf(s,x.go):null, lf=tr&&n>=0?trkLeft(s,tr):0;
+    return `<${T} class="li${x.go?' hl':''}" ${x.go?`href="#${s}-work" data-gex="${x.go}"`:''}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${x.t}</b>${x.x?`<span class="small muted">${x.x}</span>`:''}${lf?`<span class="small" style="display:block;color:var(--c);font-weight:700">Còn ${lf} việc cần làm</span>`:''}</div>${n>=0?`<span class="pill ${n<=7?'ko':'g'} num">${n===0?'Hôm nay':`${n} ngày`}</span>`:''}</${T}>`; };
   let todo='';
-  if(W&&W.todo&&W.todo.length){ const tk=i=>s==='ktud'?String(i):s+'.'+i, old=W.todoOld||[];
+  if(W&&W.todo&&W.todo.length){ const tk=i=>tdKey(s,i), old=(W.todoOld||[]).concat(...(W.track||[]).map(tr=>tr.tasks));
     const it=i=>`<label><input type="checkbox" data-td="${tk(i)}" ${todoDone[tk(i)]?'checked':''}><span>${W.todo[i]}</span></label>`;
-    const idx=W.todo.map((t,i)=>i), open=idx.filter(i=>!todoDone[tk(i)]&&!old.includes(i)), done=idx.filter(i=>todoDone[tk(i)]||old.includes(i));
-    todo=`<div class="card stack" id="rd-td"><div class="row between"><h3>To do</h3><span class="pill num">${open.length} việc</span></div>${open.length?`<div class="todo">${open.map(it).join('')}</div>`:'<p class="small muted">Không còn việc nào.</p>'}${done.length?`<details class="pastf"><summary>Đã xong / không còn cần (${done.length})</summary><div class="todo">${done.map(it).join('')}</div></details>`:''}</div>`; }
+    const inTr=(W.track||[]).flatMap(tr=>tr.tasks), idx=W.todo.map((t,i)=>i).filter(i=>!inTr.includes(i)), open=idx.filter(i=>!todoDone[tk(i)]&&!old.includes(i)), done=idx.filter(i=>todoDone[tk(i)]||old.includes(i));
+    if(open.length) todo=`<div class="card stack" id="rd-td"><div class="row between"><h3>To do</h3><span class="pill num">${open.length} việc</span></div>${open.length?`<div class="todo">${open.map(it).join('')}</div>`:'<p class="small muted">Không còn việc nào.</p>'}${done.length?`<details class="pastf"><summary>Đã xong / không còn cần (${done.length})</summary><div class="todo">${done.map(it).join('')}</div></details>`:''}</div>`; }
   const dUp=dl.filter(x=>!past(x)), dPast=dl.filter(past), sUp=sch.filter(x=>!past(x)), sPast=sch.filter(past);
   $('v-road').innerHTML = `
   ${dl.length?`<div class="card stack" id="rd-dl"><h3>Deadline</h3>${dUp.length?`<div class="list">${dUp.map(drow).join('')}</div>`:'<p class="small muted">Không còn hạn nộp sắp tới.</p>'}${fold(dPast,'Đã qua',drow)}${dUp.some(x=>x.go)?'<p class="small muted">Chạm vào mục để xem chi tiết trong tab Bài tập.</p>':''}</div>`:''}
   ${todo}
   ${sch.length?`<div class="card stack" id="rd-sch"><h3>Lịch học & thi</h3>${fold(sPast,'Đã học',row)}${sUp.length?`<div class="list">${sUp.map(row).join('')}</div>`:'<p class="small muted">Đã hết lịch học.</p>'}</div>`:''}
-  ${rm.length||nt.length?`<div class="card stack" id="rd-rm"><h3>Nhắc nhở</h3><div class="list">${nt.map(x=>({d:x.d,t:x.title||sName(x.s),x:[x.h,x.x].filter(Boolean).join(' · '),go:x.go})).map(drow).join('')}${rm.map(r=>`<div class="li"><div class="t"><p>${r.t}</p></div></div>`).join('')}</div></div>`:''}
   <details class="sol"><summary>Thông tin môn học</summary><div class="in">${infoList(S)}</div></details>
   ${!S.chapters.length&&!sch.length?`<div class="empty"><h3>Chưa có đề cương</h3><p>Thông tin môn sẽ được thêm khi có đề cương.</p></div>`:''}`;
 }
@@ -4981,9 +4974,10 @@ function renderWork(s){
   const chT=x=>{ const c=S.chapters.find(c=>'CĐ'+c.n===x.cd); return x.tp!=null&&c&&c.topics[x.tp]?c.topics[x.tp].t:''; };
   const sol=x=>`<details class="sol"><summary>Xem lời giải từng bước</summary><div class="in stack">${x.fig||''}<ol class="steps">${x.steps.map(t=>`<li>${t}</li>`).join('')}</ol>${x.after||''}<div class="note" style="--nc:var(--good);--ncs:var(--good-soft)"><b>Kết luận:</b> ${x.ans}</div>${x.trap?`<div class="note" style="--nc:var(--bad);--ncs:var(--bad-soft)"><b>Bẫy hay gặp:</b> ${x.trap}</div>`:''}</div></details>`;
   const exItem=(x,lab,pill,id)=>accItem(s,`${lab}${x.t}${chT(x)?`<span class="xsub">Chủ đề: ${chT(x)}</span>`:''}`,pill,`<p>${x.q}</p>${sol(x)}`,id);
-  const kt=(W.tests||[]).map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join('');
+  const trs=W.track||[], ktTr=trs.find(tr=>tr.at==='kt');
+  const kt=(ktTr?accItem(s,`Theo dõi · ${ktTr.t}`,`<span class="pill ko">${ktTr.due||''}</span>`,trkBody(s,ktTr),'kt-trk'):'')+(W.tests||[]).map((x,i)=>exItem(x,'',`<span class="pill ko">${x.due||x.cd}</span>`,`kt-${i}`)).join('');
   const grs=W.groups||(W.head?[{t:W.head.t,due:W.head.pill||'',done:1,b:W.head.b}]:[]);
-  const gr=grs.map((g,i)=>accItem(s,`${g.t}${chT(g)?`<span class="xsub">Chủ đề: ${chT(g)}</span>`:''}`,g.due?`<span class="pill ${g.done?'':'ko'}">${g.due}</span>`:'',g.b+(g.q?`<p>${g.q}</p>${sol(g)}`:''),`gr-${i}`)).join('');
+  const gr=grs.map((g,i)=>accItem(s,`${g.t}${chT(g)?`<span class="xsub">Chủ đề: ${chT(g)}</span>`:''}`,g.due?`<span class="pill ${g.done?'':'ko'}">${g.due}</span>`:'',(trkOf(s,'gr-'+i)?trkBody(s,trkOf(s,'gr-'+i)):'')+g.b+(g.q?`<p>${g.q}</p>${sol(g)}`:''),`gr-${i}`)).join('');
   const ex=W.ex.map((x,i)=>exItem(x,`${i+1}. `,`<span class="pill c">${x.cd}</span>`,`ex-${i}`)).join('');
   const disc=W.discuss&&W.discuss.length?accItem(s,'Câu hỏi thảo luận',`<span class="pill num">${W.discuss.length}</span>`,`<ul class="clean">${W.discuss.map(x=>`<li>${x}</li>`).join('')}</ul>`,'dq'):'';
   const sec=(h,body,extra='')=>body?`<h2 class="sech">${h}</h2>${extra}${body}`:'';
@@ -5079,7 +5073,7 @@ function vdStop(){ if(vd&&vd.iv) clearInterval(vd.iv); vd=null; }
 function outlineHTML(s){
   const S=SUBJ[s], chs=S.chapters.filter(c=>c.status!=='soon'&&c.topics.length&&c.sum);
   const info=k=>{ const r=S.info.find(x=>x[0]===k); return r?r[1]:''; };
-  const rm=REMIND.filter(r=>r.s===s);
+  const rm=EXAMTIP.filter(r=>r.s===s);
   const per=(f,lv,lab)=>chs.map(c=>{ const it=f(c); return it&&it.length?`<div class="ol-ch">CĐ${c.n} · ${c.title}${c.status==='pre'?' (học trước)':''}</div><ul>${it.map(x=>`<li>${x}</li>`).join('')}</ul>`:''; }).join('');
   const sec=(lv,cls,title,body,open)=>`<details class="card acc ol" name="ol-${s}" ${open?'open':''}><summary><span class="lv ${cls}">${lv}</span><span class="acc-t">${title}</span>${CHEV}</summary><div class="acc-b stack">${body}</div></details>`;
   return `<div class="card stack ol-h"><div class="row between"><h3>Đề cương ôn thi</h3><button class="btn ghost" data-olback="1" style="min-height:36px;padding:6px 12px">← Câu hỏi</button></div>
@@ -5091,15 +5085,6 @@ function outlineHTML(s){
   ${sec('Aa','','Thuật ngữ Việt – Anh',per(c=>c.sum.terms.map(([v,e])=>`${v} — <i>${e}</i>`)))}
   ${S.quiz.some(q=>q.k==='Vấn đáp'||q.k==='Tự luận')?sec('?','','Câu hỏi tự luận / vấn đáp cần chuẩn bị',`<ul>${S.quiz.map((q,i)=>q.k==='Vấn đáp'||q.k==='Tự luận'?`<li>${q.q} <span class="small muted">(${q.cd})</span></li>`:'').join('')}</ul><button class="btn" data-f="${S.quiz.some(q=>q.k==='Vấn đáp')?'vd':'all'}">Luyện ngay</button>`):''}`;
 }
-
-function homeNotes(){
-  const imp=REMIND.filter(r=>r.imp&&rmOn(r)).slice(0,5);
-  const nt=NOTI.filter(x=>U(x.d)>=TODAY && U(x.d)-TODAY<=21*dayMs).sort((a,b)=>U(a.d)-U(b.d));
-  if(!imp.length&&!nt.length) return '';
-  const tag=s=>SUBJ[s]?'a':'div', lk=s=>SUBJ[s]?`href="#${s}-road" data-rd="rm"`:'';
-  const dleft=d=>{ const n=Math.round((U(d)-TODAY)/dayMs); return n===0?'Hôm nay':n===1?'Ngày mai':`${n} ngày`; };
-  const nrow=x=>{ const D=dd(x.d); return `<${tag(x.s)} class="li hl" ${lk(x.s)}><div class="d"><small>${D.w}</small><b>${D.d}</b></div><div class="t"><b>${sTag(x.s)}${x.title||sName(x.s)}</b><span class="small muted">${SUBJ[x.s]?SUBJ[x.s].short:'Cả hai môn'}${x.h?' · '+x.h:''}</span></div><span class="pill g num">${dleft(x.d)}</span></${tag(x.s)}>`; };
-  return `<div class="card stack"><h3>Nhắc nhở</h3><div class="list">${nt.map(nrow).join('')}${imp.map(r=>`<${tag(r.s)} class="li hl" ${lk(r.s)}><div class="t"><span class="small" style="font-weight:700">${sTag(r.s)}${sName(r.s)}</span><p style="margin-top:2px">${r.t}</p></div></${tag(r.s)}>`).join('')}</div></div>`; }
 
 /* ---------- Sao lưu tự động qua GitHub Gist ---------- */
 // Cấu hình (có mã truy cập) lưu ở khóa 'sync-cfg' — KHÔNG bắt đầu bằng emba- nên không bị đưa vào mã sao lưu hay lên gist.
@@ -5183,7 +5168,7 @@ function backupHTML(){ const lb=store.get('emba-lastbackup',null);
 
 /* ---------- Cài đặt (#settings) ---------- */
 function renderSettings(){
-  const th=store.get('emba-theme','auto'), wake=store.get('emba-wake',true), fsOn=store.get('emba-fs',true);
+  const th=store.get('emba-theme','auto'), wake=store.get('emba-wake',true);
   const seg=(key,val,opts)=>`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0;padding:0">${opts.map(([v,l])=>`<button class="chip ${val===v?'on':''}" data-set="${key}" data-val='${JSON.stringify(v)}'>${l}</button>`).join('')}</div>`;
   $('v-settings').innerHTML=`
   ${syncHTML()}
@@ -5191,7 +5176,7 @@ function renderSettings(){
   <div class="card stack"><h3>Ôn tập</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Thời gian luyện vấn đáp</span>${seg('emba-vd-min',vdMin,[[3,'3 phút'],[4,'4 phút'],[5,'5 phút']])}</div></div>
   <div class="card stack"><h3>Giao diện</h3><div class="row between" style="flex-wrap:wrap;gap:8px"><span>Màu nền</span>${seg('emba-theme',th,[['auto','Theo máy'],['light','Sáng'],['dark','Tối']])}</div>
     ${window.WAKE_OK?`<div class="row between" style="flex-wrap:wrap;gap:8px"><span>Giữ màn hình sáng khi học<br><span class="small muted">Tự tắt sau 20 phút không chạm</span></span>${seg('emba-wake',wake,[[true,'Bật'],[false,'Tắt']])}</div>`:''}
-    ${window.FS_OK?`<div class="row between" style="flex-wrap:wrap;gap:8px"><span>Toàn màn hình<br><span class="small muted">Ẩn thanh địa chỉ của trình duyệt</span></span>${seg('emba-fs',fsOn,[[true,'Bật'],[false,'Tắt']])}</div>`:''}</div>
+</div>
   <div class="card stack"><h3>Ứng dụng</h3>
     <div class="row between" style="gap:8px"><span>Cài Sổ tay lên màn hình chính</span><button class="btn ghost" data-showinstall="1" style="min-height:40px">Hướng dẫn</button></div>
     <div class="row between" style="gap:8px"><span>Tải bản mới nhất</span><button class="btn ghost" data-reload="1" style="min-height:40px">Tải lại</button></div>
@@ -5202,7 +5187,6 @@ document.addEventListener('click',e=>{
     if(k==='emba-vd-min') vdMin=v;
     if(k==='emba-theme'){ if(v==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=v; }
     if(k==='emba-wake'&&!v&&window.wakeOff) window.wakeOff();
-    if(k==='emba-fs'){ const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement); if(v!==isFs) $('fsBtn').click(); }
     renderSettings(); return; }
   if(e.target.closest('[data-reload]')){ location.reload(); return; }
   if(e.target.closest('[data-showinstall]')){ store.set('emba-install-hide',false); location.hash='#home'; return; }
@@ -5279,25 +5263,7 @@ function askLink(s,ch,i){ const S=SUBJ[s], t=ch.topics[i]; const body=plain(t.b)
   return 'https://claude.ai/new?q='+encodeURIComponent(q); }
 
 
-/* ---------- Fullscreen ---------- */
-(function(){
-  const root=document.documentElement, b=$('fsBtn'), ico=$('fsIco');
-  const req=root.requestFullscreen||root.webkitRequestFullscreen, ex=document.exitFullscreen||document.webkitExitFullscreen;
-  const enabled=(document.fullscreenEnabled||document.webkitFullscreenEnabled)&&req;
-  if(!enabled) return;               // ví dụ Safari trên iPhone: không hỗ trợ
-  window.FS_OK=true;                 // nút bật/tắt nằm trong Cài đặt (nút #fsBtn ẩn khỏi thanh trên)
-  const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
-  const paint=()=>{ const on=isFs(); b.setAttribute('aria-label',on?'Thoát toàn màn hình':'Toàn màn hình'); b.title=b.getAttribute('aria-label'); b.classList.toggle('on',on);
-    ico.innerHTML=on?'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>':'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'; };
-  const go=async()=>{ try{ await req.call(root,{navigationUI:'hide'}); }catch(e){} paint(); };
-  const leave=async()=>{ try{ await ex.call(document); }catch(e){} paint(); };
-  b.addEventListener('click',e=>{ e.stopPropagation(); if(isFs()){ store.set('emba-fs',false); leave(); } else { store.set('emba-fs',true); go(); } });
-  document.addEventListener('fullscreenchange',paint); document.addEventListener('webkitfullscreenchange',paint);
-  // Mặc định toàn màn hình: trình duyệt chỉ cho phép sau một lần chạm, nên bật ở lần chạm đầu tiên
-  const auto=(e)=>{ if(document.body.classList.contains('app-mode')) return; if(e.target.closest&&e.target.closest('#fsBtn')) return; if(store.get('emba-fs',true) && !isFs()) go(); };
-  document.addEventListener('pointerdown',auto,{once:true,capture:true});
-  paint();
-})();
+/* Toàn màn hình: đã bỏ (Sơn yêu cầu 21/11/2026) — app luôn giữ thanh trạng thái và thanh điều hướng của điện thoại. */
 
 /* ===================== EVENTS ===================== */
 document.addEventListener('click',e=>{
